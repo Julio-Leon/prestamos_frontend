@@ -1,0 +1,12 @@
+.client-form * {
+    margin: 10px;
+}
+
+.client-form {
+    background-color: white;
+    color: black;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 10;
+}
+

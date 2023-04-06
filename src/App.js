@@ -1,23 +1,34 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react'
+import DisplayClients from './components/DisplayClients/DisplayClients.js'
+import CreateClient from './components/CreateClient/CreateClient';
+// require('dotenv').config()
 
 function App() {
+
+  const [clients, setClients] = useState(null)
+
+  console.log(process.env.REACT_APP_BACKEND_STRING)
+
+  const getClientsInfo = async () => {
+    const CLIENT_ENDPOINT =  (process.env.REACT_APP_BACKEND_STRING || 'http://localhost:4000/') + 'clients'
+    try {
+      const response = await fetch(CLIENT_ENDPOINT)
+      const data = await response.json()
+      setClients(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getClientsInfo()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app flex-container">
+      <CreateClient />
+      <DisplayClients clients={clients} />
     </div>
   );
 }
