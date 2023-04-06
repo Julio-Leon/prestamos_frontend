@@ -3,10 +3,19 @@
 }
 
 .client-form {
-    background-color: white;
-    color: black;
     flex-direction: column;
     justify-content: space-around;
-    padding: 10;
+    /* width: 50%; */
 }
 
+@media screen and (max-width: 850px) {
+    .form-address {
+        flex-direction: column;
+    }
+}
+
+.client-form input {
+    border-radius: 10%;
+    background-color: white;
+    color: black;
+}

@@ -8,7 +8,7 @@ function App() {
 
   const [clients, setClients] = useState(null)
 
-  console.log(process.env.REACT_APP_BACKEND_STRING)
+  // console.log(process.env.REACT_APP_BACKEND_STRING)
 
   const getClientsInfo = async () => {
     const CLIENT_ENDPOINT =  (process.env.REACT_APP_BACKEND_STRING || 'http://localhost:4000/') + 'clients'
