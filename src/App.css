@@ -16,4 +16,7 @@
   width: 80vw;
 }
 
+.create-client-container, .create-prestamo-container, .home {
+  margin-top: 10%;
+}
 
