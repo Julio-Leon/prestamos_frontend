@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './CreatePrestamo.css'
 
 const defaultFormState = {
@@ -11,7 +11,7 @@ const defaultFormState = {
     interestEarn: "",
     amountOfPayments: "",
     amountPerPayments: "",
-    paymentDates: []
+    paymentDates: ''
 }
 
 
@@ -34,9 +34,12 @@ const yearlyDatesForPayments = [
 const CreatePrestamo = () => {
 
     const [formState, setFormState] = useState(defaultFormState)
+    const [showGenQuote, setShowGenQuote] = useState(false)
+    const [quoteCounter, setQuoteCounter] = useState(0)
 
     const calculatePaymentDates = (numOfPayments, paySch, start) => {
         let counter = 0
+        let yearPlus = 0
         const startArr = start.split('/')
         let month = Number(startArr[0])
         let day = Number(startArr[1])
@@ -61,10 +64,11 @@ const CreatePrestamo = () => {
 
         while (counter < numOfPayments) {
             if (paySch === 'Bi-Weekly') {
-                payments.push(yearlyDatesForPayments[i][biWeeklyCounter])
+                payments.push([i, biWeeklyCounter, new Date().getFullYear() + yearPlus])
                 if (biWeeklyCounter === 1) {
                     if (i === 11) {
                         i = 0
+                        yearPlus++
                     } else {
                         i++
                     }
@@ -73,69 +77,83 @@ const CreatePrestamo = () => {
                     biWeeklyCounter = 1
                 }
             } else {
-                payments.push(yearlyDatesForPayments[i][startDateIdx[1]])
+                payments.push([i, 1, new Date().getFullYear() + yearPlus])
                 if (i === 11) {
                     i = 0
+                    yearPlus++
                 } else {
                     i++
                 }
             }
             counter++
         }
-        setFormState({
-            ...formState,
-            paymentDates: [...payments]
-        })
-        console.log(payments)
+        return payments
     }
 
     const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
-        const interestRate = paySch === 'Monthly' ? 10 : 5
+        const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
 
-        const topOfEquation = Math.pow((1 + interestRate), numOfPayments) * interestRate
-        const bottomOfEquation = Math.pow((1 + interestRate), numOfPayments) - 1
+        const topFirst = (1 + (interestRate / numOfPayments))
+        const topSecond = Math.pow(topFirst, numOfPayments)
+        const topFinal = topSecond * (interestRate / numOfPayments)
 
-        const amountPerPayment = (total * topOfEquation) / bottomOfEquation
+        const bottomFinal = topSecond - 1
+        
+        const equationFinal = topFinal / bottomFinal
 
-        console.log(amountPerPayment)
+        const newAmountPerPayment = (total * equationFinal)
 
-        console.log(total, topOfEquation, bottomOfEquation)
+        console.log(newAmountPerPayment)
 
-        return amountPerPayment
+        // console.log(total, topOfEquation, bottomOfEquation)
+        console.log(total, equationFinal)
+        setFormState({
+            ...formState,
+            amountPerPayments: newAmountPerPayment.toFixed(2)
+        })
     }
 
     const handleChange = (e) => {
-
-        if (formState.amountOfPayments !== '' && formState.paymentSchedule !== '') {
-            setFormState({
-                ...formState,
-                startDate: `${new Date().getMonth()}/${new Date().getDate()}`
-            })
-            console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
-            calculatePaymentDates(Number(formState.amountOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
-            if (formState.prestamoAmount) {
-                setFormState({
-                    ...formState,
-                    amountPerPayments: calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
-                })
-            }
-        }
-
         e.preventDefault()
+
+        // if (formState.cedula) {
+
+        // }
         setFormState({
             ...formState,
             [e.target.name]: e.target.value
         })
+        if (formState.amountOfPayments !== '' && formState.paymentSchedule !== '') {
+            console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
+            const tempDates = calculatePaymentDates(Number(formState.amountOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
+            setFormState(formState => {
+                return (
+                    {
+                        ...formState,
+                        startDate: `${new Date().getMonth()}/${new Date().getDate()}/${new Date().getFullYear()}`,
+                        paymentDates: [...tempDates]
+                    }
+                )
+            })
+        }
         console.log(formState)
-    }   
+    }
 
     // console.log(new Date().getFullYear())
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        calculatePaymentDates(Number(formState.numOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
+        // calculatePaymentDates(Number(formState.numOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
         return
     }
+
+    useEffect(() => {
+        if (formState.prestamoAmount && formState.amountOfPayments && formState.paymentSchedule) {
+            setShowGenQuote(true)
+        } else {
+            setShowGenQuote(false)
+        }
+    }, [formState, ])
 
     return (
         <div className="create-prestamo-container flex-container">
@@ -154,22 +172,26 @@ const CreatePrestamo = () => {
                         <input type="button" id='monthly' name="paymentSchedule" value="Monthly" onClick={handleChange} />
                     </div>
                 </div>
-                <div className='amount-of-payments flex-container'>
-                    <label htmlFor="amountOfPayments">Number Of Payments: </label>
-                    <input type="text" name="amountOfPayments" onChange={handleChange} value={formState.amountOfPayments}/>
-                </div>
                 <div>
                     <label htmlFor="prestamoAmount">Prestamo Amount: </label>
                     <input type="text" name="prestamoAmount" onChange={handleChange} value={formState.prestamoAmount}/>
+                </div>
+                <div className='amount-of-payments flex-container'>
+                    <label htmlFor="amountOfPayments">Number Of Payments: </label>
+                    <input type="text" name="amountOfPayments" onChange={handleChange} value={formState.amountOfPayments}/>
+
+                    <input style={{display: showGenQuote ? 'flex' : 'none'}} type="button" value="Generate Quote" onClick={(e) => {
+                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
+                    }} />
                 </div>
                 <input type="submit" value="Create" />
             </form>
             <div className="prestamo-client-info">
                 <div>First Name</div>
                 <div>Last Name</div>
-                <div>Amount Per Payment: {formState.prestamoAmount !== '' ? formState.amountPerPayments : 'Need more information'}</div>
-                <div>start date : TODAY</div>
-                <div>end date : calculate depending on payment schedule and amount</div>
+                <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
+                <div>start date : {new Date().getDate()}/{new Date().getMonth()}/{new Date().getFullYear()}</div>
+                <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
                 <div>Interest to pay</div>
                 <div>Total to pay</div>
             </div>
