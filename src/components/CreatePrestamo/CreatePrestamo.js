@@ -18,7 +18,7 @@ const defaultFormState = {
 
 const yearlyDatesForPayments = [
     ['January 15th', 'January 30th'],
-    ['February 15th', (new Date().getFullYear() % 4 === 0) || ((new Date().getFullYear() % 100 === 0) && (new Date().getFullYear() % 400 === 0)) ? 'February 29th' : 'February 28th'],
+    ['February 15th', (new Date().getFullYear() % 4 === 0) || ((new Date().getFullYear() % 100 === 0) && (new Date().getFullYear() % 400 === 0)) ? 29 : 28],
     ['March 15th', 'March 30th'],
     ['April 15th', 'April 30th'],
     ['May 15th', 'May 30th'],
@@ -36,6 +36,11 @@ const CreatePrestamo = () => {
     const [formState, setFormState] = useState(defaultFormState)
     const [showGenQuote, setShowGenQuote] = useState(false)
     const [quoteCounter, setQuoteCounter] = useState(0)
+
+    const [totalInterest, setTotalInterest] = useState(false)
+    const [totalPay, setTotalPay] = useState(false)
+
+    const [clientInfo, setClientInfo] = useState(false)
 
     const calculatePaymentDates = (numOfPayments, paySch, start) => {
         let counter = 0
@@ -58,13 +63,12 @@ const CreatePrestamo = () => {
 
         const payments = []
 
-        console.log(paySch)
+        // console.log(paySch)
 
         let biWeeklyCounter = startDateIdx[1]
 
         while (counter < numOfPayments) {
             if (paySch === 'Bi-Weekly') {
-                payments.push([i, biWeeklyCounter, new Date().getFullYear() + yearPlus])
                 if (biWeeklyCounter === 1) {
                     if (i === 11) {
                         i = 0
@@ -76,14 +80,16 @@ const CreatePrestamo = () => {
                 } else {
                     biWeeklyCounter = 1
                 }
+                // console.log('I:', i)
+                payments.push([i + 1, i===1 && biWeeklyCounter===1 ? (new Date().getFullYear() % 4 === 0) || ((new Date().getFullYear() % 100 === 0) && (new Date().getFullYear() % 400 === 0)) ? 29 : 28 : biWeeklyCounter === 0 ? 15 : 30, new Date().getFullYear() + yearPlus])
             } else {
-                payments.push([i, 1, new Date().getFullYear() + yearPlus])
                 if (i === 11) {
                     i = 0
                     yearPlus++
                 } else {
                     i++
                 }
+                payments.push([i + 1, 1, new Date().getFullYear() + yearPlus])
             }
             counter++
         }
@@ -103,40 +109,64 @@ const CreatePrestamo = () => {
 
         const newAmountPerPayment = (total * equationFinal)
 
-        console.log(newAmountPerPayment)
+        // console.log(newAmountPerPayment)
 
         // console.log(total, topOfEquation, bottomOfEquation)
-        console.log(total, equationFinal)
+        // console.log(total, equationFinal)
         setFormState({
             ...formState,
             amountPerPayments: newAmountPerPayment.toFixed(2)
         })
     }
 
-    const handleChange = (e) => {
-        e.preventDefault()
+    const handleBlur = async (e) => {
 
-        // if (formState.cedula) {
+        if (formState.cedula.length === 11) {
+            const SHOW_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/${formState.cedula}`
+            try {
+                const response = await fetch(SHOW_CLIENT_ENDPOINT)
+                const data = await response.json()
+                console.log(data)
+                if (response.status === 200) {
+                    setClientInfo({
+                        ...data
+                    })
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
 
-        // }
-        setFormState({
-            ...formState,
-            [e.target.name]: e.target.value
-        })
         if (formState.amountOfPayments !== '' && formState.paymentSchedule !== '') {
-            console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
+            // console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
             const tempDates = calculatePaymentDates(Number(formState.amountOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
-            setFormState(formState => {
+            setFormState(prevForm => {
                 return (
                     {
-                        ...formState,
+                        ...prevForm,
                         startDate: `${new Date().getMonth()}/${new Date().getDate()}/${new Date().getFullYear()}`,
                         paymentDates: [...tempDates]
                     }
                 )
             })
         }
-        console.log(formState)
+
+        if (formState.prestamoAmount && formState.paymentSchedule) {
+            const total = Number(formState.prestamoAmount) * (formState.paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
+            setTotalPay(total.toFixed(2))
+            setTotalInterest((total - Number(formState.prestamoAmount)).toFixed(2))
+        }
+    }
+
+    const handleChange = (e) => {
+        e.preventDefault()
+
+        
+        setFormState({
+            ...formState,
+            [e.target.name]: e.target.value
+        })
+        // console.log(formState)
     }
 
     // console.log(new Date().getFullYear())
@@ -174,11 +204,11 @@ const CreatePrestamo = () => {
                 </div>
                 <div>
                     <label htmlFor="prestamoAmount">Prestamo Amount: </label>
-                    <input type="text" name="prestamoAmount" onChange={handleChange} value={formState.prestamoAmount}/>
+                    <input type="text" name="prestamoAmount" onBlur={handleBlur} onChange={handleChange} value={formState.prestamoAmount}/>
                 </div>
                 <div className='amount-of-payments flex-container'>
                     <label htmlFor="amountOfPayments">Number Of Payments: </label>
-                    <input type="text" name="amountOfPayments" onChange={handleChange} value={formState.amountOfPayments}/>
+                    <input type="text" name="amountOfPayments" onBlur={handleBlur} onChange={handleChange} value={formState.amountOfPayments}/>
 
                     <input style={{display: showGenQuote ? 'flex' : 'none'}} type="button" value="Generate Quote" onClick={(e) => {
                         calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
@@ -187,13 +217,13 @@ const CreatePrestamo = () => {
                 <input type="submit" value="Create" />
             </form>
             <div className="prestamo-client-info">
-                <div>First Name</div>
-                <div>Last Name</div>
+                <div>First Name: {clientInfo && clientInfo.firstName}</div>
+                <div>Last Name: {clientInfo && clientInfo.lastName}</div>
                 <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
-                <div>start date : {new Date().getDate()}/{new Date().getMonth()}/{new Date().getFullYear()}</div>
+                <div>start date : {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</div>
                 <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
-                <div>Interest to pay</div>
-                <div>Total to pay</div>
+                <div>Interest to pay: {totalInterest && totalInterest}</div>
+                <div>Total to pay: {totalPay && totalPay}</div>
             </div>
         </div>
     )
