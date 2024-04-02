@@ -1,6 +1,6 @@
 * {
-  background: black;
-  color: white;
+  /* background: black;
+  color: white; */
 }
 
 .flex-container {
@@ -10,13 +10,15 @@
 .app {
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-left: 15%;
-  margin-right: 15%;
-  width: 80vw;
+  justify-content: space-between;
+  /* margin-left: 15%;
+  margin-right: 15%; */
+  width: 100vw;
+  height: 70vh;
+  border: solid 1px black;
 }
 
-.create-client-container, .create-prestamo-container, .home {
+/* .create-client-container, .create-prestamo-container, .home {
   margin-top: 10%;
-}
+} */
 

@@ -1,4 +1,7 @@
 const DisplayClients = ({ clients }) => {
+
+    console.log(clients)
+
     return (
         <div>
             {clients && clients.map(client => {

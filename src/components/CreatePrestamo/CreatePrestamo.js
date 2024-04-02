@@ -121,7 +121,9 @@ const CreatePrestamo = () => {
 
     const handleBlur = async (e) => {
 
-        if (formState.cedula.length === 11) {
+        // MAKE THIS HAPPEN FASTER /// FRONT-END INSTEAD OF BACKEND
+
+        if (formState.cedula.length > 7) {
             const SHOW_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/${formState.cedula}`
             try {
                 const response = await fetch(SHOW_CLIENT_ENDPOINT)
@@ -131,6 +133,8 @@ const CreatePrestamo = () => {
                     setClientInfo({
                         ...data
                     })
+                } else {
+                    console.log(response)
                 }
             } catch (error) {
                 console.error(error)
@@ -216,7 +220,7 @@ const CreatePrestamo = () => {
                 </div>
                 <input type="submit" value="Create" />
             </form>
-            <div className="prestamo-client-info">
+            {/* <div className="prestamo-client-info">
                 <div>First Name: {clientInfo && clientInfo.firstName}</div>
                 <div>Last Name: {clientInfo && clientInfo.lastName}</div>
                 <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
@@ -224,7 +228,7 @@ const CreatePrestamo = () => {
                 <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
                 <div>Interest to pay: {totalInterest && totalInterest}</div>
                 <div>Total to pay: {totalPay && totalPay}</div>
-            </div>
+            </div> */}
         </div>
     )
 }
