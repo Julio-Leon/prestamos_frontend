@@ -37,6 +37,8 @@ const yearlyDatesForPayments = [
 
 const CreatePrestamo = () => {
 
+    const [allClientsInfo, setAllClientsInfo] = useState(false) 
+
     const [formState, setFormState] = useState(defaultFormState)
     const [showGenQuote, setShowGenQuote] = useState(false)
     const [quoteCounter, setQuoteCounter] = useState(0)
@@ -132,23 +134,23 @@ const CreatePrestamo = () => {
 
         // MAKE THIS HAPPEN FASTER /// FRONT-END INSTEAD OF BACKEND
 
-        if (formState.cedula.length > 7) {
-            const SHOW_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/${formState.cedula}`
-            try {
-                const response = await fetch(SHOW_CLIENT_ENDPOINT)
-                const data = await response.json()
-                console.log(data)
-                if (response.status === 200) {
-                    setClientInfo({
-                        ...data
-                    })
-                } else {
-                    console.log(response)
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
+        // if (formState.cedula.length > 7) {
+        //     const SHOW_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/${formState.cedula}`
+        //     try {
+        //         const response = await fetch(SHOW_CLIENT_ENDPOINT)
+        //         const data = await response.json()
+        //         console.log(data)
+        //         if (response.status === 200) {
+        //             setClientInfo({
+        //                 ...data
+        //             })
+        //         } else {
+        //             console.log(response)
+        //         }
+        //     } catch (error) {
+        //         console.error(error)
+        //     }
+        // }
 
         if (formState.amountOfPayments !== '' && formState.paymentSchedule !== '') {
             // console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
@@ -184,11 +186,11 @@ const CreatePrestamo = () => {
 
     // console.log(new Date().getFullYear())
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        // calculatePaymentDates(Number(formState.numOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
-        return
-    }
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
+    //     // calculatePaymentDates(Number(formState.numOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
+    //     return
+    // }
 
     useEffect(() => {
         if (formState.prestamoAmount && formState.amountOfPayments && formState.paymentSchedule) {
@@ -196,8 +198,58 @@ const CreatePrestamo = () => {
         } else {
             setShowGenQuote(false)
         }
+
+        
+        // if (allClientsInfo.length > 0) {
+        //     setClientInfo(allClientsInfo)
+        // }
     }, [formState, ])
 
+    const getAllClientsInfo = async () => {
+        try {
+            const All_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/`
+            const response = await fetch(All_CLIENT_ENDPOINT)
+            const data = await response.json()
+            setAllClientsInfo(data)
+            // console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getAllClientsInfo()
+    }, [])
+
+
+    /// New Handle Change's ///
+
+    const cedulaHandleChange = e => {
+
+        const tempFormState = {
+            ...formState,
+            'cedula': e.target.value
+        }
+        setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ))
+        setFormState(tempFormState)
+    }
+
+    const paymentScheduleHandleChange = e => {
+
+    }
+
+    const prestamoAmountHandleChange = e => {
+
+    }
+
+    const amountOfPaymentsHandleChange = e => {
+        
+    }
+
+    /// LOADING SIGN ///
+    if (allClientsInfo.length < 1) {
+        return <div className="loader"></div>
+    }
     return (
         <div className="create-prestamo-container flex-container">
             {/* <form onSubmit={handleSubmit} className='client-form flex-container'>
@@ -233,7 +285,7 @@ const CreatePrestamo = () => {
             <Form>
                 <Form.Group className="mb-3" >
                     <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onBlur={handleBlur} onChange={handleChange} type="text" placeholder="00000000000" />
+                    <Form.Control name="cedula" onBlur={cedulaHandleChange} onChange={cedulaHandleChange} type="text" placeholder="00000000000" />
                     {/* <Form.Text className="text-muted">
                         Esta informacion es totalmente privada
                     </Form.Text> */}
