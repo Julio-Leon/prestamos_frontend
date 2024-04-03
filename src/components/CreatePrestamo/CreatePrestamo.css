@@ -1,5 +1,5 @@
-.payment-schedule {
-    align-items: center;
+.payment-schedule > * {
+    margin-right: 0.5rem;
 }
 
 .create-prestamo-container {

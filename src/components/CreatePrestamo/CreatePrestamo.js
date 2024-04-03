@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 import './CreatePrestamo.css'
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 
 const defaultFormState = {
     cedula: "",
@@ -97,6 +101,8 @@ const CreatePrestamo = () => {
     }
 
     const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
+        // e.preventDefault()
+
         const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
 
         const topFirst = (1 + (interestRate / numOfPayments))
@@ -118,6 +124,9 @@ const CreatePrestamo = () => {
             amountPerPayments: newAmountPerPayment.toFixed(2)
         })
     }
+
+
+    // EACH INPUT SHOULD HAVE THEIR OWN HANDLE CHANGE AND HANDLE BLUR
 
     const handleBlur = async (e) => {
 
@@ -164,12 +173,12 @@ const CreatePrestamo = () => {
 
     const handleChange = (e) => {
         e.preventDefault()
-
         
         setFormState({
             ...formState,
             [e.target.name]: e.target.value
         })
+
         // console.log(formState)
     }
 
@@ -191,7 +200,7 @@ const CreatePrestamo = () => {
 
     return (
         <div className="create-prestamo-container flex-container">
-            <form onSubmit={handleSubmit} className='client-form flex-container'>
+            {/* <form onSubmit={handleSubmit} className='client-form flex-container'>
                 <div>
                     <label htmlFor="cedula">Cedula: </label>
                     <input type="text" name="cedula" onChange={handleChange} value={formState.cedula}/>
@@ -219,8 +228,44 @@ const CreatePrestamo = () => {
                     }} />
                 </div>
                 <input type="submit" value="Create" />
-            </form>
-            {/* <div className="prestamo-client-info">
+            </form> */}
+
+            <Form>
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onBlur={handleBlur} onChange={handleChange} type="text" placeholder="00000000000" />
+                    {/* <Form.Text className="text-muted">
+                        Esta informacion es totalmente privada
+                    </Form.Text> */}
+                </Form.Group>
+
+                <Form.Group className="payment-schedule mb-3" >
+                    <Form.Label>Payment Schedule</Form.Label>
+                    <Button name="paymentSchedule" value='Bi-Weekly' onClick={handleChange}>
+                        Weekly
+                    </Button>
+                    <Button name="paymentSchedule" value='Monthly' onClick={handleChange}>
+                        Monthly
+                    </Button>
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cantidad De Prestamo</Form.Label>
+                    <Form.Control name="prestamoAmount" onBlur={handleBlur} onChange={handleChange} type="text" placeholder="1000" />
+                </Form.Group>
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cantidad De Pagos</Form.Label>
+                    <Form.Control name="amountOfPayments" onBlur={handleBlur} onChange={handleChange} type="text" placeholder="10" />
+                </Form.Group>
+                <Button onClick={(e) => {
+                        e.preventDefault()
+                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
+                    }} variant="primary" type="submit">
+                    Crear Cuota
+                </Button>
+            </Form>
+
+            <div className="prestamo-client-info">
                 <div>First Name: {clientInfo && clientInfo.firstName}</div>
                 <div>Last Name: {clientInfo && clientInfo.lastName}</div>
                 <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
@@ -228,9 +273,12 @@ const CreatePrestamo = () => {
                 <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
                 <div>Interest to pay: {totalInterest && totalInterest}</div>
                 <div>Total to pay: {totalPay && totalPay}</div>
-            </div> */}
+            </div>
         </div>
     )
 }
 
 export default CreatePrestamo
+
+
+/// MAKE THE SEQUENCE HAPPEN IN ORDER, IF TOP CHANGES -> BOTTOM IS UPDATED
