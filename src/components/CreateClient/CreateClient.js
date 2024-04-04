@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Navbar from '../Navbar/PrestamosNavbar'
-
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import './CreateClient.css'
 
 const defaultFormState = {
@@ -98,6 +99,83 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                 </div>
                 <input type="submit" value="Create" />
             </form>
+
+            <Form>
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                <Form.Group className="mb-3" >
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
+                </Form.Group>
+
+                
+                {/* <Button onClick={(e) => {
+                        e.preventDefault()
+                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
+                    }} variant="primary" type="submit">
+                    Crear Cuota
+                </Button> */}
+            </Form>
+
+
         </div>
     )
 }

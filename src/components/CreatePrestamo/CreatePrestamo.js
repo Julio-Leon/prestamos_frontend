@@ -317,7 +317,7 @@ const CreatePrestamo = () => {
                 </Button>
             </Form>
 
-            <div className="prestamo-client-info">
+            {/* <div className="prestamo-client-info">
                 <div>First Name: {clientInfo && clientInfo.firstName}</div>
                 <div>Last Name: {clientInfo && clientInfo.lastName}</div>
                 <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
@@ -325,7 +325,7 @@ const CreatePrestamo = () => {
                 <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
                 <div>Interest to pay: {totalInterest && totalInterest}</div>
                 <div>Total to pay: {totalPay && totalPay}</div>
-            </div>
+            </div> */}
         </div>
     )
 }
