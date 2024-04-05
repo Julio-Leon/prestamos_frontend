@@ -221,6 +221,23 @@ const CreatePrestamo = () => {
         getAllClientsInfo()
     }, [])
 
+    const calculateTotal = () => {
+        
+    }
+
+    const calculateInterest = () => {
+
+    }
+
+
+    const calculateQuote = e => {
+        /// calculatePaymentDates
+        /// calculateAmountPerPayments
+
+        /// calculate total
+        /// calculate interest to pay
+    }
+
 
     /// New Handle Change's ///
 
@@ -234,16 +251,27 @@ const CreatePrestamo = () => {
         setFormState(tempFormState)
     }
 
-    const paymentScheduleHandleChange = e => {
+    
 
+    const paymentScheduleHandleChange = e => {
+        /// Set payment schedule
+
+        /// check if prestamo amount and amount of payments are there, 
+            /// if they are, re calculate quote
     }
 
     const prestamoAmountHandleChange = e => {
+        /// Set prestamo amount
 
+        /// check if payment schedule and amount of payments are there, 
+            /// if they are, re calculate quote
     }
 
     const amountOfPaymentsHandleChange = e => {
-        
+        /// Set amount of payments
+
+        /// check if prestamo amount and payment schedule are there, 
+            /// if they are, re calculate quote
     }
 
     /// LOADING SIGN ///
