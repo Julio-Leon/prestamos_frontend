@@ -1,6 +1,6 @@
 const DisplayClients = ({ clients }) => {
 
-    console.log(clients)
+    // console.log(clients)
 
     return (
         <div>
