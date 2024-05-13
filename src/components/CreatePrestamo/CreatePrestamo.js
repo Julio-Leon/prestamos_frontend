@@ -117,6 +117,8 @@ const CreatePrestamo = () => {
 
         const newAmountPerPayment = (total * equationFinal)
 
+        console.log(numOfPayments)
+
         // console.log(newAmountPerPayment)
 
         // console.log(total, topOfEquation, bottomOfEquation)
@@ -221,9 +223,11 @@ const CreatePrestamo = () => {
         getAllClientsInfo()
     }, [])
 
-    const calculateQuote = e => {
 
-        console.log(formState)
+    // Add the default parameters
+    const calculateQuote = (amountOfPayments=formState.amountOfPayments, paymentSchedule=formState.paymentSchedule, prestamoAmount=formState.prestamoAmount) => {
+
+        // console.log(formState)
 
         const total = Number(formState.prestamoAmount) * (formState.paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
         setTotalPay(total)
@@ -236,10 +240,10 @@ const CreatePrestamo = () => {
         }
         setFormState(tempFormState)
         /// calculatePaymentDates
-        calculatePaymentDates(formState.amountOfPayments, formState.paymentSchedule, formState.startDate)
+        calculatePaymentDates(Number(amountOfPayments), paymentSchedule, formState.startDate)
 
         /// calculateAmountPerPayments
-        calculateAmountPerPayment(formState.amountOfPayments, formState.paymentSchedule, total)
+        calculateAmountPerPayment(Number(amountOfPayments), paymentSchedule, Number(total))
 
     }
 
@@ -256,9 +260,10 @@ const CreatePrestamo = () => {
         setFormState(tempFormState)
     }
 
-    
+    // TEST vvv TEST //
 
     const paymentScheduleHandleChange = e => {
+        e.preventDefault()
         /// Set payment schedule
         const tempFormState = {
             ...formState,
@@ -266,10 +271,12 @@ const CreatePrestamo = () => {
         }
         setFormState(tempFormState)
 
+        console.log('prestamo amunt: ' + formState.prestamoAmount + '\namount of payments: ' + formState.amountOfPayments)
+        console.log(formState)
         /// check if prestamo amount and amount of payments are there,
         if (formState.prestamoAmount && formState.amountOfPayments) {
              /// if they are, re calculate quote
-             calculateQuote()
+             calculateQuote(formState.amountOfPayments, e.target.value, formState.prestamoAmount)
         }
     }
 
@@ -284,7 +291,7 @@ const CreatePrestamo = () => {
         /// check if payment schedule and amount of payments are there, 
         if (formState.paymentSchedule && formState.amountOfPayments){
             /// if they are, re calculate quote
-            calculateQuote()
+            calculateQuote(formState.amountOfPayments, formState.paymentSchedule, e.target.value)
         }
     }
 
@@ -294,14 +301,18 @@ const CreatePrestamo = () => {
             ...formState,
             'amountOfPayments': e.target.value
         }
+
+        console.log(tempFormState)
         setFormState(tempFormState)
 
         /// check if prestamo amount and payment schedule are there,
         if (formState.prestamoAmount && formState.paymentSchedule){ 
             /// if they are, re calculate quote
-            calculateQuote()
+            calculateQuote(e.target.value, formState.paymentSchedule, formState.prestamoAmount)
         }
     }
+
+    // TEST ^^^ TEST //
 
     /// LOADING SIGN ///
     if (allClientsInfo.length < 1) {
@@ -350,10 +361,10 @@ const CreatePrestamo = () => {
 
                 <Form.Group className="payment-schedule mb-3" >
                     <Form.Label>Payment Schedule</Form.Label>
-                    <Button name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange}>
+                    <Button className='mb-3' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange}>
                         Weekly
                     </Button>
-                    <Button name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange}>
+                    <Button className='mb-3' name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange}>
                         Monthly
                     </Button>
                 </Form.Group>
@@ -382,12 +393,18 @@ const CreatePrestamo = () => {
                 <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
                 <div>Interest to pay: {totalInterest && totalInterest}</div>
                 <div>Total to pay: {totalPay && totalPay}</div>
+
+                    {/* Add button to save quote HERE */}
+
             </div>
+
         </div>
     )
 }
 
 export default CreatePrestamo
+
+// Calculate quote when button is pressed
 
 
 /// MAKE THE SEQUENCE HAPPEN IN ORDER, IF TOP CHANGES -> BOTTOM IS UPDATED
