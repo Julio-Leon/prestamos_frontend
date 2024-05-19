@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './CreatePrestamo.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 
 
@@ -107,9 +108,13 @@ const CreatePrestamo = () => {
 
         const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
 
+        console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
+
         const topFirst = (1 + (interestRate / numOfPayments))
         const topSecond = Math.pow(topFirst, numOfPayments)
         const topFinal = topSecond * (interestRate / numOfPayments)
+
+        // console.log('AMOUNT PER PAYMENT CHECK:', topFirst)
 
         const bottomFinal = topSecond - 1
         
@@ -205,7 +210,11 @@ const CreatePrestamo = () => {
         // if (allClientsInfo.length > 0) {
         //     setClientInfo(allClientsInfo)
         // }
-    }, [formState, ])
+        calculateQuote(formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount)
+
+        // calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(totalPay))
+
+    }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount ])
 
     const getAllClientsInfo = async () => {
         try {
@@ -229,9 +238,9 @@ const CreatePrestamo = () => {
 
         // console.log(formState)
 
-        const total = Number(formState.prestamoAmount) * (formState.paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
+        const total = Number(prestamoAmount) * (paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
         setTotalPay(total)
-        const interest = (total - Number(formState.prestamoAmount)).toFixed(2)
+        const interest = (total - Number(prestamoAmount)).toFixed(2)
         setTotalInterest(interest)
         const tempFormState = {
             ...formState,
@@ -265,51 +274,57 @@ const CreatePrestamo = () => {
     const paymentScheduleHandleChange = e => {
         e.preventDefault()
         /// Set payment schedule
-        const tempFormState = {
-            ...formState,
-            'paymentSchedule': e.target.value
-        }
-        setFormState(tempFormState)
 
-        console.log('prestamo amunt: ' + formState.prestamoAmount + '\namount of payments: ' + formState.amountOfPayments)
-        console.log(formState)
+        // console.log('prestamo amunt: ' + formState.prestamoAmount + '\namount of payments: ' + formState.amountOfPayments)
+        // console.log(formState)
         /// check if prestamo amount and amount of payments are there,
         if (formState.prestamoAmount && formState.amountOfPayments) {
              /// if they are, re calculate quote
              calculateQuote(formState.amountOfPayments, e.target.value, formState.prestamoAmount)
         }
+
+        const tempFormState = {
+            ...formState,
+            'paymentSchedule': e.target.value
+        }
+        setFormState(tempFormState)
     }
 
     const prestamoAmountHandleChange = e => {
-        /// Set prestamo amount
-        const tempFormState = {
+        e.preventDefault()
+        /// check if payment schedule and amount of payments are there, 
+        if (formState.paymentSchedule && formState.amountOfPayments){
+            // console.log('CHECK TWO', formState.amountOfPayments)
+            /// if they are, re calculate quote
+            calculateQuote(formState.amountOfPayments, formState.paymentSchedule, e.target.value)
+        }
+
+         /// Set prestamo amount
+         const tempFormState = {
             ...formState,
             'prestamoAmount': e.target.value
         }
         setFormState(tempFormState)
-
-        /// check if payment schedule and amount of payments are there, 
-        if (formState.paymentSchedule && formState.amountOfPayments){
-            /// if they are, re calculate quote
-            calculateQuote(formState.amountOfPayments, formState.paymentSchedule, e.target.value)
-        }
+        console.log('CHECK TWO', Number(formState.amountOfPayments))
     }
 
     const amountOfPaymentsHandleChange = e => {
+        e.preventDefault()
         /// Set amount of payments
-        const tempFormState = {
-            ...formState,
-            'amountOfPayments': e.target.value
-        }
-
-        console.log(tempFormState)
-        setFormState(tempFormState)
 
         /// check if prestamo amount and payment schedule are there,
         if (formState.prestamoAmount && formState.paymentSchedule){ 
             /// if they are, re calculate quote
             calculateQuote(e.target.value, formState.paymentSchedule, formState.prestamoAmount)
         }
+
+        const tempFormState = {
+            ...formState,
+            'amountOfPayments': e.target.value
+        }
+
+        // console.log(tempFormState)
+        setFormState(tempFormState)
     }
 
     // TEST ^^^ TEST //
@@ -385,18 +400,15 @@ const CreatePrestamo = () => {
                 </Button>
             </Form>
 
-            <div className="prestamo-client-info">
-                <div>First Name: {clientInfo && clientInfo.firstName}</div>
-                <div>Last Name: {clientInfo && clientInfo.lastName}</div>
-                <div>Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</div>
-                <div>start date : {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</div>
-                <div>end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</div>
-                <div>Interest to pay: {totalInterest && totalInterest}</div>
-                <div>Total to pay: {totalPay && totalPay}</div>
-
-                    {/* Add button to save quote HERE */}
-
-            </div>
+            <ListGroup className='mb-3'>
+                <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Last Name: {clientInfo && clientInfo.lastName}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</ListGroup.Item>
+                <ListGroup.Item variant="primary">start date : {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</ListGroup.Item>
+                <ListGroup.Item variant="primary">end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
+            </ListGroup>
 
         </div>
     )
