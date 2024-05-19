@@ -7,6 +7,21 @@
     width: 80%;
 }
 
+.date-picker {
+  margin-top: 2vw;
+  margin-bottom: 2vw;
+}
+
+.modal {
+  /* height: 15vh; */
+
+  overflow-y: auto;
+}
+
+.button-date {
+  margin-left: 2vw;
+}
+
 .loader {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */

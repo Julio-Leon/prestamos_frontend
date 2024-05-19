@@ -3,6 +3,9 @@ import './CreatePrestamo.css'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Modal from 'react-bootstrap/Modal';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
@@ -40,6 +43,10 @@ const CreatePrestamo = () => {
 
     const [allClientsInfo, setAllClientsInfo] = useState(false) 
 
+    const [paymentDatesFull, setPaymentDatesFull] = useState(false)
+
+    const [startDate, setStartDate] = useState(new Date());
+
     const [formState, setFormState] = useState(defaultFormState)
     const [showGenQuote, setShowGenQuote] = useState(false)
     const [quoteCounter, setQuoteCounter] = useState(0)
@@ -49,11 +56,60 @@ const CreatePrestamo = () => {
 
     const [clientInfo, setClientInfo] = useState(false)
 
+    const [show, setShow] = useState(false);
+
     const calculatePaymentDates = (numOfPayments, paySch, start) => {
+
+        let newStart = '/' + String(start).split(' ')[2] + '/' + String(start).split(' ')[3]
+        
+        let monthTempTemp = String(start).split(' ')[1]
+
+        console.log(monthTempTemp)
+        if (monthTempTemp === 'Jan') {
+            monthTempTemp = 1
+        }
+        else if (monthTempTemp === 'Feb') {
+            monthTempTemp = 2
+        }
+        else if (monthTempTemp === 'Mar') {
+            monthTempTemp = 3
+        }
+        else if (monthTempTemp === 'Apr') {
+            monthTempTemp = 4
+        }
+        else if (monthTempTemp === 'May') {
+            monthTempTemp = 5
+        }
+        else if (monthTempTemp === 'Jun') {
+            monthTempTemp = 6
+        }
+        else if (monthTempTemp === 'Jul') {
+            monthTempTemp = 7
+        }
+        else if (monthTempTemp === 'Aug') {
+            monthTempTemp = 8
+        }
+        else if (monthTempTemp === 'Sep') {
+            monthTempTemp = 9
+        }
+        else if (monthTempTemp === 'Oct') {
+            monthTempTemp = 10
+        }
+        else if (monthTempTemp === 'Nov') {
+            monthTempTemp = 11
+        }
+        else if (monthTempTemp === 'Dec') {
+            monthTempTemp = 12
+        }
+
+        newStart = monthTempTemp + newStart
+
+        console.log(newStart)
+
         let counter = 0
         let yearPlus = 0
-        const startArr = start.split('/')
-        let month = Number(startArr[0])
+        const startArr = newStart.split('/')
+        let month = Number(startArr[0] - 1)
         let day = Number(startArr[1])
 
         let startDateIdx = [month]
@@ -72,7 +128,7 @@ const CreatePrestamo = () => {
 
         // console.log(paySch)
 
-        let biWeeklyCounter = startDateIdx[1]
+        let biWeeklyCounter = startDateIdx[0]
 
         while (counter < numOfPayments) {
             if (paySch === 'Bi-Weekly') {
@@ -108,7 +164,7 @@ const CreatePrestamo = () => {
 
         const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
 
-        console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
+        // console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
 
         const topFirst = (1 + (interestRate / numOfPayments))
         const topSecond = Math.pow(topFirst, numOfPayments)
@@ -216,6 +272,14 @@ const CreatePrestamo = () => {
 
     }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount ])
 
+    useEffect(() => {
+        
+        if (formState.amountOfPayments && formState.paymentSchedule && startDate) {
+            setPaymentDatesFull(calculatePaymentDates(formState.amountOfPayments, formState.paymentSchedule, startDate))
+        }
+
+    }, [startDate, setStartDate, formState, setFormState])
+
     const getAllClientsInfo = async () => {
         try {
             const All_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/`
@@ -305,7 +369,7 @@ const CreatePrestamo = () => {
             'prestamoAmount': e.target.value
         }
         setFormState(tempFormState)
-        console.log('CHECK TWO', Number(formState.amountOfPayments))
+        // console.log('CHECK TWO', Number(formState.amountOfPayments))
     }
 
     const amountOfPaymentsHandleChange = e => {
@@ -374,6 +438,14 @@ const CreatePrestamo = () => {
                     </Form.Text> */}
                 </Form.Group>
 
+                <div className="dates">
+                    <DatePicker className='date-picker' selected={startDate} onChange={(date) => setStartDate(date)} />
+
+                    <Button disabled={paymentDatesFull ? false : true} className='date-picker button-date mb-3' name="showDates" value='Show Dates' onClick={() => {setShow(true)}}>
+                        Show Dates
+                    </Button>
+                </div>
+
                 <Form.Group className="payment-schedule mb-3" >
                     <Form.Label>Payment Schedule</Form.Label>
                     <Button className='mb-3' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange}>
@@ -403,12 +475,33 @@ const CreatePrestamo = () => {
             <ListGroup className='mb-3'>
                 <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Last Name: {clientInfo && clientInfo.lastName}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Amount Per Payment: {(formState.amountPerPayments ? formState.amountPerPayments : 'Quote not found')}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</ListGroup.Item>
                 <ListGroup.Item variant="primary">start date : {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</ListGroup.Item>
-                <ListGroup.Item variant="primary">end date : {formState.paymentDates ? `${formState.paymentDates[formState.paymentDates.length - 1][0]}/${formState.paymentDates[formState.paymentDates.length - 1][1]}/${formState.paymentDates[formState.paymentDates.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
+                <ListGroup.Item variant="primary">end date : {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
             </ListGroup>
+
+            <Modal show={show} onHide={() => {setShow(false)}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Payment Dates</Modal.Title>
+                </Modal.Header>
+                {/* <div className="modal"> */}
+                    <ListGroup className='mb-3'>
+                        {/* <div className="modal"> */}
+                            {paymentDatesFull && paymentDatesFull.map((date, i) => {
+                                return <ListGroup.Item variant="dark">{i+1}. {date[0]}/{date[1]}/{date[2]}</ListGroup.Item>
+                            })}
+                        {/* </div> */}
+                        {/* <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item> */}
+                    </ListGroup>
+                {/* </div> */}
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => {setShow(false)}}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
         </div>
     )
