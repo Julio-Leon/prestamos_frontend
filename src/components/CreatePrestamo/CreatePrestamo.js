@@ -162,7 +162,7 @@ const CreatePrestamo = () => {
     const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
         // e.preventDefault()
 
-        const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
+        const interestRate = paySch === 'Monthly' ? 1.2 : 0.60
 
         // console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
 
@@ -480,7 +480,15 @@ const CreatePrestamo = () => {
                 <ListGroup.Item variant="primary">end date: {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Interest Rate: {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}</ListGroup.Item>
+                <ListGroup.Item variant="primary">
+                    Interest Rate: {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}
+
+                    <Form.Group className="mb-3" >
+                        <Form.Label>Cantidad De Pagos</Form.Label>
+                        <Form.Control name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="10" />
+                    </Form.Group>
+
+                </ListGroup.Item>
             </ListGroup>
 
             <Modal show={show} onHide={() => {setShow(false)}}>
