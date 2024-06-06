@@ -162,7 +162,7 @@ const CreatePrestamo = () => {
     const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
         // e.preventDefault()
 
-        const interestRate = paySch === 'Monthly' ? 1.2 : 0.60
+        const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
 
         // console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
 
@@ -391,6 +391,12 @@ const CreatePrestamo = () => {
         setFormState(tempFormState)
     }
 
+    const interestRateHandleChange = e => {
+        e.preventDefault()
+
+        
+    }
+
     // TEST ^^^ TEST //
 
     /// LOADING SIGN ///
@@ -484,8 +490,8 @@ const CreatePrestamo = () => {
                     Interest Rate: {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}
 
                     <Form.Group className="mb-3" >
-                        <Form.Label>Cantidad De Pagos</Form.Label>
-                        <Form.Control name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="10" />
+                        <Form.Label>Interest Rate</Form.Label>
+                        <Form.Control name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="No Interest Found" />
                     </Form.Group>
 
                 </ListGroup.Item>
