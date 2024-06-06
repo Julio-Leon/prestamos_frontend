@@ -329,7 +329,7 @@ const CreatePrestamo = () => {
             ...formState,
             'cedula': e.target.value
         }
-        setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ))
+        if(allClientsInfo.length > 1) setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ));
         setFormState(tempFormState)
     }
 
