@@ -476,11 +476,11 @@ const CreatePrestamo = () => {
                 <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Last Name: {clientInfo && clientInfo.lastName}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</ListGroup.Item>
-                <ListGroup.Item variant="primary">start date : {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</ListGroup.Item>
-                <ListGroup.Item variant="primary">end date : {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
+                <ListGroup.Item variant="primary">start date: {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</ListGroup.Item>
+                <ListGroup.Item variant="primary">end date: {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Interest Rate {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}</ListGroup.Item>
+                <ListGroup.Item variant="primary">Interest Rate: {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}</ListGroup.Item>
             </ListGroup>
 
             <Modal show={show} onHide={() => {setShow(false)}}>
