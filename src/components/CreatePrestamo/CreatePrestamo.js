@@ -449,7 +449,7 @@ const CreatePrestamo = () => {
                 <Form.Group className="payment-schedule mb-3" >
                     <Form.Label>Payment Schedule</Form.Label>
                     <Button className='mb-3' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange}>
-                        Weekly
+                        Bi-Weekly
                     </Button>
                     <Button className='mb-3' name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange}>
                         Monthly
