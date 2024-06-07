@@ -47,6 +47,8 @@ const CreatePrestamo = () => {
 
     const [startDate, setStartDate] = useState(new Date());
 
+    const [currentInterestRate, setCurrentInterestRate] = useState(null)
+
     const [formState, setFormState] = useState(defaultFormState)
     const [showGenQuote, setShowGenQuote] = useState(false)
     const [quoteCounter, setQuoteCounter] = useState(0)
@@ -161,9 +163,13 @@ const CreatePrestamo = () => {
 
     const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
         // e.preventDefault()
-
-        const interestRate = paySch === 'Monthly' ? 0.1 : 0.05
-
+        let interestRate
+        if (currentInterestRate === null) {
+            interestRate = paySch === 'Monthly' ? 0.1 : 0.05
+            setCurrentInterestRate(interestRate)
+        } else {
+            interestRate = currentInterestRate
+        }
         // console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
 
         const topFirst = (1 + (interestRate / numOfPayments))
@@ -337,6 +343,8 @@ const CreatePrestamo = () => {
 
     const paymentScheduleHandleChange = e => {
         e.preventDefault()
+
+
         /// Set payment schedule
 
         // console.log('prestamo amunt: ' + formState.prestamoAmount + '\namount of payments: ' + formState.amountOfPayments)
@@ -351,6 +359,8 @@ const CreatePrestamo = () => {
             ...formState,
             'paymentSchedule': e.target.value
         }
+
+        setCurrentInterestRate(e.target.value === 'Monthly' ? 10 : 5)
         setFormState(tempFormState)
     }
 
@@ -394,7 +404,7 @@ const CreatePrestamo = () => {
     const interestRateHandleChange = e => {
         e.preventDefault()
 
-        
+        setCurrentInterestRate(e.target.value)
     }
 
     // TEST ^^^ TEST //
@@ -487,11 +497,11 @@ const CreatePrestamo = () => {
                 <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
                 <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
                 <ListGroup.Item variant="primary">
-                    Interest Rate: {formState.paymentSchedule === 'Monthly' ? '10%' : formState.paymentSchedule === 'Bi-Weekly' ? '5%' : 'No Payment Schedule Selected'}
+                    Interest Rate: {currentInterestRate}
 
                     <Form.Group className="mb-3" >
                         <Form.Label>Interest Rate</Form.Label>
-                        <Form.Control name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="No Interest Found" />
+                        <Form.Control name="amountOfPayments" onBlur={interestRateHandleChange} onChange={interestRateHandleChange} type="text" placeholder="No Interest Found" />
                     </Form.Group>
 
                 </ListGroup.Item>
