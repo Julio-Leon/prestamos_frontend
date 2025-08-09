@@ -1,6 +1,8 @@
 import './App.css';
 import { useState, useEffect } from 'react'
 import DisplayClients from './components/DisplayClients/DisplayClients.js'
+import ClientCards from './components/DisplayClients/ClientCards';
+import PrestamoCards from './components/DisplayClients/PrestamoCards';
 import CreateClient from './components/CreateClient/CreateClient';
 import CreatePrestamo from './components/CreatePrestamo/CreatePrestamo';
 import Home from './components/Home/Home'
@@ -53,13 +55,23 @@ function App() {
   }, [])
 
   return (
-    <div className="app flex-container">
+    <div className="app modern-app-bg">
       <PrestamosNavbar NEW_CLIENT_PATH={NEW_CLIENT_PATH} NEW_PRESTAMO_PATH={NEW_PRESTAMO_PATH} />
-      <Routes>
-        <Route path='/' element={<Home prestamos={prestamos} clients={clients} NEW_CLIENT_PATH={NEW_CLIENT_PATH} NEW_PRESTAMO_PATH={NEW_PRESTAMO_PATH} DISPLAY_CLIENTS={DISPLAY_CLIENTS} />} />
-        <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
-        <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
-      </Routes>
+      <div className="main-flex-layout">
+        <aside className="sidebar-clients">
+          <ClientCards clients={clients || []} />
+        </aside>
+        <main className="main-content">
+          <Routes>
+            <Route path='/' element={<Home prestamos={prestamos} clients={clients} />} />
+            <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
+            <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
+          </Routes>
+        </main>
+        <div className="prestamos-sidebar">
+          <PrestamoCards prestamos={prestamos || []} />
+        </div>
+      </div>
     </div>
   );
 }

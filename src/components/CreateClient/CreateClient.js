@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import Navbar from '../Navbar/PrestamosNavbar'
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import './CreateClient.css'
 
 const defaultFormState = {
@@ -19,8 +17,8 @@ const defaultFormState = {
     zipCode: "",
     recommendedBy: ""
 }
-const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
 
+const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
     const [formState, setFormState] = useState(defaultFormState)
 
     const handleChange = (e) => {
@@ -29,8 +27,7 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
             ...formState,
             [e.target.name]: e.target.value
         })
-        console.log(formState)
-    }    
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -51,133 +48,79 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
     }
 
     return (
-        <div className="create-client-container">
-            <form onSubmit={handleSubmit} className='client-form flex-container'>
-                <div>
-                    <label htmlFor="cedula">Cedula: </label>
-                    <input type="text" name="cedula" onChange={handleChange} value={formState.cedula}/>
+        <div className="create-client-container modern-bg">
+            <form onSubmit={handleSubmit} className="client-form responsive-form">
+                <h2 className="form-title">Crear Nuevo Cliente</h2>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="cedula">Cédula</label>
+                        <input className="input-field" type="text" name="cedula" onChange={handleChange} value={formState.cedula} placeholder="00000000000"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="firstName">Nombre</label>
+                        <input className="input-field" type="text" name="firstName" onChange={handleChange} value={formState.firstName} placeholder="Nombre"/>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="firstName">First Name: </label>
-                    <input type="text" name="firstName" onChange={handleChange} value={formState.firstName}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="lastName">Apellido</label>
+                        <input className="input-field" type="text" name="lastName" onChange={handleChange} value={formState.lastName} placeholder="Apellido"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="department">Institución</label>
+                        <input className="input-field" type="text" name="department" onChange={handleChange} value={formState.department} placeholder="Institución"/>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="lastName">Last Name: </label>
-                    <input type="text" name="lastName" onChange={handleChange} value={formState.lastName}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="telephoneNumber">Teléfono</label>
+                        <input className="input-field" type="text" name="telephoneNumber" onChange={handleChange} value={formState.telephoneNumber} placeholder="Teléfono"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="celularNumber">Celular</label>
+                        <input className="input-field" type="text" name="celularNumber" onChange={handleChange} value={formState.celularNumber} placeholder="Celular"/>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="department">Institucion: </label>
-                    <input type="text" name="department" onChange={handleChange} value={formState.department}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="number">No. Calle</label>
+                        <input className="input-field" type="text" name="number" onChange={handleChange} value={formState.number} placeholder="No."/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="street">Calle</label>
+                        <input className="input-field" type="text" name="street" onChange={handleChange} value={formState.street} placeholder="Calle"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="apartment">Apartamento (Opcional)</label>
+                        <input className="input-field" type="text" name="apartment" onChange={handleChange} value={formState.apartment} placeholder="Apt."/>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="telephoneNumber">Telephone Number: </label>
-                    <input type="text" name="telephoneNumber" onChange={handleChange} value={formState.telephoneNumber}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="county">Municipio</label>
+                        <input className="input-field" type="text" name="county" onChange={handleChange} value={formState.county} placeholder="Municipio"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="state">Provincia</label>
+                        <input className="input-field" type="text" name="state" onChange={handleChange} value={formState.state} placeholder="Provincia"/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="zipCode">Código Postal</label>
+                        <input className="input-field" type="text" name="zipCode" onChange={handleChange} value={formState.zipCode} placeholder="Código Postal"/>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="celularNumber">Celular Number: </label>
-                    <input type="text" name="celularNumber" onChange={handleChange} value={formState.celularNumber}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="recommendedBy">Recomendado Por</label>
+                        <input className="input-field" type="text" name="recommendedBy" onChange={handleChange} value={formState.recommendedBy} placeholder="Recomendado por"/>
+                    </div>
                 </div>
-                <div className="form-address flex-container">
-                    <label htmlFor="number">Street Number: </label>
-                    <input type="text" name="number" onChange={handleChange} value={formState.number}/>
-                    <label htmlFor="street">Street Name: </label>
-                    <input type="text" name="street" onChange={handleChange} value={formState.street}/>
-                    <label htmlFor="apartment">Apartment(Optional): </label>
-                    <input type="text" name="apartment" onChange={handleChange} value={formState.apartment}/>
+                <div className="form-row">
+                    <button className="submit-btn" type="submit">Crear</button>
                 </div>
-                <div className="form-address flex-container">
-                    <label htmlFor="county">County: </label>
-                    <input type="text" name="county" onChange={handleChange} value={formState.county}/>
-                    <label htmlFor="state">State: </label>
-                    <input type="text" name="state" onChange={handleChange} value={formState.state}/>
-                    <label htmlFor="zipCode">ZIPCODE: </label>
-                    <input type="text" name="zipCode" onChange={handleChange} value={formState.zipCode}/>
-                </div>
-                <div>
-                    <label htmlFor="recommendedBy">Recommended By: </label>
-                    <input type="text" name="recommendedBy" onChange={handleChange} value={formState.recommendedBy}/>
-                </div>
-                <input type="submit" value="Create" />
             </form>
-
-            <Form>
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onChange={handleChange} type="text" placeholder="00000000000" />
-                </Form.Group>
-
-                
-                {/* <Button onClick={(e) => {
-                        e.preventDefault()
-                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
-                    }} variant="primary" type="submit">
-                    Crear Cuota
-                </Button> */}
-            </Form>
-
-
         </div>
     )
 }
 
-export default CreateClient
+export default CreateClient;

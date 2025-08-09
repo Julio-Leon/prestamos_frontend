@@ -1,0 +1,61 @@
+
+.display-clients-container {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+    padding: 2rem 1rem;
+}
+
+.clients-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b3b3b;
+    margin-bottom: 2rem;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.clients-list {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.client-item {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px 0 rgba(60, 72, 88, 0.10);
+    padding: 1.2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.client-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6366f1;
+}
+.client-cedula {
+    font-size: 0.98rem;
+    color: #3b3b3b;
+}
+
+@media (max-width: 700px) {
+    .clients-title {
+        font-size: 1.3rem;
+    }
+    .clients-list {
+        max-width: 100%;
+        gap: 0.7rem;
+    }
+    .client-item {
+        font-size: 0.95rem;
+        padding: 0.7rem 0.5rem;
+    }
+}

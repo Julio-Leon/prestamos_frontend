@@ -414,120 +414,81 @@ const CreatePrestamo = () => {
         return <div className="loader"></div>
     }
     return (
-        <div className="create-prestamo-container flex-container">
-            {/* <form onSubmit={handleSubmit} className='client-form flex-container'>
-                <div>
-                    <label htmlFor="cedula">Cedula: </label>
-                    <input type="text" name="cedula" onChange={handleChange} value={formState.cedula}/>
-                </div>
-                <div className='payment-schedule flex-container'>
-                    <label htmlFor="paymentSchedule">Payment Schedule: </label>
-
-                    <div className="payment-schedule-selections">
-                        <label htmlFor="bi-weekly"></label>
-                        <input type="button" id='bi-weekly' name="paymentSchedule" value="Bi-Weekly" onClick={handleChange}/>
-                        <label htmlFor="monthly"></label>
-                        <input type="button" id='monthly' name="paymentSchedule" value="Monthly" onClick={handleChange} />
+        <div className="create-prestamo-container modern-prestamo-bg">
+            <form className="prestamo-form responsive-form">
+                <h2 className="form-title">Crear Nuevo Préstamo</h2>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="cedula">Cédula</label>
+                        <input className="input-field" name="cedula" onBlur={cedulaHandleChange} onChange={cedulaHandleChange} type="text" placeholder="00000000000" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="startDate">Fecha de Inicio</label>
+                        <DatePicker className='date-picker input-field' selected={startDate} onChange={(date) => setStartDate(date)} />
                     </div>
                 </div>
-                <div>
-                    <label htmlFor="prestamoAmount">Prestamo Amount: </label>
-                    <input type="text" name="prestamoAmount" onBlur={handleBlur} onChange={handleChange} value={formState.prestamoAmount}/>
+                <div className="form-row">
+                    <div className="form-group">
+                        <label>Payment Schedule</label>
+                        <div className="payment-schedule-btns">
+                            <button className='schedule-btn' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange} type="button">Bi-Weekly</button>
+                            <button className='schedule-btn' name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange} type="button">Monthly</button>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="prestamoAmount">Cantidad De Préstamo</label>
+                        <input className="input-field" name="prestamoAmount" onBlur={prestamoAmountHandleChange} onChange={prestamoAmountHandleChange} type="text" placeholder="1000" />
+                    </div>
                 </div>
-                <div className='amount-of-payments flex-container'>
-                    <label htmlFor="amountOfPayments">Number Of Payments: </label>
-                    <input type="text" name="amountOfPayments" onBlur={handleBlur} onChange={handleChange} value={formState.amountOfPayments}/>
-
-                    <input style={{display: showGenQuote ? 'flex' : 'none'}} type="button" value="Generate Quote" onClick={(e) => {
-                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
-                    }} />
+                <div className="form-row">
+                    <div className="form-group">
+                        <label htmlFor="amountOfPayments">Cantidad De Pagos</label>
+                        <input className="input-field" name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="10" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="interestRate">Interest Rate</label>
+                        <input className="input-field" name="interestRate" onBlur={interestRateHandleChange} onChange={interestRateHandleChange} type="text" placeholder="No Interest Found" />
+                    </div>
                 </div>
-                <input type="submit" value="Create" />
-            </form> */}
-
-            <Form>
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cedula</Form.Label>
-                    <Form.Control name="cedula" onBlur={cedulaHandleChange} onChange={cedulaHandleChange} type="text" placeholder="00000000000" />
-                    {/* <Form.Text className="text-muted">
-                        Esta informacion es totalmente privada
-                    </Form.Text> */}
-                </Form.Group>
-
-                <div className="dates">
-                    <DatePicker className='date-picker' selected={startDate} onChange={(date) => setStartDate(date)} />
-
-                    <Button disabled={paymentDatesFull ? false : true} className='date-picker button-date mb-3' name="showDates" value='Show Dates' onClick={() => {setShow(true)}}>
-                        Show Dates
-                    </Button>
-                </div>
-
-                <Form.Group className="payment-schedule mb-3" >
-                    <Form.Label>Payment Schedule</Form.Label>
-                    <Button className='mb-3' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange}>
-                        Bi-Weekly
-                    </Button>
-                    <Button className='mb-3' name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange}>
-                        Monthly
-                    </Button>
-                </Form.Group>
-
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cantidad De Prestamo</Form.Label>
-                    <Form.Control name="prestamoAmount" onBlur={prestamoAmountHandleChange} onChange={prestamoAmountHandleChange} type="text" placeholder="1000" />
-                </Form.Group>
-                <Form.Group className="mb-3" >
-                    <Form.Label>Cantidad De Pagos</Form.Label>
-                    <Form.Control name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="10" />
-                </Form.Group>
-                <Button onClick={(e) => {
+                <div className="form-row">
+                    <button className="submit-btn" onClick={(e) => {
                         e.preventDefault()
                         calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
-                    }} variant="primary" type="submit">
-                    Crear Cuota
-                </Button>
-            </Form>
+                    }} type="submit">
+                        Crear Cuota
+                    </button>
+                    <button className="show-dates-btn" disabled={!paymentDatesFull} name="showDates" type="button" onClick={() => {setShow(true)}}>
+                        Mostrar Fechas
+                    </button>
+                </div>
+            </form>
 
-            <ListGroup className='mb-3'>
-                <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Last Name: {clientInfo && clientInfo.lastName}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</ListGroup.Item>
-                <ListGroup.Item variant="primary">start date: {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</ListGroup.Item>
-                <ListGroup.Item variant="primary">end date: {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Interest to pay: {totalInterest && totalInterest}</ListGroup.Item>
-                <ListGroup.Item variant="primary">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</ListGroup.Item>
-                <ListGroup.Item variant="primary">
-                    Interest Rate: {currentInterestRate}
-
-                    <Form.Group className="mb-3" >
-                        <Form.Label>Interest Rate</Form.Label>
-                        <Form.Control name="amountOfPayments" onBlur={interestRateHandleChange} onChange={interestRateHandleChange} type="text" placeholder="No Interest Found" />
-                    </Form.Group>
-
-                </ListGroup.Item>
-            </ListGroup>
+            <div className="prestamo-summary">
+                <div className="summary-item">First Name: {clientInfo && clientInfo.firstName}</div>
+                <div className="summary-item">Last Name: {clientInfo && clientInfo.lastName}</div>
+                <div className="summary-item">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</div>
+                <div className="summary-item">Start date: {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</div>
+                <div className="summary-item">End date: {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</div>
+                <div className="summary-item">Interest to pay: {totalInterest && totalInterest}</div>
+                <div className="summary-item">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</div>
+                <div className="summary-item">Interest Rate: {currentInterestRate}</div>
+            </div>
 
             <Modal show={show} onHide={() => {setShow(false)}}>
                 <Modal.Header closeButton>
                     <Modal.Title>Payment Dates</Modal.Title>
                 </Modal.Header>
-                {/* <div className="modal"> */}
-                    <ListGroup className='mb-3'>
-                        {/* <div className="modal"> */}
-                            {paymentDatesFull && paymentDatesFull.map((date, i) => {
-                                return <ListGroup.Item variant="dark">{i+1}. {date[0]}/{date[1]}/{date[2]}</ListGroup.Item>
-                            })}
-                        {/* </div> */}
-                        {/* <ListGroup.Item variant="primary">First Name: {clientInfo && clientInfo.firstName}</ListGroup.Item> */}
-                    </ListGroup>
-                {/* </div> */}
+                <div className="modal-dates-list">
+                    {paymentDatesFull && paymentDatesFull.map((date, i) => (
+                        <div className="modal-date-item" key={i}>{i+1}. {date[0]}/{date[1]}/{date[2]}</div>
+                    ))}
+                </div>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => {setShow(false)}}>
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
-
         </div>
     )
 }

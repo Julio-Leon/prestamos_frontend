@@ -1,21 +1,114 @@
-.client-form * {
-    margin: 10px;
+
+/* Container background and centering */
+.create-client-container.modern-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+    padding: 2rem 1rem;
 }
 
+/* Form styling */
 .client-form {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 32px 0 rgba(60, 72, 88, 0.12);
+    padding: 2.5rem 2rem;
+    max-width: 600px;
+    width: 100%;
+    display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    /* width: 50%; */
+    gap: 1.5rem;
+    transition: box-shadow 0.2s;
 }
 
-@media screen and (max-width: 850px) {
-    .form-address {
+.form-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b3b3b;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1 1 180px;
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+}
+
+.form-group label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6366f1;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+.input-field {
+    padding: 0.7rem 1rem;
+    border: 1px solid #c7d2fe;
+    border-radius: 0.7rem;
+    background: #f1f5f9;
+    color: #22223b;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+.input-field:focus {
+    border: 1.5px solid #6366f1;
+    box-shadow: 0 0 0 2px #a5b4fc55;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.9rem 0;
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.7rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 0.5rem;
+}
+.submit-btn:hover, .submit-btn:focus {
+    background: linear-gradient(90deg, #818cf8 0%, #6366f1 100%);
+    box-shadow: 0 4px 16px 0 rgba(99, 102, 241, 0.15);
+}
+
+/* Responsive design */
+@media (max-width: 700px) {
+    .client-form {
+        padding: 1.2rem 0.5rem;
+    }
+    .form-title {
+        font-size: 1.3rem;
+    }
+    .form-row {
         flex-direction: column;
+        gap: 0.7rem;
+    }
+    .form-group {
+        min-width: 100%;
     }
 }
 
-.client-form input {
-    border-radius: 10%;
-    background-color: white;
-    color: black;
+@media (max-width: 400px) {
+    .client-form {
+        padding: 0.5rem 0.1rem;
+    }
+    .form-title {
+        font-size: 1.1rem;
+    }
 }

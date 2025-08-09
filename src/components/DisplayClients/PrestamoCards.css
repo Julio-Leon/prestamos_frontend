@@ -1,0 +1,85 @@
+.prestamo-cards-container {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 32px 0 rgba(60, 72, 88, 0.12);
+  padding: 2rem 1.2rem;
+  max-width: 340px;
+  min-width: 260px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 1.5rem 1.5rem 1.5rem 0.5rem;
+}
+
+.prestamo-cards-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.prestamo-cards-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #818cf8;
+  letter-spacing: 1px;
+}
+
+.arrow-btn {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow-btn:disabled {
+  background: #e0e7ff;
+  color: #b4b4b4;
+  cursor: not-allowed;
+}
+
+.prestamo-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.prestamo-card {
+  background: #f8fafc;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px 0 rgba(60, 72, 88, 0.10);
+  padding: 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.prestamo-card-detail {
+  font-size: 0.98rem;
+  color: #3b3b3b;
+}
+
+.prestamo-cards-empty {
+  color: #818cf8;
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+@media (max-width: 900px) {
+  .prestamo-cards-container {
+    margin: 1rem auto;
+    max-width: 95vw;
+    min-width: 0;
+  }
+}
