@@ -6,27 +6,52 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background: var(--bg-content);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 2rem 1rem;
+    background: transparent; /* Remove background, main-content provides it */
+    padding: 1rem 0;
+    width: 100%;
 }
 
-/* Form styling */
+/* Form styling - responsive to container width */
 .prestamo-form {
     background: var(--form-bg);
     border-radius: 1.5rem;
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-color);
     padding: 2.5rem 2rem;
-    max-width: 650px;
+    max-width: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-bottom: 2rem;
+    margin: 0 0 2rem 0; /* Keep bottom margin for summary spacing */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+}
+
+/* Mobile responsive form */
+@media (max-width: 900px) {
+  .create-prestamo-container.modern-prestamo-bg {
+    padding: 0.5rem 0;
+    min-height: auto;
+  }
+
+  .prestamo-form {
+    width: 100%;
+    max-width: 100%;
+    padding: 2rem 1.5rem;
+    border-radius: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .prestamo-form {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    border-radius: 1rem;
+    gap: 1.2rem;
+  }
 }
 
 .form-title {
@@ -51,6 +76,18 @@
     min-width: 140px;
 }
 
+/* Mobile full-width inputs */
+@media (max-width: 900px) {
+  .form-group {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+}
+
 .form-group label {
     font-size: 1rem;
     font-weight: 500;
@@ -68,6 +105,19 @@
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
+    min-height: 44px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Mobile input fields */
+@media (max-width: 600px) {
+  .input-field {
+    min-height: 48px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+  }
 }
 
 .input-field:focus {
@@ -80,6 +130,7 @@
     gap: 0.7rem;
     margin-top: 0.2rem;
 }
+
 .schedule-btn {
     padding: 0.6rem 1.2rem;
     background: var(--button-bg);
@@ -91,6 +142,22 @@
     cursor: pointer;
     box-shadow: var(--shadow-card);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 44px;
+}
+
+/* Mobile schedule buttons */
+@media (max-width: 600px) {
+  .payment-schedule-btns {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .schedule-btn {
+    min-height: 48px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    flex: 1 1 auto;
+  }
 }
 
 .schedule-btn:hover, .schedule-btn:focus {
@@ -112,6 +179,23 @@
     box-shadow: var(--shadow-card);
     margin-top: 0.5rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 44px;
+}
+
+/* Mobile submit and show dates buttons */
+@media (max-width: 600px) {
+  .submit-btn, .show-dates-btn {
+    min-height: 52px;
+    padding: 1rem 0;
+    font-size: 1.1rem;
+  }
+
+  .show-dates-btn {
+    margin-left: 0;
+    margin-top: 0.8rem;
+    width: 100%;
+    min-width: auto;
+  }
 }
 
 .submit-btn:hover, .show-dates-btn:hover, .submit-btn:focus, .show-dates-btn:focus {
@@ -131,9 +215,9 @@
     box-shadow: var(--shadow-card);
     border: 1px solid var(--border-color);
     padding: 1.5rem 1rem;
-    max-width: 650px;
+    max-width: 100%;
     width: 100%;
-    margin-bottom: 2rem;
+    margin: 0 0 2rem 0;
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
@@ -183,10 +267,10 @@
 /* Responsive design */
 @media (max-width: 900px) {
     .create-prestamo-container.modern-prestamo-bg {
-        padding: 1rem 0.2rem;
+        padding: 0.5rem 0;
     }
     .prestamo-form, .prestamo-summary {
-        padding: 1.2rem 0.5rem;
+        padding: 1.2rem 0.8rem;
     }
     .form-title {
         font-size: 1.3rem;
@@ -202,9 +286,22 @@
 
 @media (max-width: 400px) {
     .prestamo-form, .prestamo-summary {
-        padding: 0.5rem 0.1rem;
+        padding: 1rem 0.6rem;
     }
     .form-title {
         font-size: 1.1rem;
     }
+}
+
+/* Large screen responsive padding */
+@media (min-width: 1400px) {
+  .prestamo-form, .prestamo-summary {
+    padding: 3rem 2.5rem;
+  }
+}
+
+@media (min-width: 1800px) {
+  .prestamo-form, .prestamo-summary {
+    padding: 3.5rem 3rem;
+  }
 }

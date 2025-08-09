@@ -1,10 +1,22 @@
+/* Global scroll and width prevention */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 /* Ensure dark mode toggle button is never overridden by app styles */
 .darkmode-toggle-btn {
   all: unset;
   position: fixed !important;
   top: 18px !important;
   right: 24px !important;
-  z-index: 1000 !important;
+  z-index: 9999 !important;
   display: inline-block;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -21,34 +33,282 @@
 }
 
 .prestamos-sidebar {
-  flex: 0 0 350px;
-  min-width: 260px;
-  max-width: 350px;
+  flex: 0 0 min(280px, 22vw); /* Reduced width to prevent overflow */
+  min-width: 220px;
+  max-width: 280px;
   background: var(--bg-sidebar);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 2;
   order: 3;
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
   border-radius: 1.2rem;
   box-shadow: var(--shadow-main);
   border: 1px solid var(--border-color);
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-  /* animation removed */
+  margin: 2rem 0;
+  padding: 1rem; /* Add internal padding for content margins */
   transition: box-shadow 0.3s;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  max-height: calc(100vh - 4rem); /* Ensure it doesn't exceed screen height */
 }
 
 @media (max-width: 900px) {
   .prestamos-sidebar {
-    max-width: 100vw;
-    min-width: 0;
+    display: none;
+  }
+}
+
+/* Mobile dropdown containers - hidden on desktop */
+.mobile-clients-dropdown-container,
+.mobile-prestamos-dropdown-container {
+  display: none;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  /* Show mobile dropdowns only on mobile */
+  .mobile-clients-dropdown-container,
+  .mobile-prestamos-dropdown-container {
+    display: block !important;
+    position: relative;
+    z-index: 1000;
+  }
+
+  .mobile-clients-dropdown-container {
+    position: fixed !important;
+    top: 80px;
+    left: 0;
+    right: 0;
+    padding: 0 1rem;
+    z-index: 1099 !important; /* Below navbar (1100) */
+    background: transparent;
+    /* Default: minimal size when closed */
+    height: auto;
+    min-height: auto;
+    max-height: auto;
+    overflow: visible !important;
+    /* Prevent scrolling with page */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* When dropdown is open, expand the container */
+  .mobile-clients-dropdown-container.dropdown-open {
+    height: 60vh !important;
+    min-height: 60vh !important;
+    max-height: 60vh !important;
+  }
+
+  .mobile-prestamos-dropdown-container {
+    position: fixed !important;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    padding: 0 1rem 1rem 1rem;
+    z-index: 1099 !important; /* Below navbar (1100) */
+    background: transparent;
+    /* Default: minimal size when closed */
+    height: auto;
+    min-height: auto;
+    max-height: auto;
+    /* Prevent scrolling with page */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* When prestamos dropdown is open, expand the container if needed */
+  .mobile-prestamos-dropdown-container.dropdown-open {
+    height: auto; /* Prestamos dropdown uses auto-sizing */
+  }
+
+  .mobile-dropdown-toggle {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.8rem;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1000;
+  }
+
+  .mobile-dropdown-toggle:hover {
+    background: var(--form-input-bg);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .mobile-dropdown-toggle:active {
+    transform: translateY(0);
+  }
+
+  .mobile-dropdown-toggle:hover {
+    background: var(--form-input-bg);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .mobile-dropdown-toggle:active {
+    transform: translateY(0);
+  }
+
+  .mobile-dropdown-content {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.8rem;
+    box-shadow: var(--shadow-main);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1098; /* Below navbar */
+    -webkit-overflow-scrolling: touch;
+    transform: scaleY(1);
+    transform-origin: top;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+    opacity: 1;
+    visibility: visible;
+    display: block;
+    /* Prevent page scrolling when dropdown is scrolled */
+    overscroll-behavior: contain;
+  }
+
+  .mobile-dropdown-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .mobile-dropdown-content::-webkit-scrollbar-track {
+    background: transparent; /* Transparent track */
+  }
+
+  .mobile-dropdown-content::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 2px;
+  }
+
+  .mobile-dropdown-content::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color-hover, #2563eb);
+  }
+
+  .clients-dropdown {
+    top: 60px;
+    margin-top: 0;
+    left: 0;
+    right: 0;
+    position: absolute !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.8rem;
+    height: calc(100% - 80px);
+    max-height: calc(100% - 80px);
+    min-height: calc(100% - 80px);
+    padding: 0;
+    box-shadow: var(--shadow-main);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: calc(100% - 2rem);
+    transform: translateZ(0);
+    z-index: 1098; /* Below navbar and container */
+    /* Prevent page scrolling when dropdown is scrolled */
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prestamos-dropdown {
+    bottom: 100%;
+    margin-bottom: 0.5rem;
+    left: 0;
+    right: 0;
+    position: absolute !important;
+    transform-origin: bottom;
+    z-index: 1098; /* Below navbar and container */
+  }
+
+  .mobile-dropdown-item {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    background: var(--bg-card);
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+    cursor: pointer;
+  }
+
+  .mobile-dropdown-item:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+  }
+
+  .mobile-dropdown-item:first-child {
+    border-top-left-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+  }
+
+  .mobile-dropdown-item:hover {
+    background: var(--form-input-bg);
+  }
+
+  /* Adjust main content for mobile dropdowns */
+  .main-flex-layout {
+    padding-top: 70px;
+    padding-bottom: 120px;
+    min-height: calc(100vh - 190px);
     width: 100vw;
-    margin-top: 1.5rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    order: 3;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .mobile-dropdown-item:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+  }
+
+  .mobile-dropdown-item:hover {
+    background: var(--form-input-bg);
+    cursor: pointer;
+  }
+
+  /* Adjust main content for mobile dropdowns */
+  .main-flex-layout {
+    padding-top: 70px;
+    padding-bottom: 120px;
+    min-height: calc(100vh - 190px);
+    width: 100vw;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .main-content {
+    margin: 1rem 0.5rem;
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
   }
 }
 /* Main flex layout for sidebar and main content */
@@ -57,16 +317,19 @@
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
   min-height: 100vh;
+  box-sizing: border-box;
+  padding: 0 1rem;
+  gap: 1rem; /* Add consistent gap between elements */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .sidebar-clients {
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-  flex: 0 0 350px;
-  min-width: 260px;
-  max-width: 350px;
+  flex: 0 0 min(280px, 22vw); /* Reduced width to prevent overflow */
+  min-width: 220px;
+  max-width: 280px;
   background: var(--bg-sidebar);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -75,28 +338,54 @@
   border-radius: 1.2rem;
   box-shadow: var(--shadow-main);
   border: 1px solid var(--border-color);
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
-  /* animation removed */
+  margin: 2rem 0;
+  padding: 1rem; /* Add internal padding for content margins */
   transition: box-shadow 0.3s;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  max-height: calc(100vh - 4rem); /* Ensure it doesn't exceed screen height */
 }
 
-@media (max-width: 900px) {
+/* Large desktop screens (1600px+) - more space for sidebars */
+@media (min-width: 1600px) {
+  .sidebar-clients, .prestamos-sidebar {
+    flex: 0 0 320px;
+    max-width: 350px;
+    padding: 1.5rem; /* More padding on larger screens */
+  }
+  
   .main-flex-layout {
-    flex-direction: column;
-    align-items: stretch;
+    padding: 0 2rem;
+    gap: 1.5rem;
   }
-  .sidebar-clients {
-    max-width: 100vw;
-    min-width: 0;
-    width: 100vw;
-    margin-bottom: 1.5rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    order: 1;
+}
+
+/* Medium desktop screens (1200px - 1599px) - balanced layout */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .sidebar-clients, .prestamos-sidebar {
+    flex: 0 0 280px;
+    max-width: 300px;
+    padding: 1.2rem; /* Balanced padding */
   }
+}
+
+/* Small desktop screens (901px - 1199px) - compact sidebars */
+@media (min-width: 901px) and (max-width: 1199px) {
+  .sidebar-clients, .prestamos-sidebar {
+    flex: 0 0 220px;
+    min-width: 200px;
+    max-width: 240px;
+    padding: 0.8rem; /* Reduced padding for smaller screens */
+  }
+  
+  .main-flex-layout {
+    padding: 0 0.5rem;
+    gap: 0.75rem;
+  }
+  
   .main-content {
-    order: 2;
+    padding: 1.5rem 0.8rem;
   }
 }
 
@@ -250,13 +539,14 @@ body, html {
   -webkit-backdrop-filter: blur(10px);
   pointer-events: none;
   animation: floatBubble 5s ease-in-out infinite;
-  z-index: 0;
+  z-index: -1;
 }
 
 .modern-app-bg::before {
   left: -200px;
   top: 10%;
   animation-delay: 0s;
+  z-index: -1;
 }
 
 .modern-app-bg::after {
@@ -266,6 +556,7 @@ body, html {
   height: 500px;
   animation-delay: -7.5s;
   animation-direction: reverse;
+  z-index: -1;
 }
 
 .main-flex-layout {
@@ -276,6 +567,8 @@ body, html {
   width: 100vw;
   min-height: 100vh;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .main-content {
@@ -284,7 +577,7 @@ body, html {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 2rem 1rem 2rem 1rem;
+  padding: 2rem 1rem;
   min-height: 0;
   order: 2;
   background: var(--bg-content);
@@ -293,15 +586,70 @@ body, html {
   border-radius: 1.2rem;
   box-shadow: var(--shadow-main);
   border: 1px solid var(--border-color);
-  margin: 2.5rem 0.5rem 2.5rem 0.5rem;
+  margin: 2rem 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 2;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  max-height: calc(100vh - 4rem); /* Ensure it doesn't exceed screen height */
+  min-width: 0; /* Allow shrinking */
+  width: 100%; /* Ensure it takes full available width */
 }
 
 
 
+/* Complete scrollbar styling - transparent backgrounds, visible thumbs only */
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
 .main-content::-webkit-scrollbar-thumb {
   background: var(--accent-color);
   border-radius: 8px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color-hover, #2563eb);
+}
+
+/* Firefox scrollbar styling */
+.main-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) transparent;
+}
+
+/* Sidebar scrollbar styling */
+.sidebar-clients::-webkit-scrollbar,
+.prestamos-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-clients::-webkit-scrollbar-track,
+.prestamos-sidebar::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+.sidebar-clients::-webkit-scrollbar-thumb,
+.prestamos-sidebar::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 6px;
+}
+
+.sidebar-clients::-webkit-scrollbar-thumb:hover,
+.prestamos-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color-hover, #2563eb);
+}
+
+/* Firefox scrollbar styling for sidebars */
+.sidebar-clients,
+.prestamos-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) transparent;
 }
 
   
@@ -336,19 +684,39 @@ body, html {
   transform: translateX(100%);
 }
 
-/* Responsive adjustments */
+/* Mobile layout - hide sidebars, show dropdown system */
 @media (max-width: 900px) {
+  .main-flex-layout {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    gap: 0;
+  }
+  
+  .sidebar-clients,
+  .prestamos-sidebar {
+    display: none;
+  }
+  
   .main-content {
-    padding: 1rem 0.2rem 1rem 0.2rem;
+    order: 2;
+    padding: 1rem 0.5rem;
+    margin: 1rem 0.5rem;
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
   }
 }
 
 @media (max-width: 600px) {
   .modern-app-bg {
     padding: 0;
+    overflow-x: hidden;
   }
   .main-content {
-    padding: 0.5rem 0.1rem 1rem 0.1rem;
+    padding: 0.8rem 0.3rem;
+    margin: 0.5rem;
+    max-width: calc(100vw - 1rem);
+    box-sizing: border-box;
   }
 }
 

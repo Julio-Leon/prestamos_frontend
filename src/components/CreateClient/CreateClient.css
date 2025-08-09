@@ -5,26 +5,81 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-content);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 2rem 1rem;
+    background: transparent; /* Remove background, main-content provides it */
+    padding: 1rem 0;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-/* Form styling */
+/* Form styling - responsive to container width */
 .client-form {
     background: var(--form-bg);
     border-radius: 1.5rem;
     box-shadow: var(--shadow-main);
     border: 1px solid var(--border-color);
-    padding: 2.5rem 2rem;
-    max-width: 600px;
+    padding: 2rem 2rem;
+    max-width: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.8rem;
     backdrop-filter: blur(8px);                                                                                                                                                                                                 
     -webkit-backdrop-filter: blur(8px);
+    box-sizing: border-box;
+    margin: 0; /* Remove external margin, main-content provides spacing */
+}
+
+/* Mobile responsive form */
+@media (max-width: 900px) {
+  .create-client-container.modern-bg {
+    padding: 0.5rem 0;
+    min-height: auto;
+  }
+
+  .client-form {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem 1rem;
+    border-radius: 1.2rem;
+    gap: 1.5rem;
+  }
+  
+  .form-row {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .create-client-container.modern-bg {
+    padding: 0.25rem 0;
+  }
+
+  .client-form {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.2rem 0.8rem;
+    border-radius: 1rem;
+    gap: 1.2rem;
+  }
+  
+  .form-row {
+    gap: 0.8rem;
+  }
+}
+
+/* Large screens - adapt to main content width */
+@media (min-width: 1400px) {
+  .client-form {
+    max-width: 100%;
+    padding: 3rem 3rem;
+  }
+}
+
+@media (min-width: 1800px) {
+  .client-form {
+    max-width: 100%;
+    padding: 3.5rem 4rem;
+  }
 }
 
 .form-title {
@@ -36,17 +91,99 @@
     letter-spacing: 1px;
 }
 
+/* Mobile form title */
+@media (max-width: 600px) {
+  .form-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.4rem;
+  }
+}
+
 .form-row {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .form-group {
-    flex: 1 1 180px;
+    flex: 1 1 100%;
     display: flex;
     flex-direction: column;
-    min-width: 140px;
+    min-width: 100%;
+    width: 100%;
+}
+
+/* Desktop form groups - maximize full width usage */
+@media (min-width: 901px) {
+  .form-row {
+    gap: 1.5rem;
+  }
+  
+  /* Standard 2-column layout */
+  .form-group {
+    flex: 1 1 calc(50% - 0.75rem);
+    min-width: calc(50% - 0.75rem);
+  }
+  
+  /* 3-column layout for address row */
+  .form-row:nth-of-type(4) .form-group {
+    flex: 1 1 calc(33.333% - 1rem);
+    min-width: calc(33.333% - 1rem);
+  }
+  
+  /* 3-column layout for location row */
+  .form-row:nth-of-type(5) .form-group {
+    flex: 1 1 calc(33.333% - 1rem);
+    min-width: calc(33.333% - 1rem);
+  }
+  
+  /* Single column for recommendation field */
+  .form-row:nth-of-type(6) .form-group {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
+/* Ultra-wide screens - maximize space with 4-6 columns */
+@media (min-width: 1600px) {
+  .form-row {
+    gap: 2rem;
+  }
+  
+  /* 4-column layout for standard rows */
+  .form-row:nth-of-type(1) .form-group,
+  .form-row:nth-of-type(2) .form-group,
+  .form-row:nth-of-type(3) .form-group {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: calc(50% - 1rem);
+  }
+  
+  /* 6-column layout for address and location */
+  .form-row:nth-of-type(4) .form-group,
+  .form-row:nth-of-type(5) .form-group {
+    flex: 1 1 calc(16.666% - 1.67rem);
+    min-width: calc(16.666% - 1.67rem);
+  }
+}
+
+/* Mobile full-width inputs */
+@media (max-width: 900px) {
+  .form-group {
+    flex: 1 1 100%;
+    min-width: 100%;
+    width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
 }
 
 .form-group label {
@@ -66,6 +203,19 @@
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
+    min-height: 44px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Mobile input fields */
+@media (max-width: 600px) {
+  .input-field {
+    min-height: 48px;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+  }
 }
 
 .input-field:focus {
@@ -86,6 +236,16 @@
     box-shadow: var(--shadow-card);
     margin-top: 0.5rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 44px;
+}
+
+/* Mobile submit button */
+@media (max-width: 600px) {
+  .submit-btn {
+    min-height: 52px;
+    padding: 1rem 0;
+    font-size: 1.1rem;
+  }
 }
 
 .submit-btn:hover, .submit-btn:focus {
@@ -94,28 +254,24 @@
     transform: translateY(-2px);
 }
 
-/* Responsive design */
-@media (max-width: 700px) {
-    .client-form {
-        padding: 1.2rem 0.5rem;
-    }
-    .form-title {
-        font-size: 1.3rem;
-    }
-    .form-row {
-        flex-direction: column;
-        gap: 0.7rem;
-    }
-    .form-group {
-        min-width: 100%;
-    }
+/* Additional responsive adjustments */
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.4rem;
+  }
+  
+  .client-form {
+    padding: 1rem 0.6rem;
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 400px) {
-    .client-form {
-        padding: 0.5rem 0.1rem;
-    }
-    .form-title {
-        font-size: 1.1rem;
-    }
+  .form-title {
+    font-size: 1.2rem;
+  }
+  
+  .client-form {
+    padding: 0.8rem 0.5rem;
+  }
 }

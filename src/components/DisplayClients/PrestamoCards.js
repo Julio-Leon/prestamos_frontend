@@ -21,7 +21,7 @@ const PrestamoCards = ({ prestamos }) => {
   const visiblePrestamos = prestamos ? prestamos.slice(startIdx, startIdx + cardsPerPage) : [];
 
   return (
-    <div className="prestamo-cards-container prestamos-sidebar">
+    <div className="prestamo-cards-container">
       <div className="prestamo-cards-header">
         <button className="arrow-btn" onClick={handlePrev} disabled={startIdx === 0}>&lt;</button>
         <span className="prestamo-cards-title">Préstamos</span>

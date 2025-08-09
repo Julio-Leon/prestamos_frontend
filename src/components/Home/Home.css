@@ -53,6 +53,24 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Mobile home container */
+@media (max-width: 900px) {
+  .home.modern-home-bg {
+    max-width: calc(100vw - 1rem);
+    margin: 1rem 0.5rem 0 0.5rem;
+    padding: 1rem 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .home.modern-home-bg {
+    max-width: calc(100vw - 0.5rem);
+    margin: 0.5rem 0.25rem 0 0.25rem;
+    padding: 0.8rem 0.5rem;
+    border-radius: 1rem;
+  }
+}
+
 .home-title {
     font-size: 2.2rem;
     font-weight: 700;
@@ -61,13 +79,55 @@
     letter-spacing: 1px;
     text-align: center;
 }
-.home-title {
-  font-size: 1.3rem;
-  margin-bottom: 0.7rem;
-}
+
 .clients-count, .prestamos-count {
-  font-size: 1.05rem;
-  margin-bottom: 0.3rem;
+    display: inline-block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    background: var(--button-bg);
+    border-radius: 1.2rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    padding: 0.7rem 1.7rem;
+    margin-bottom: 1.5rem;
+    margin-right: 1rem;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Mobile adjustments for title and counts */
+@media (max-width: 600px) {
+  .home-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .clients-count, .prestamos-count {
+    font-size: 1rem;
+    padding: 0.6rem 1.4rem;
+    margin-bottom: 1.2rem;
+    margin-right: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .clients-count, .prestamos-count {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.8rem;
+  }
 }
 
 .prestamos-list {
@@ -76,6 +136,25 @@
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+}
+
+/* Mobile list adjustments */
+@media (max-width: 600px) {
+  .prestamos-list {
+    max-width: 100%;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prestamos-list {
+    gap: 0.8rem;
+  }
+
+  .prestamos-list-empty {
+    font-size: 1rem;
+    padding: 1rem 0.8rem;
+  }
 }
 
 .prestamo-listgroup {
@@ -95,14 +174,14 @@
 }
 
 @media (max-width: 700px) {
-    .home-title {
-        font-size: 1.3rem;
-    }
-    .prestamos-list {
-        max-width: 100%;
-        gap: 0.7rem;
-    }
     .prestamo-listgroup {
         font-size: 0.95rem;
+        border-radius: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .prestamo-listgroup {
+        font-size: 0.9rem;
     }
 }
