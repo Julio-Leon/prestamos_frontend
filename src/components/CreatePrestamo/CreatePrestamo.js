@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import './CreatePrestamo.css'
-import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,20 +22,7 @@ const defaultFormState = {
 
 
 
-const yearlyDatesForPayments = [
-    ['January 15th', 'January 30th'],
-    ['February 15th', (new Date().getFullYear() % 4 === 0) || ((new Date().getFullYear() % 100 === 0) && (new Date().getFullYear() % 400 === 0)) ? 29 : 28],
-    ['March 15th', 'March 30th'],
-    ['April 15th', 'April 30th'],
-    ['May 15th', 'May 30th'],
-    ['June 15th', 'June 30th'],
-    ['July 15th', 'July 30th'],
-    ['August 15th', 'August 30th'],
-    ['September 15th', 'September 30th'],
-    ['October 15th', 'October 30th'],
-    ['November 15th', 'November 30th'],
-    ['December 15th', 'December 30th']
-]
+
 
 const CreatePrestamo = () => {
 
@@ -50,7 +35,6 @@ const CreatePrestamo = () => {
     const [currentInterestRate, setCurrentInterestRate] = useState(null)
 
     const [formState, setFormState] = useState(defaultFormState)
-    const [showGenQuote] = useState(false)
 
     const [totalInterest, setTotalInterest] = useState(false)
     const [totalPay, setTotalPay] = useState(false)
@@ -59,13 +43,11 @@ const CreatePrestamo = () => {
 
     const [show, setShow] = useState(false);
 
-    const calculatePaymentDates = (numOfPayments, paySch, start) => {
+    const calculatePaymentDates = useCallback((numOfPayments, paySch, start) => {
 
         let newStart = '/' + String(start).split(' ')[2] + '/' + String(start).split(' ')[3]
         
         let monthTempTemp = String(start).split(' ')[1]
-
-        console.log(monthTempTemp)
         if (monthTempTemp === 'Jan') {
             monthTempTemp = 1
         }
@@ -104,8 +86,6 @@ const CreatePrestamo = () => {
         }
 
         newStart = monthTempTemp + newStart
-
-        console.log(newStart)
 
         let counter = 0
         let yearPlus = 0
@@ -158,9 +138,9 @@ const CreatePrestamo = () => {
             counter++
         }
         return payments
-    }
+    }, [])
 
-    const calculateAmountPerPayment = (numOfPayments, paySch, total) => {
+    const calculateAmountPerPayment = useCallback((numOfPayments, paySch, total) => {
         // e.preventDefault()
         let interestRate
         if (currentInterestRate === null) {
@@ -183,74 +163,19 @@ const CreatePrestamo = () => {
 
         const newAmountPerPayment = (total * equationFinal)
 
-        console.log(numOfPayments)
-
         // console.log(newAmountPerPayment)
 
         // console.log(total, topOfEquation, bottomOfEquation)
         // console.log(total, equationFinal)
-        setFormState({
-            ...formState,
+        setFormState(prevState => ({
+            ...prevState,
             amountPerPayments: newAmountPerPayment.toFixed(2)
-        })
-    }
+        }))
+    }, [currentInterestRate])
 
 
     // EACH INPUT SHOULD HAVE THEIR OWN HANDLE CHANGE AND HANDLE BLUR
 
-    const handleBlur = async (e) => {
-
-        // MAKE THIS HAPPEN FASTER /// FRONT-END INSTEAD OF BACKEND
-
-        // if (formState.cedula.length > 7) {
-        //     const SHOW_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/${formState.cedula}`
-        //     try {
-        //         const response = await fetch(SHOW_CLIENT_ENDPOINT)
-        //         const data = await response.json()
-        //         console.log(data)
-        //         if (response.status === 200) {
-        //             setClientInfo({
-        //                 ...data
-        //             })
-        //         } else {
-        //             console.log(response)
-        //         }
-        //     } catch (error) {
-        //         console.error(error)
-        //     }
-        // }
-
-        if (formState.amountOfPayments !== '' && formState.paymentSchedule !== '') {
-            // console.log(`${new Date().getMonth()}/${new Date().getDate()}`)
-            const tempDates = calculatePaymentDates(Number(formState.amountOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
-            setFormState(prevForm => {
-                return (
-                    {
-                        ...prevForm,
-                        startDate: `${new Date().getMonth()}/${new Date().getDate()}/${new Date().getFullYear()}`,
-                        paymentDates: [...tempDates]
-                    }
-                )
-            })
-        }
-
-        if (formState.prestamoAmount && formState.paymentSchedule) {
-            const total = Number(formState.prestamoAmount) * (formState.paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
-            setTotalPay(total.toFixed(2))
-            setTotalInterest((total - Number(formState.prestamoAmount)).toFixed(2))
-        }
-    }
-
-    const handleChange = (e) => {
-        e.preventDefault()
-        
-        setFormState({
-            ...formState,
-            [e.target.name]: e.target.value
-        })
-
-        // console.log(formState)
-    }
 
     // console.log(new Date().getFullYear())
 
@@ -262,13 +187,14 @@ const CreatePrestamo = () => {
 
     useEffect(() => {
         calculateQuote(formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount])
 
     useEffect(() => {
         if (formState.amountOfPayments && formState.paymentSchedule && startDate) {
             setPaymentDatesFull(calculatePaymentDates(formState.amountOfPayments, formState.paymentSchedule, startDate))
         }
-    }, [startDate, formState.amountOfPayments, formState.paymentSchedule])
+    }, [startDate, formState.amountOfPayments, formState.paymentSchedule, calculatePaymentDates])
 
     const getAllClientsInfo = async () => {
         try {
@@ -278,7 +204,7 @@ const CreatePrestamo = () => {
             setAllClientsInfo(data)
             // console.log(data)
         } catch (error) {
-            console.log(error)
+            // Handle error silently
         }
     }
 
@@ -288,7 +214,7 @@ const CreatePrestamo = () => {
 
 
     // Add the default parameters
-    const calculateQuote = (amountOfPayments=formState.amountOfPayments, paymentSchedule=formState.paymentSchedule, prestamoAmount=formState.prestamoAmount) => {
+    const calculateQuote = useCallback((amountOfPayments=formState.amountOfPayments, paymentSchedule=formState.paymentSchedule, prestamoAmount=formState.prestamoAmount) => {
 
         // console.log(formState)
 
@@ -308,7 +234,7 @@ const CreatePrestamo = () => {
         /// calculateAmountPerPayments
         calculateAmountPerPayment(Number(amountOfPayments), paymentSchedule, Number(total))
 
-    }
+    }, [formState, calculatePaymentDates, calculateAmountPerPayment])
 
 
     /// New Handle Change's ///
@@ -319,7 +245,7 @@ const CreatePrestamo = () => {
             ...formState,
             'cedula': e.target.value
         }
-        if(allClientsInfo.length > 1) setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ));
+        if(allClientsInfo && allClientsInfo.length > 1) setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ));
         setFormState(tempFormState)
     }
 
@@ -394,7 +320,7 @@ const CreatePrestamo = () => {
     // TEST ^^^ TEST //
 
     /// LOADING SIGN ///
-    if (allClientsInfo.length < 1) {
+    if (!allClientsInfo || allClientsInfo.length < 1) {
         return <div className="loader"></div>
     }
     return (
@@ -452,7 +378,7 @@ const CreatePrestamo = () => {
                 <div className="summary-item">Last Name: {clientInfo && clientInfo.lastName}</div>
                 <div className="summary-item">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</div>
                 <div className="summary-item">Start date: {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</div>
-                <div className="summary-item">End date: {paymentDatesFull ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</div>
+                <div className="summary-item">End date: {paymentDatesFull && paymentDatesFull.length > 0 ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</div>
                 <div className="summary-item">Interest to pay: {totalInterest && totalInterest}</div>
                 <div className="summary-item">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</div>
                 <div className="summary-item">Interest Rate: {currentInterestRate}</div>
@@ -463,7 +389,7 @@ const CreatePrestamo = () => {
                     <Modal.Title>Payment Dates</Modal.Title>
                 </Modal.Header>
                 <div className="modal-dates-list">
-                    {paymentDatesFull && paymentDatesFull.map((date, i) => (
+                    {paymentDatesFull && paymentDatesFull.length > 0 && paymentDatesFull.map((date, i) => (
                         <div className="modal-date-item" key={i}>{i+1}. {date[0]}/{date[1]}/{date[2]}</div>
                     ))}
                 </div>

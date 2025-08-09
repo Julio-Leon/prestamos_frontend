@@ -47,7 +47,6 @@ function DarkModeToggle({ dark, setDark }) {
 
 const NEW_CLIENT_PATH = '/new-client'
 const NEW_PRESTAMO_PATH = '/new-prestamo'
-const DISPLAY_CLIENTS = '/display-clients'
 
 function App() {
 
