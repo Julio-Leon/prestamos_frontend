@@ -1,12 +1,43 @@
+/* Ensure dark mode toggle button is never overridden by app styles */
+.darkmode-toggle-btn {
+  all: unset;
+  position: fixed !important;
+  top: 18px !important;
+  right: 24px !important;
+  z-index: 1000 !important;
+  display: inline-block;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-card);
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-main);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .prestamos-sidebar {
   flex: 0 0 350px;
   min-width: 260px;
   max-width: 350px;
-  background: transparent;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 2;
   order: 3;
   margin-left: 1.5rem;
   margin-right: 1.5rem;
+  border-radius: 1.2rem;
+  box-shadow: var(--shadow-main);
+  border: 1px solid var(--border-color);
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  /* animation removed */
+  transition: box-shadow 0.3s;
 }
 
 @media (max-width: 900px) {
@@ -36,9 +67,18 @@
   flex: 0 0 350px;
   min-width: 260px;
   max-width: 350px;
-  background: transparent;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 2;
   order: 1;
+  border-radius: 1.2rem;
+  box-shadow: var(--shadow-main);
+  border: 1px solid var(--border-color);
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  /* animation removed */
+  transition: box-shadow 0.3s;
 }
 
 @media (max-width: 900px) {
@@ -65,16 +105,177 @@ body, html {
   padding: 0;
   min-height: 100vh;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  background: #f3f4f6;
+  background: var(--bg-main, #ededed);
+  color: var(--text-main, #222);
+}
+  
+:root {
+  /* Base colors */
+  --bg-main: #f0f0f0;
+  --bg-content: rgba(240, 240, 240, 0.8);
+  --bg-sidebar: rgba(248, 248, 248, 0.85);
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-main: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --accent-color: #808080;
+  --border-color: rgba(200, 200, 200, 0.2);
+
+  /* Form colors */
+  --form-bg: rgba(255, 255, 255, 0.95);
+  --form-input-bg: rgba(241, 245, 249, 0.9);
+  --form-text: #1a1a1a;
+  --form-label: #808080;
+  --form-border: rgba(200, 200, 200, 0.3);
+  --form-focus-border: #808080;
+  --form-focus-shadow: rgba(128, 128, 128, 0.2);
+  --button-bg: linear-gradient(90deg, #808080 0%, #909090 100%);
+  --button-hover-bg: linear-gradient(90deg, #909090 0%, #808080 100%);
+
+  /* Shadows */
+  --shadow-main: 0 4px 32px 0 rgba(0, 0, 0, 0.08), 0 1.5px 8px 0 rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+
+  /* Glass effects */
+  --glass-effect: rgba(255, 255, 255, 0.15);
+  --glass-gradient: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  
+  /* Bubble effects */
+  --bubble-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 240, 240, 0.2));
+  --bubble-glow: rgba(255, 255, 255, 0.3);
 }
 
+.dark-mode {
+  /* Base colors */
+  --bg-main: #121212;
+  --bg-content: rgba(28, 28, 28, 0.85);
+  --bg-sidebar: rgba(32, 32, 32, 0.9);
+  --bg-card: rgba(40, 40, 40, 0.95);
+  --text-main: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --accent-color: #808080;
+  --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Form colors */
+  --form-bg: rgba(40, 40, 40, 0.95);
+  --form-input-bg: rgba(30, 30, 30, 0.9);
+  --form-text: #e0e0e0;
+  --form-label: #a0a0a0;
+  --form-border: rgba(255, 255, 255, 0.1);
+  --form-focus-border: #909090;
+  --form-focus-shadow: rgba(255, 255, 255, 0.1);
+  --button-bg: linear-gradient(90deg, #606060 0%, #808080 100%);
+  --button-hover-bg: linear-gradient(90deg, #808080 0%, #606060 100%);
+
+  /* Shadows */
+  --shadow-main: 0 4px 32px 0 rgba(0, 0, 0, 0.4), 0 1.5px 8px 0 rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 2px 12px 0 rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+
+  /* Glass effects */
+  --glass-effect: rgba(255, 255, 255, 0.03);
+  --glass-gradient: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+  
+  /* Bubble effects */
+  --bubble-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  --bubble-glow: rgba(255, 255, 255, 0.05);
+}
+
+
+/* Minimalistic, dynamic, animated app background */
 .modern-app-bg {
   min-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  background: linear-gradient(135deg, 
+    var(--bg-main) 0%,
+    var(--bg-content) 35%,
+    var(--bg-main) 65%,
+    var(--bg-content) 100%
+  );
+  position: relative;
+  overflow: hidden;
+  animation: gradientShift 4s ease-in-out infinite;
+  background-size: 300% 300%;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes floatBubble {
+  0% { 
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.8;
+    box-shadow: 
+      inset 0 0 200px var(--bubble-glow),
+      0 0 100px var(--glass-effect),
+      0 0 30px var(--accent-color);
+  }
+  50% { 
+    transform: translate(-200px, -300px) rotate(180deg) scale(1.4);
+    opacity: 1;
+    box-shadow: 
+      inset 0 0 300px var(--bubble-glow),
+      0 0 150px var(--glass-effect),
+      0 0 50px var(--accent-color);
+  }
+  100% { 
+    transform: translate(0, 0) rotate(360deg) scale(1);
+    opacity: 0.8;
+    box-shadow: 
+      inset 0 0 200px var(--bubble-glow),
+      0 0 100px var(--glass-effect),
+      0 0 30px var(--accent-color);
+  }
+}
+
+.modern-app-bg::before,
+.modern-app-bg::after {
+  content: "";
+  position: fixed;
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: var(--bubble-gradient);
+  box-shadow: 
+    inset 0 0 200px var(--bubble-glow),
+    0 0 100px var(--glass-effect),
+    0 0 30px var(--accent-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  animation: floatBubble 5s ease-in-out infinite;
+  z-index: 0;
+}
+
+.modern-app-bg::before {
+  left: -200px;
+  top: 10%;
+  animation-delay: 0s;
+}
+
+.modern-app-bg::after {
+  right: -150px;
+  bottom: 10%;
+  width: 500px;
+  height: 500px;
+  animation-delay: -7.5s;
+  animation-direction: reverse;
+}
+
+.main-flex-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  
+  width: 100vw;
+  min-height: 100vh;
+  background: transparent;
 }
 
 .main-content {
@@ -86,6 +287,53 @@ body, html {
   padding: 2rem 1rem 2rem 1rem;
   min-height: 0;
   order: 2;
+  background: var(--bg-content);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1.2rem;
+  box-shadow: var(--shadow-main);
+  border: 1px solid var(--border-color);
+  margin: 2.5rem 0.5rem 2.5rem 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 8px;
+}
+
+  
+/* Minimalistic shadow for all cards */
+.prestamo-card, .client-card {
+  box-shadow: var(--shadow-card, 0 2px 12px 0 rgba(80, 80, 80, 0.10));
+  border-radius: 1rem;
+  background: var(--bg-card, #f4f4f4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.prestamo-card::before, .client-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--glass-gradient);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prestamo-card:hover, .client-card:hover {
+  box-shadow: var(--shadow-card-hover, 0 8px 32px 0 rgba(80, 80, 80, 0.25));
+  transform: translateY(-6px) scale(1.05);
+}
+
+.prestamo-card:hover::before, .client-card:hover::before {
+  transform: translateX(100%);
 }
 
 /* Responsive adjustments */

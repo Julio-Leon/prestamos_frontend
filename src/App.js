@@ -12,6 +12,37 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
+// Dark mode toggle button
+function DarkModeToggle({ dark, setDark }) {
+  return (
+    <button
+      className="darkmode-toggle-btn"
+      onClick={() => setDark(d => !d)}
+      style={{
+        position: 'fixed',
+        top: 18,
+        right: 24,
+        zIndex: 1000,
+        background: dark ? 'linear-gradient(135deg, #232526 0%, #18191a 100%)' : 'linear-gradient(135deg, #ededed 0%, #f9f9f9 100%)',
+        color: dark ? '#f1f1f1' : '#222',
+        border: 'none',
+        borderRadius: '2rem',
+        boxShadow: '0 2px 12px 0 rgba(80,80,80,0.10)',
+        padding: '0.5rem 1.2rem',
+        fontWeight: 600,
+        fontSize: '1rem',
+        cursor: 'pointer',
+        transition: 'background 0.3s, color 0.3s',
+      }}
+      aria-label="Toggle dark mode"
+    >
+      {dark ? '☾ Dark' : '☀ Light'}
+    </button>
+  );
+}
+
+
+
 
 // require('dotenv').config()
 
@@ -23,6 +54,10 @@ function App() {
 
   const [clients, setClients] = useState(null)
   const [prestamos, setPrestamos] = useState(null)
+  const [dark, setDark] = useState(() => {
+    const stored = localStorage.getItem('darkMode');
+    return stored === 'true';
+  });
 
   // console.log(process.env.REACT_APP_BACKEND_STRING)
 
@@ -54,8 +89,13 @@ function App() {
     getPrestamosInfo()
   }, [])
 
+  useEffect(() => {
+    localStorage.setItem('darkMode', dark);
+  }, [dark]);
+
   return (
-    <div className="app modern-app-bg">
+    <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
+      <DarkModeToggle dark={dark} setDark={setDark} />
       <PrestamosNavbar NEW_CLIENT_PATH={NEW_CLIENT_PATH} NEW_PRESTAMO_PATH={NEW_PRESTAMO_PATH} />
       <div className="main-flex-layout">
         <aside className="sidebar-clients">

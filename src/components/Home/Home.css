@@ -1,32 +1,38 @@
 .prestamos-list-empty {
     font-size: 1.1rem;
-    color: #818cf8;
-    background: #f1f5f9;
+    color: var(--text-secondary);
+    background: var(--bg-card);
     border-radius: 1rem;
     padding: 1.2rem 1rem;
     text-align: center;
     margin: 1.2rem 0;
-    box-shadow: 0 2px 12px 0 rgba(99, 102, 241, 0.08);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     font-weight: 600;
     letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .clients-count, .prestamos-count {
     display: inline-block;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #fff;
-    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    color: var(--text-main);
+    background: var(--button-bg);
     border-radius: 1.2rem;
-    box-shadow: 0 2px 12px 0 rgba(99, 102, 241, 0.10);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
     padding: 0.7rem 1.7rem;
     margin-bottom: 1.5rem;
     margin-right: 1rem;
     text-align: center;
     letter-spacing: 0.5px;
-    transition: background 0.2s, box-shadow 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .clients-count strong, .prestamos-count strong {
-    color: #e0e7ff;
+    color: var(--text-main);
     font-weight: 900;
     margin-left: 0.3rem;
 }
@@ -36,17 +42,21 @@
   margin: 2rem auto 0 auto;
   padding: 1rem 0.5rem;
   border-radius: 1.2rem;
-  box-shadow: 0 2px 12px 0 rgba(60, 72, 88, 0.10);
-  background: #fff;
+  box-shadow: var(--shadow-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .home-title {
     font-size: 2.2rem;
     font-weight: 700;
-    color: #3b3b3b;
+    color: var(--text-main);
     margin-bottom: 2rem;
     letter-spacing: 1px;
     text-align: center;
@@ -70,9 +80,18 @@
 
 .prestamo-listgroup {
     border-radius: 1rem;
-    box-shadow: 0 2px 12px 0 rgba(60, 72, 88, 0.10);
-    background: #fff;
+    box-shadow: var(--shadow-card);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prestamo-listgroup:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
 }
 
 @media (max-width: 700px) {
