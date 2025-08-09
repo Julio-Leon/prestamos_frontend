@@ -1,16 +1,13 @@
-import NEW_CLIENT_PATH from '../../App'
-import NEW_PRESTAMO_PATH from '../../App'
-import { Link } from 'react-router-dom'
-import './Navbar.css'
-
+import { Link } from 'react-router-dom';
+import './Navbar.css';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 
-const PrestamosNavbar = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
-
-    const displayMyNavbar = false
+const PrestamosNavbar = () => {
+    const NEW_CLIENT_PATH = '/new-client';
+    const NEW_PRESTAMO_PATH = '/new-prestamo';
+    const displayMyNavbar = false;
 
     return displayMyNavbar ? (
         <nav className="navbar modern-navbar">

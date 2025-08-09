@@ -50,8 +50,7 @@ const CreatePrestamo = () => {
     const [currentInterestRate, setCurrentInterestRate] = useState(null)
 
     const [formState, setFormState] = useState(defaultFormState)
-    const [showGenQuote, setShowGenQuote] = useState(false)
-    const [quoteCounter, setQuoteCounter] = useState(0)
+    const [showGenQuote] = useState(false)
 
     const [totalInterest, setTotalInterest] = useState(false)
     const [totalPay, setTotalPay] = useState(false)
@@ -262,29 +261,14 @@ const CreatePrestamo = () => {
     // }
 
     useEffect(() => {
-        if (formState.prestamoAmount && formState.amountOfPayments && formState.paymentSchedule) {
-            setShowGenQuote(true)
-        } else {
-            setShowGenQuote(false)
-        }
-
-        
-        // if (allClientsInfo.length > 0) {
-        //     setClientInfo(allClientsInfo)
-        // }
         calculateQuote(formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount)
-
-        // calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(totalPay))
-
-    }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount ])
+    }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount])
 
     useEffect(() => {
-        
         if (formState.amountOfPayments && formState.paymentSchedule && startDate) {
             setPaymentDatesFull(calculatePaymentDates(formState.amountOfPayments, formState.paymentSchedule, startDate))
         }
-
-    }, [startDate, setStartDate, formState, setFormState])
+    }, [startDate, formState.amountOfPayments, formState.paymentSchedule])
 
     const getAllClientsInfo = async () => {
         try {

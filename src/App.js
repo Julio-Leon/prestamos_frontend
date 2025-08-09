@@ -1,13 +1,12 @@
 import './App.css';
-import { useState, useEffect } from 'react'
-import DisplayClients from './components/DisplayClients/DisplayClients.js'
+import { useState, useEffect } from 'react';
 import ClientCards from './components/DisplayClients/ClientCards';
 import PrestamoCards from './components/DisplayClients/PrestamoCards';
 import CreateClient from './components/CreateClient/CreateClient';
 import CreatePrestamo from './components/CreatePrestamo/CreatePrestamo';
-import Home from './components/Home/Home'
+import Home from './components/Home/Home';
 import { Routes, Route } from "react-router-dom";
-import PrestamosNavbar from './components/Navbar/PrestamosNavbar'
+import PrestamosNavbar from './components/Navbar/PrestamosNavbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -96,7 +95,7 @@ function App() {
   return (
     <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
       <DarkModeToggle dark={dark} setDark={setDark} />
-      <PrestamosNavbar NEW_CLIENT_PATH={NEW_CLIENT_PATH} NEW_PRESTAMO_PATH={NEW_PRESTAMO_PATH} />
+      <PrestamosNavbar />
       <div className="main-flex-layout">
         <aside className="sidebar-clients">
           <ClientCards clients={clients || []} />
