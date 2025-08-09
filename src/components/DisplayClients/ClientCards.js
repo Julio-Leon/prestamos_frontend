@@ -5,8 +5,6 @@ const ClientCards = ({ clients }) => {
   const [startIdx, setStartIdx] = useState(0);
   const cardsPerPage = 5;
 
-  const isEmpty = !clients || clients.length === 0;
-
   const handleNext = () => {
     if (startIdx + cardsPerPage < clients.length) {
       setStartIdx(startIdx + cardsPerPage);
