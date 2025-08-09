@@ -19,15 +19,15 @@ const PrestamosNavbar = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
             <Link className="nav-link" to={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Link>
         </nav>
     ) : (
-        <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="navbar modern-navbar bg-body-tertiary">
+        <Navbar expand="lg" className="navbar modern-navbar">
             <Container>
-                <Navbar.Brand href="#home">Préstamos León</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/">Préstamos León</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href='/'>Home</Nav.Link>
-                        <Nav.Link href={NEW_CLIENT_PATH}>Nuevo Cliente</Nav.Link>
-                        <Nav.Link href={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Nav.Link>
+                        <Nav.Link as={Link} to="/">Home</Nav.Link>
+                        <Nav.Link as={Link} to={NEW_CLIENT_PATH}>Nuevo Cliente</Nav.Link>
+                        <Nav.Link as={Link} to={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>

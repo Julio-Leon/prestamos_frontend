@@ -56,7 +56,7 @@ function App() {
   const [prestamos, setPrestamos] = useState(null)
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem('darkMode');
-    return stored === 'true';
+    return stored === null ? true : stored === 'true'; // Default to dark theme
   });
 
   // console.log(process.env.REACT_APP_BACKEND_STRING)
