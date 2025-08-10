@@ -471,7 +471,6 @@ const CreatePrestamo = () => {
 
                 {calculating && (
                     <div className="calculation-loading">
-                        <div className="calc-spinner"></div>
                         <span>Calculando préstamo...</span>
                     </div>
                 )}
@@ -501,7 +500,6 @@ const CreatePrestamo = () => {
                     >
                         {loading ? (
                             <>
-                                <div className="loading-spinner"></div>
                                 Creando Préstamo...
                             </>
                         ) : (

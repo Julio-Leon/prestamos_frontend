@@ -343,7 +343,6 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                         >
                             {loading ? (
                                 <>
-                                    <span className="loading-spinner"></span>
                                     Creando...
                                 </>
                             ) : (

@@ -196,6 +196,13 @@
     width: 100%;
 }
 
+/* Date picker specific styling */
+.date-picker.input-field {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
 .input-field:focus {
     border: 2px solid var(--form-focus-border);
     box-shadow: 0 0 0 3px var(--form-focus-shadow);
@@ -289,28 +296,18 @@
 
 /* Calculation loading */
 .calculation-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 2rem;
-    background: var(--bg-card);
-    border-radius: 1rem;
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    font-weight: 500;
-}
-
-.calc-spinner {
-    width: 24px;
-    height: 24px;
-    border: 3px solid var(--border-color);
-    border-top: 3px solid var(--accent-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-/* Form actions */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--bg-card);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-weight: 500;
+  text-align: center;
+}/* Form actions */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -369,16 +366,6 @@
     transform: none;
 }
 
-/* Loading spinner in button */
-.loading-spinner {
-    width: 20px;
-    height: 20px;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
 /* Modal styling */
 .modal-dates-list {
     padding: 1rem;
@@ -392,6 +379,7 @@
     border-radius: 0.8rem;
     margin-bottom: 1.5rem;
     border: 1px solid var(--border-color);
+    text-align: left;
 }
 
 .dates-info {
@@ -414,36 +402,36 @@
     border-radius: 0.6rem;
     border: 1px solid var(--border-color);
     color: var(--text-main);
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .payment-number {
     font-weight: 600;
     color: var(--accent-color);
+    flex-shrink: 0;
 }
 
 .payment-date {
     font-weight: 500;
+    flex-shrink: 0;
 }
 
 .payment-amount {
     font-weight: 700;
     color: var(--success-text);
+    flex-shrink: 0;
 }
 
 /* Loading animation */
 .loader {
-    border: 6px solid var(--border-color);
-    border-top: 6px solid var(--accent-color);
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    margin: 4rem auto;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  border: 6px solid var(--border-color);
+  border-top: 6px solid var(--accent-color);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin: 4rem auto;
+  display: block;
 }
 
 /* Mobile responsive design */
