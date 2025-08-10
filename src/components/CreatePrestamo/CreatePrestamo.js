@@ -1,11 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './CreatePrestamo.css'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-
 
 const defaultFormState = {
     cedula: "",
@@ -16,195 +15,169 @@ const defaultFormState = {
     totalToPay: "",
     interestEarn: "",
     amountOfPayments: "",
-    amountPerPayments: "",
-    paymentDates: ''
+    amountPerPayment: "",
+    paymentDates: []
 }
 
 
-
-
-
 const CreatePrestamo = () => {
-
-    const [allClientsInfo, setAllClientsInfo] = useState(false) 
-
-    const [paymentDatesFull, setPaymentDatesFull] = useState(false)
-
-    const [startDate, setStartDate] = useState(new Date());
-
-    const [currentInterestRate, setCurrentInterestRate] = useState(null)
-
+    const navigate = useNavigate()
+    
+    // Form state management
     const [formState, setFormState] = useState(defaultFormState)
+    const [allClientsInfo, setAllClientsInfo] = useState([])
+    const [clientInfo, setClientInfo] = useState(null)
+    const [startDate, setStartDate] = useState(new Date())
+    const [paymentDatesFull, setPaymentDatesFull] = useState([])
+    
+    // UI state management
+    const [loading, setLoading] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const [error, setError] = useState('')
+    const [calculating, setCalculating] = useState(false)
+    const [show, setShow] = useState(false)
+    
+    // Form validation
+    const [validationErrors, setValidationErrors] = useState({})
+    
+    // Interest rates (annual rates)
+    const INTEREST_RATES = {
+        'Monthly': 0.12,     // 12% annual for monthly payments
+        'Bi-Weekly': 0.10    // 10% annual for bi-weekly payments
+    }
 
-    const [totalInterest, setTotalInterest] = useState(false)
-    const [totalPay, setTotalPay] = useState(false)
-
-    const [clientInfo, setClientInfo] = useState(false)
-
-    const [show, setShow] = useState(false);
-
-    const calculatePaymentDates = useCallback((numOfPayments, paySch, start) => {
-
-        let newStart = '/' + String(start).split(' ')[2] + '/' + String(start).split(' ')[3]
+    // Modern loan calculation using amortization formula
+    const calculateLoanDetails = useCallback((principal, annualRate, totalPayments, paymentFrequency) => {
+        if (!principal || !annualRate || !totalPayments) return null
         
-        let monthTempTemp = String(start).split(' ')[1]
-        if (monthTempTemp === 'Jan') {
-            monthTempTemp = 1
+        // Convert annual rate to payment period rate
+        const paymentsPerYear = paymentFrequency === 'Monthly' ? 12 : 26
+        const periodRate = annualRate / paymentsPerYear
+        
+        // Calculate monthly payment using amortization formula
+        // PMT = P * [r(1+r)^n] / [(1+r)^n - 1]
+        const numerator = periodRate * Math.pow(1 + periodRate, totalPayments)
+        const denominator = Math.pow(1 + periodRate, totalPayments) - 1
+        const paymentAmount = principal * (numerator / denominator)
+        
+        // Calculate totals
+        const totalToPay = paymentAmount * totalPayments
+        const totalInterest = totalToPay - principal
+        
+        return {
+            amountPerPayment: Math.round(paymentAmount * 100) / 100, // Round to 2 decimals
+            totalToPay: Math.round(totalToPay * 100) / 100,
+            interestEarn: Math.round(totalInterest * 100) / 100,
+            effectiveRate: periodRate,
+            paymentsPerYear
         }
-        else if (monthTempTemp === 'Feb') {
-            monthTempTemp = 2
-        }
-        else if (monthTempTemp === 'Mar') {
-            monthTempTemp = 3
-        }
-        else if (monthTempTemp === 'Apr') {
-            monthTempTemp = 4
-        }
-        else if (monthTempTemp === 'May') {
-            monthTempTemp = 5
-        }
-        else if (monthTempTemp === 'Jun') {
-            monthTempTemp = 6
-        }
-        else if (monthTempTemp === 'Jul') {
-            monthTempTemp = 7
-        }
-        else if (monthTempTemp === 'Aug') {
-            monthTempTemp = 8
-        }
-        else if (monthTempTemp === 'Sep') {
-            monthTempTemp = 9
-        }
-        else if (monthTempTemp === 'Oct') {
-            monthTempTemp = 10
-        }
-        else if (monthTempTemp === 'Nov') {
-            monthTempTemp = 11
-        }
-        else if (monthTempTemp === 'Dec') {
-            monthTempTemp = 12
-        }
-
-        newStart = monthTempTemp + newStart
-
-        let counter = 0
-        let yearPlus = 0
-        const startArr = newStart.split('/')
-        let month = Number(startArr[0] - 1)
-        let day = Number(startArr[1])
-
-        let startDateIdx = [month]
-
-        if (day > 15) {
-            startDateIdx[1] = 1
-        } else {
-            startDateIdx[1] = 0
-        }
-
-        let i = month
-
-        // console.log(startDateIdx)
-
-        const payments = []
-
-        // console.log(paySch)
-
-        let biWeeklyCounter = startDateIdx[0]
-
-        while (counter < numOfPayments) {
-            if (paySch === 'Bi-Weekly') {
-                if (biWeeklyCounter === 1) {
-                    if (i === 11) {
-                        i = 0
-                        yearPlus++
-                    } else {
-                        i++
-                    }
-                    biWeeklyCounter = 0
-                } else {
-                    biWeeklyCounter = 1
-                }
-                // console.log('I:', i)
-                payments.push([i + 1, i===1 && biWeeklyCounter===1 ? (new Date().getFullYear() % 4 === 0) || ((new Date().getFullYear() % 100 === 0) && (new Date().getFullYear() % 400 === 0)) ? 29 : 28 : biWeeklyCounter === 0 ? 15 : 30, new Date().getFullYear() + yearPlus])
-            } else {
-                if (i === 11) {
-                    i = 0
-                    yearPlus++
-                } else {
-                    i++
-                }
-                payments.push([i + 1, 1, new Date().getFullYear() + yearPlus])
-            }
-            counter++
-        }
-        return payments
     }, [])
 
-    const calculateAmountPerPayment = useCallback((numOfPayments, paySch, total) => {
-        // e.preventDefault()
-        let interestRate
-        if (currentInterestRate === null) {
-            interestRate = paySch === 'Monthly' ? 0.1 : 0.05
-            setCurrentInterestRate(interestRate)
-        } else {
-            interestRate = currentInterestRate
-        }
-        // console.log('AMOUNT PER PAYMENT CHECK:', numOfPayments)
-
-        const topFirst = (1 + (interestRate / numOfPayments))
-        const topSecond = Math.pow(topFirst, numOfPayments)
-        const topFinal = topSecond * (interestRate / numOfPayments)
-
-        // console.log('AMOUNT PER PAYMENT CHECK:', topFirst)
-
-        const bottomFinal = topSecond - 1
+    // Calculate payment dates with proper date handling
+    const calculatePaymentDates = useCallback((numOfPayments, paymentSchedule, startDate) => {
+        if (!numOfPayments || !paymentSchedule || !startDate) return []
         
-        const equationFinal = topFinal / bottomFinal
-
-        const newAmountPerPayment = (total * equationFinal)
-
-        // console.log(newAmountPerPayment)
-
-        // console.log(total, topOfEquation, bottomOfEquation)
-        // console.log(total, equationFinal)
-        setFormState(prevState => ({
-            ...prevState,
-            amountPerPayments: newAmountPerPayment.toFixed(2)
-        }))
-    }, [currentInterestRate])
-
-
-    // EACH INPUT SHOULD HAVE THEIR OWN HANDLE CHANGE AND HANDLE BLUR
-
-
-    // console.log(new Date().getFullYear())
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault()
-    //     // calculatePaymentDates(Number(formState.numOfPayments), formState.paymentSchedule, `${new Date().getMonth()}/${new Date().getDate()}`)
-    //     return
-    // }
-
-    useEffect(() => {
-        calculateQuote(formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formState.amountOfPayments, formState.paymentSchedule, formState.prestamoAmount])
-
-    useEffect(() => {
-        if (formState.amountOfPayments && formState.paymentSchedule && startDate) {
-            setPaymentDatesFull(calculatePaymentDates(formState.amountOfPayments, formState.paymentSchedule, startDate))
+        const dates = []
+        const currentDate = new Date(startDate)
+        
+        for (let i = 0; i < numOfPayments; i++) {
+            if (paymentSchedule === 'Monthly') {
+                currentDate.setMonth(currentDate.getMonth() + 1)
+            } else if (paymentSchedule === 'Bi-Weekly') {
+                currentDate.setDate(currentDate.getDate() + 14)
+            }
+            
+            dates.push(new Date(currentDate))
         }
-    }, [startDate, formState.amountOfPayments, formState.paymentSchedule, calculatePaymentDates])
+        
+        return dates
+    }, [])
 
+    // Validate form fields
+    const validateForm = () => {
+        const errors = {}
+        
+        if (!formState.cedula?.trim()) {
+            errors.cedula = 'Cédula es requerida'
+        }
+        
+        if (!formState.paymentSchedule) {
+            errors.paymentSchedule = 'Seleccione frecuencia de pago'
+        }
+        
+        const amount = parseFloat(formState.prestamoAmount)
+        if (!amount || amount <= 0) {
+            errors.prestamoAmount = 'Ingrese un monto válido mayor a 0'
+        }
+        
+        const payments = parseInt(formState.amountOfPayments)
+        if (!payments || payments <= 0 || payments > 60) {
+            errors.amountOfPayments = 'Ingrese número de pagos entre 1 y 60'
+        }
+        
+        if (!clientInfo) {
+            errors.cedula = 'Cliente no encontrado con esta cédula'
+        }
+        
+        setValidationErrors(errors)
+        return Object.keys(errors).length === 0
+    }
+
+    // Auto-calculate loan details when key fields change
+    useEffect(() => {
+        if (formState.prestamoAmount && formState.paymentSchedule && formState.amountOfPayments) {
+            setCalculating(true)
+            
+            const principal = parseFloat(formState.prestamoAmount)
+            const payments = parseInt(formState.amountOfPayments)
+            const annualRate = INTEREST_RATES[formState.paymentSchedule]
+            
+            const calculation = calculateLoanDetails(principal, annualRate, payments, formState.paymentSchedule)
+            
+            if (calculation) {
+                setFormState(prev => ({
+                    ...prev,
+                    amountPerPayment: calculation.amountPerPayment,
+                    totalToPay: calculation.totalToPay,
+                    interestEarn: calculation.interestEarn
+                }))
+                
+                // Calculate payment dates
+                const dates = calculatePaymentDates(payments, formState.paymentSchedule, startDate)
+                setPaymentDatesFull(dates)
+                
+                if (dates.length > 0) {
+                    const endDate = dates[dates.length - 1]
+                    setFormState(prev => ({
+                        ...prev,
+                        endDate: endDate.toISOString().split('T')[0],
+                        paymentDates: dates.map(date => date.toISOString().split('T')[0])
+                    }))
+                }
+            }
+            
+            setTimeout(() => setCalculating(false), 500)
+        }
+    }, [formState.prestamoAmount, formState.paymentSchedule, formState.amountOfPayments, startDate, calculateLoanDetails, calculatePaymentDates])
+
+    // Update start date in form state
+    useEffect(() => {
+        setFormState(prev => ({
+            ...prev,
+            startDate: startDate.toISOString().split('T')[0]
+        }))
+    }, [startDate])
+
+    // Fetch all clients
     const getAllClientsInfo = async () => {
         try {
-            const All_CLIENT_ENDPOINT = (process.env.BACKEND_STRING || 'http://localhost:4000/') + `clients/`
-            const response = await fetch(All_CLIENT_ENDPOINT)
+            const response = await fetch('http://localhost:4000/clients')
+            if (!response.ok) throw new Error('Failed to fetch clients')
             const data = await response.json()
             setAllClientsInfo(data)
-            // console.log(data)
         } catch (error) {
-            // Handle error silently
+            console.error('Error fetching clients:', error)
+            setError('Error al cargar clientes')
         }
     }
 
@@ -212,190 +185,354 @@ const CreatePrestamo = () => {
         getAllClientsInfo()
     }, [])
 
-
-    // Add the default parameters
-    const calculateQuote = useCallback((amountOfPayments=formState.amountOfPayments, paymentSchedule=formState.paymentSchedule, prestamoAmount=formState.prestamoAmount) => {
-
-        // console.log(formState)
-
-        const total = Number(prestamoAmount) * (paymentSchedule === 'Bi-Weekly' ? 1.05 : 1.1)
-        setTotalPay(total)
-        const interest = (total - Number(prestamoAmount)).toFixed(2)
-        setTotalInterest(interest)
-        const tempFormState = {
-            ...formState,
-            'totalToPay': total,
-            'interestEarn': interest
-        }
-        setFormState(tempFormState)
-        /// calculatePaymentDates
-        calculatePaymentDates(Number(amountOfPayments), paymentSchedule, formState.startDate)
-
-        /// calculateAmountPerPayments
-        calculateAmountPerPayment(Number(amountOfPayments), paymentSchedule, Number(total))
-
-    }, [formState, calculatePaymentDates, calculateAmountPerPayment])
-
-
-    /// New Handle Change's ///
-
-    const cedulaHandleChange = e => {
-
-        const tempFormState = {
-            ...formState,
-            'cedula': e.target.value
-        }
-        if(allClientsInfo && allClientsInfo.length > 1) setClientInfo(allClientsInfo.find((client) => client.cedula === e.target.value ));
-        setFormState(tempFormState)
-    }
-
-    // TEST vvv TEST //
-
-    const paymentScheduleHandleChange = e => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault()
-
-
-        /// Set payment schedule
-
-        // console.log('prestamo amunt: ' + formState.prestamoAmount + '\namount of payments: ' + formState.amountOfPayments)
-        // console.log(formState)
-        /// check if prestamo amount and amount of payments are there,
-        if (formState.prestamoAmount && formState.amountOfPayments) {
-             /// if they are, re calculate quote
-             calculateQuote(formState.amountOfPayments, e.target.value, formState.prestamoAmount)
+        
+        if (!validateForm()) return
+        
+        setLoading(true)
+        setError('')
+        
+        try {
+            const prestamoData = {
+                cedula: formState.cedula,
+                paymentSchedule: formState.paymentSchedule,
+                prestamoAmount: parseFloat(formState.prestamoAmount),
+                startDate: formState.startDate,
+                endDate: formState.endDate,
+                totalToPay: formState.totalToPay,
+                interestEarn: formState.interestEarn,
+                amountOfPayments: parseInt(formState.amountOfPayments),
+                amountPerPayment: formState.amountPerPayment
+            }
+            
+            const response = await fetch('http://localhost:4000/prestamos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(prestamoData)
+            })
+            
+            if (!response.ok) {
+                const errorData = await response.text()
+                throw new Error(errorData || 'Error al crear préstamo')
+            }
+            
+            setSuccess(true)
+        } catch (error) {
+            console.error('Error creating prestamo:', error)
+            setError(error.message || 'Error al crear el préstamo')
+        } finally {
+            setLoading(false)
         }
-
-        const tempFormState = {
-            ...formState,
-            'paymentSchedule': e.target.value
-        }
-
-        setCurrentInterestRate(e.target.value === 'Monthly' ? 10 : 5)
-        setFormState(tempFormState)
     }
 
-    const prestamoAmountHandleChange = e => {
-        e.preventDefault()
-        /// check if payment schedule and amount of payments are there, 
-        if (formState.paymentSchedule && formState.amountOfPayments){
-            // console.log('CHECK TWO', formState.amountOfPayments)
-            /// if they are, re calculate quote
-            calculateQuote(formState.amountOfPayments, formState.paymentSchedule, e.target.value)
+    // Form field handlers
+    const handleInputChange = (field, value) => {
+        setFormState(prev => ({
+            ...prev,
+            [field]: value
+        }))
+        
+        // Clear validation errors for this field
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({
+                ...prev,
+                [field]: ''
+            }))
         }
-
-         /// Set prestamo amount
-         const tempFormState = {
-            ...formState,
-            'prestamoAmount': e.target.value
+        
+        // Find client when cedula changes
+        if (field === 'cedula' && allClientsInfo.length > 0) {
+            const client = allClientsInfo.find(client => client.cedula === value)
+            setClientInfo(client || null)
         }
-        setFormState(tempFormState)
-        // console.log('CHECK TWO', Number(formState.amountOfPayments))
     }
 
-    const amountOfPaymentsHandleChange = e => {
-        e.preventDefault()
-        /// Set amount of payments
-
-        /// check if prestamo amount and payment schedule are there,
-        if (formState.prestamoAmount && formState.paymentSchedule){ 
-            /// if they are, re calculate quote
-            calculateQuote(e.target.value, formState.paymentSchedule, formState.prestamoAmount)
-        }
-
-        const tempFormState = {
-            ...formState,
-            'amountOfPayments': e.target.value
-        }
-
-        // console.log(tempFormState)
-        setFormState(tempFormState)
+    const resetForm = () => {
+        setFormState(defaultFormState)
+        setClientInfo(null)
+        setStartDate(new Date())
+        setPaymentDatesFull([])
+        setValidationErrors({})
+        setError('')
+        setSuccess(false)
     }
 
-    const interestRateHandleChange = e => {
-        e.preventDefault()
-
-        setCurrentInterestRate(e.target.value)
+    const createAnother = () => {
+        resetForm()
     }
 
-    // TEST ^^^ TEST //
-
-    /// LOADING SIGN ///
-    if (!allClientsInfo || allClientsInfo.length < 1) {
-        return <div className="loader"></div>
+    const viewPrestamos = () => {
+        navigate('/prestamos')
     }
+
+    // Loading state for fetching clients
+    if (allClientsInfo.length === 0) {
+        return (
+            <div className="create-prestamo-container modern-prestamo-bg">
+                <div className="loader"></div>
+            </div>
+        )
+    }
+
+    // Success state
+    if (success) {
+        return (
+            <div className="create-prestamo-container modern-prestamo-bg">
+                <div className="success-container">
+                    <div className="success-icon">✅</div>
+                    <h2 className="success-title">¡Préstamo Creado Exitosamente!</h2>
+                    <div className="success-details">
+                        <p><strong>Cliente:</strong> {clientInfo?.firstName} {clientInfo?.lastName}</p>
+                        <p><strong>Monto:</strong> ${formState.prestamoAmount}</p>
+                        <p><strong>Total a Pagar:</strong> ${formState.totalToPay}</p>
+                        <p><strong>Pago por Período:</strong> ${formState.amountPerPayment}</p>
+                        <p><strong>Frecuencia:</strong> {formState.paymentSchedule === 'Monthly' ? 'Mensual' : 'Quincenal'}</p>
+                    </div>
+                    <div className="success-actions">
+                        <button 
+                            className="view-prestamos-btn"
+                            onClick={viewPrestamos}
+                        >
+                            Ver Préstamos
+                        </button>
+                        <button 
+                            className="create-another-btn"
+                            onClick={createAnother}
+                        >
+                            Crear Otro Préstamo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="create-prestamo-container modern-prestamo-bg">
-            <form className="prestamo-form responsive-form">
+            <form className="prestamo-form" onSubmit={handleSubmit}>
                 <h2 className="form-title">Crear Nuevo Préstamo</h2>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="cedula">Cédula</label>
-                        <input className="input-field" name="cedula" onBlur={cedulaHandleChange} onChange={cedulaHandleChange} type="text" placeholder="00000000000" />
+                <p className="form-subtitle">Complete los datos para calcular y crear el préstamo</p>
+
+                {error && (
+                    <div className="error-message">
+                        <span className="error-icon">⚠️</span>
+                        {error}
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="startDate">Fecha de Inicio</label>
-                        <DatePicker className='date-picker input-field' selected={startDate} onChange={(date) => setStartDate(date)} />
-                    </div>
-                </div>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Payment Schedule</label>
-                        <div className="payment-schedule-btns">
-                            <button className='schedule-btn' name="paymentSchedule" value='Bi-Weekly' onClick={paymentScheduleHandleChange} type="button">Bi-Weekly</button>
-                            <button className='schedule-btn' name="paymentSchedule" value='Monthly' onClick={paymentScheduleHandleChange} type="button">Monthly</button>
+                )}
+
+                {/* Client Information Section */}
+                <div className="form-section">
+                    <h3 className="section-title">Información del Cliente</h3>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="cedula">Cédula del Cliente</label>
+                            <input 
+                                id="cedula"
+                                className={`input-field ${validationErrors.cedula ? 'error' : ''}`}
+                                name="cedula" 
+                                value={formState.cedula}
+                                onChange={(e) => handleInputChange('cedula', e.target.value)}
+                                type="text" 
+                                placeholder="Ingrese la cédula del cliente" 
+                                disabled={loading}
+                            />
+                            {validationErrors.cedula && (
+                                <span className="field-error">{validationErrors.cedula}</span>
+                            )}
+                            {clientInfo && (
+                                <div className="client-found">
+                                    ✅ Cliente: {clientInfo.firstName} {clientInfo.lastName}
+                                </div>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="startDate">Fecha de Inicio</label>
+                            <DatePicker 
+                                id="startDate"
+                                className='date-picker input-field' 
+                                selected={startDate} 
+                                onChange={(date) => setStartDate(date || new Date())}
+                                minDate={new Date()}
+                                disabled={loading}
+                                dateFormat="dd/MM/yyyy"
+                            />
                         </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="prestamoAmount">Cantidad De Préstamo</label>
-                        <input className="input-field" name="prestamoAmount" onBlur={prestamoAmountHandleChange} onChange={prestamoAmountHandleChange} type="text" placeholder="1000" />
+                </div>
+
+                {/* Loan Details Section */}
+                <div className="form-section">
+                    <h3 className="section-title">Detalles del Préstamo</h3>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Frecuencia de Pago</label>
+                            <div className="payment-schedule-btns">
+                                <button 
+                                    type="button"
+                                    className={`schedule-btn ${formState.paymentSchedule === 'Monthly' ? 'active' : ''}`}
+                                    onClick={() => handleInputChange('paymentSchedule', 'Monthly')}
+                                    disabled={loading}
+                                >
+                                    Mensual (12% anual)
+                                </button>
+                                <button 
+                                    type="button"
+                                    className={`schedule-btn ${formState.paymentSchedule === 'Bi-Weekly' ? 'active' : ''}`}
+                                    onClick={() => handleInputChange('paymentSchedule', 'Bi-Weekly')}
+                                    disabled={loading}
+                                >
+                                    Quincenal (10% anual)
+                                </button>
+                            </div>
+                            {validationErrors.paymentSchedule && (
+                                <span className="field-error">{validationErrors.paymentSchedule}</span>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="prestamoAmount">Monto del Préstamo ($)</label>
+                            <input 
+                                id="prestamoAmount"
+                                className={`input-field ${validationErrors.prestamoAmount ? 'error' : ''}`}
+                                name="prestamoAmount" 
+                                value={formState.prestamoAmount}
+                                onChange={(e) => handleInputChange('prestamoAmount', e.target.value)}
+                                type="number" 
+                                min="1"
+                                step="0.01"
+                                placeholder="Ej: 1000" 
+                                disabled={loading}
+                            />
+                            {validationErrors.prestamoAmount && (
+                                <span className="field-error">{validationErrors.prestamoAmount}</span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="amountOfPayments">Número de Pagos</label>
+                            <input 
+                                id="amountOfPayments"
+                                className={`input-field ${validationErrors.amountOfPayments ? 'error' : ''}`}
+                                name="amountOfPayments" 
+                                value={formState.amountOfPayments}
+                                onChange={(e) => handleInputChange('amountOfPayments', e.target.value)}
+                                type="number" 
+                                min="1"
+                                max="60"
+                                placeholder="Ej: 12" 
+                                disabled={loading}
+                            />
+                            {validationErrors.amountOfPayments && (
+                                <span className="field-error">{validationErrors.amountOfPayments}</span>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label htmlFor="amountOfPayments">Cantidad De Pagos</label>
-                        <input className="input-field" name="amountOfPayments" onBlur={amountOfPaymentsHandleChange} onChange={amountOfPaymentsHandleChange} type="text" placeholder="10" />
+
+                {/* Loan Summary Section */}
+                {formState.amountPerPayment && !calculating && (
+                    <div className="form-section calculation-section">
+                        <h3 className="section-title">Resumen del Préstamo</h3>
+                        <div className="calculation-grid">
+                            <div className="calc-item">
+                                <span className="calc-label">Pago por Período:</span>
+                                <span className="calc-value">${formState.amountPerPayment}</span>
+                            </div>
+                            <div className="calc-item">
+                                <span className="calc-label">Total a Pagar:</span>
+                                <span className="calc-value">${formState.totalToPay}</span>
+                            </div>
+                            <div className="calc-item">
+                                <span className="calc-label">Intereses Totales:</span>
+                                <span className="calc-value">${formState.interestEarn}</span>
+                            </div>
+                            <div className="calc-item">
+                                <span className="calc-label">Fecha de Finalización:</span>
+                                <span className="calc-value">
+                                    {paymentDatesFull.length > 0 
+                                        ? paymentDatesFull[paymentDatesFull.length - 1].toLocaleDateString('es-ES')
+                                        : 'Calculando...'
+                                    }
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="interestRate">Interest Rate</label>
-                        <input className="input-field" name="interestRate" onBlur={interestRateHandleChange} onChange={interestRateHandleChange} type="text" placeholder="No Interest Found" />
+                )}
+
+                {calculating && (
+                    <div className="calculation-loading">
+                        <div className="calc-spinner"></div>
+                        <span>Calculando préstamo...</span>
                     </div>
-                </div>
-                <div className="form-row">
-                    <button className="submit-btn" onClick={(e) => {
-                        e.preventDefault()
-                        calculateAmountPerPayment(Number(formState.amountOfPayments), formState.paymentSchedule, Number(formState.prestamoAmount))
-                    }} type="submit">
-                        Crear Cuota
+                )}
+
+                {/* Form Actions */}
+                <div className="form-actions">
+                    <button 
+                        type="button" 
+                        className="cancel-btn"
+                        onClick={resetForm}
+                        disabled={loading}
+                    >
+                        Limpiar Formulario
                     </button>
-                    <button className="show-dates-btn" disabled={!paymentDatesFull} name="showDates" type="button" onClick={() => {setShow(true)}}>
-                        Mostrar Fechas
+                    <button 
+                        type="button"
+                        className="show-dates-btn" 
+                        disabled={!paymentDatesFull.length || loading}
+                        onClick={() => setShow(true)}
+                    >
+                        Ver Fechas de Pago
+                    </button>
+                    <button 
+                        type="submit" 
+                        className="submit-btn"
+                        disabled={loading || calculating || !formState.amountPerPayment}
+                    >
+                        {loading ? (
+                            <>
+                                <div className="loading-spinner"></div>
+                                Creando Préstamo...
+                            </>
+                        ) : (
+                            'Crear Préstamo'
+                        )}
                     </button>
                 </div>
             </form>
 
-            <div className="prestamo-summary">
-                <div className="summary-item">First Name: {clientInfo && clientInfo.firstName}</div>
-                <div className="summary-item">Last Name: {clientInfo && clientInfo.lastName}</div>
-                <div className="summary-item">Amount Per Payment: {(formState.amountPerPayments === String(NaN) ? 'Quote not found' : formState.amountPerPayments)}</div>
-                <div className="summary-item">Start date: {new Date().getMonth()}/{new Date().getDate()}/{new Date().getFullYear()}</div>
-                <div className="summary-item">End date: {paymentDatesFull && paymentDatesFull.length > 0 ? `${paymentDatesFull[paymentDatesFull.length - 1][0]}/${paymentDatesFull[paymentDatesFull.length - 1][1]}/${paymentDatesFull[paymentDatesFull.length - 1][2]}` : 'No end date found'}</div>
-                <div className="summary-item">Interest to pay: {totalInterest && totalInterest}</div>
-                <div className="summary-item">Total to pay: {totalPay && Number(totalPay).toFixed(2)}</div>
-                <div className="summary-item">Interest Rate: {currentInterestRate}</div>
-            </div>
-
-            <Modal show={show} onHide={() => {setShow(false)}}>
+            {/* Payment Dates Modal */}
+            <Modal show={show} onHide={() => setShow(false)} size="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>Payment Dates</Modal.Title>
+                    <Modal.Title>Fechas de Pago del Préstamo</Modal.Title>
                 </Modal.Header>
-                <div className="modal-dates-list">
-                    {paymentDatesFull && paymentDatesFull.length > 0 && paymentDatesFull.map((date, i) => (
-                        <div className="modal-date-item" key={i}>{i+1}. {date[0]}/{date[1]}/{date[2]}</div>
-                    ))}
-                </div>
+                <Modal.Body>
+                    <div className="modal-dates-list">
+                        <div className="dates-header">
+                            <div className="dates-info">
+                                <strong>Cliente:</strong> {clientInfo?.firstName} {clientInfo?.lastName}<br/>
+                                <strong>Monto por Pago:</strong> ${formState.amountPerPayment}<br/>
+                                <strong>Frecuencia:</strong> {formState.paymentSchedule === 'Monthly' ? 'Mensual' : 'Quincenal'}
+                            </div>
+                        </div>
+                        <div className="dates-grid">
+                            {paymentDatesFull.map((date, i) => (
+                                <div className="modal-date-item" key={i}>
+                                    <span className="payment-number">Pago #{i + 1}</span>
+                                    <span className="payment-date">{date.toLocaleDateString('es-ES')}</span>
+                                    <span className="payment-amount">${formState.amountPerPayment}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => {setShow(false)}}>
-                        Close
+                    <Button variant="secondary" onClick={() => setShow(false)}>
+                        Cerrar
                     </Button>
                 </Modal.Footer>
             </Modal>

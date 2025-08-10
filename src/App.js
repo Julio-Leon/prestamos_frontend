@@ -4,6 +4,8 @@ import ClientCards from './components/DisplayClients/ClientCards';
 import PrestamoCards from './components/DisplayClients/PrestamoCards';
 import CreateClient from './components/CreateClient/CreateClient';
 import CreatePrestamo from './components/CreatePrestamo/CreatePrestamo';
+import Clients from './components/Clients/Clients';
+import Prestamos from './components/Prestamos/Prestamos';
 import Home from './components/Home/Home';
 import { Routes, Route } from "react-router-dom";
 import PrestamosNavbar from './components/Navbar/PrestamosNavbar';
@@ -47,6 +49,8 @@ function DarkModeToggle({ dark, setDark }) {
 
 const NEW_CLIENT_PATH = '/new-client'
 const NEW_PRESTAMO_PATH = '/new-prestamo'
+const CLIENTS_PATH = '/clients'
+const PRESTAMOS_PATH = '/prestamos'
 
 function App() {
 
@@ -134,6 +138,11 @@ function App() {
         </button>
         {showClientsDropdown && (
           <div className="mobile-dropdown-content clients-dropdown">
+            <div className="mobile-dropdown-item mobile-nav-item">
+              <a href={CLIENTS_PATH} onClick={() => setShowClientsDropdown(false)} style={{ color: 'var(--accent-color)', fontWeight: '600', textDecoration: 'none' }}>
+                Ver Todos los Clientes →
+              </a>
+            </div>
             {clients && clients.length > 0 ? (
               clients.map((client, index) => (
                 <div key={client.cedula || index} className="mobile-dropdown-item">
@@ -154,6 +163,8 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path='/' element={<Home prestamos={prestamos} clients={clients} />} />
+            <Route path={CLIENTS_PATH} element={<Clients />} />
+            <Route path={PRESTAMOS_PATH} element={<Prestamos />} />
             <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
             <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
           </Routes>
@@ -178,6 +189,11 @@ function App() {
         </button>
         {showPrestamosDropdown && (
           <div className="mobile-dropdown-content prestamos-dropdown">
+            <div className="mobile-dropdown-item mobile-nav-item">
+              <a href={PRESTAMOS_PATH} onClick={() => setShowPrestamosDropdown(false)} style={{ color: 'var(--accent-color)', fontWeight: '600', textDecoration: 'none' }}>
+                Ver Todos los Préstamos →
+              </a>
+            </div>
             {prestamos && prestamos.length > 0 ? (
               prestamos.map((prestamo, idx) => (
                 <div key={prestamo._id || idx} className="mobile-dropdown-item">

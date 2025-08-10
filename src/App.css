@@ -274,6 +274,25 @@ html, body {
     background: var(--form-input-bg);
   }
 
+  /* Special styling for navigation items in mobile dropdowns */
+  .mobile-dropdown-item.mobile-nav-item {
+    background: var(--accent-color);
+    color: white;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-color-hover, #2563eb);
+  }
+
+  .mobile-dropdown-item.mobile-nav-item:hover {
+    background: var(--accent-color-hover, #2563eb);
+  }
+
+  .mobile-dropdown-item.mobile-nav-item a {
+    color: white !important;
+    text-decoration: none;
+    width: 100%;
+    display: block;
+  }
+
   /* Adjust main content for mobile dropdowns */
   .main-flex-layout {
     padding-top: 70px;

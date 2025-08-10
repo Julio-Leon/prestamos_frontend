@@ -1,0 +1,755 @@
+/* Main container */
+.prestamos-container.modern-bg {
+    min-height: 100vh;
+    padding: 2rem 0;
+    background: transparent;
+    width: 100%;
+}
+
+/* Header */
+.prestamos-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.prestamos-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--button-bg));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.prestamos-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    opacity: 0.8;
+    margin-bottom: 0;
+}
+
+/* Controls section */
+.prestamos-controls {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-container {
+    flex: 2;
+    min-width: 300px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    z-index: 1;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 2.8rem;
+    border: 2px solid var(--form-border);
+    border-radius: 1rem;
+    background: var(--form-input-bg);
+    color: var(--form-text);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: var(--form-focus-border);
+    box-shadow: 0 0 0 3px var(--form-focus-shadow);
+}
+
+.clear-search {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.2rem;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.clear-search:hover {
+    color: var(--error-text);
+    background: var(--error-bg);
+}
+
+.filter-sort-container {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-select, .sort-select {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--form-border);
+    border-radius: 1rem;
+    background: var(--form-input-bg);
+    color: var(--form-text);
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus, .sort-select:focus {
+    border-color: var(--form-focus-border);
+    box-shadow: 0 0 0 3px var(--form-focus-shadow);
+}
+
+/* Results summary */
+.results-summary {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Grid layout */
+.prestamos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Prestamo cards */
+.prestamo-card {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.prestamo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* Status-based card styling */
+.prestamo-card.activo {
+    border-left: 4px solid var(--success-border);
+}
+
+.prestamo-card.completado {
+    border-left: 4px solid var(--text-secondary);
+}
+
+.prestamo-card.pendiente {
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Card header */
+.prestamo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.prestamo-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.activo {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
+
+.status-badge.completado {
+    background: var(--text-secondary-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.status-badge.pendiente {
+    background: var(--accent-color-light);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+.prestamo-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-btn, .delete-btn {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.edit-btn:hover {
+    background: var(--accent-color-light);
+    transform: scale(1.1);
+}
+
+.delete-btn:hover {
+    background: var(--error-bg);
+    transform: scale(1.1);
+}
+
+/* Client information */
+.prestamo-client {
+    margin-bottom: 1.2rem;
+}
+
+.client-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.3rem;
+}
+
+.client-cedula {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Amounts section */
+.prestamo-amounts {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.amount-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+}
+
+.amount-item.main-amount {
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
+}
+
+.amount-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.amount-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.amount-item.main-amount .amount-value {
+    font-size: 1.4rem;
+    color: var(--accent-color);
+}
+
+.amount-value.interest {
+    color: var(--error-text);
+}
+
+/* Details section */
+.prestamo-details {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+}
+
+.detail-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.detail-value {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Edit form */
+.prestamo-edit-form {
+    background: var(--form-bg);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 2px solid var(--accent-color);
+}
+
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.edit-header h3 {
+    color: var(--text-main);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.save-btn {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
+
+.cancel-btn {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+}
+
+.save-btn:hover, .cancel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+.edit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.edit-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--form-label);
+    margin-bottom: 0.4rem;
+}
+
+.edit-field input, .edit-field select {
+    padding: 0.8rem;
+    border: 1px solid var(--form-border);
+    border-radius: 0.6rem;
+    background: var(--form-input-bg);
+    color: var(--form-text);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.edit-field input:focus, .edit-field select:focus {
+    border-color: var(--form-focus-border);
+    box-shadow: 0 0 0 2px var(--form-focus-shadow);
+}
+
+/* Loading state */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--border-color);
+    border-top: 6px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* No prestamos state */
+.no-prestamos {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+}
+
+.no-prestamos-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.no-prestamos h3 {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+}
+
+.no-prestamos p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-main);
+    border: 1px solid var(--border-color);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    color: var(--text-main);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body p {
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.delete-preview {
+    background: var(--form-bg);
+    padding: 1rem;
+    border-radius: 0.8rem;
+    border: 1px solid var(--border-color);
+}
+
+.delete-preview p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.modal-actions {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.confirm-delete-btn, .cancel-delete-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.confirm-delete-btn {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+}
+
+.cancel-delete-btn {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.confirm-delete-btn:hover, .cancel-delete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+/* Mobile responsive design */
+@media (max-width: 900px) {
+    .prestamos-container.modern-bg {
+        padding: 1rem 0;
+    }
+
+    .prestamos-title {
+        font-size: 2rem;
+    }
+
+    .prestamos-subtitle {
+        font-size: 1rem;
+    }
+
+    .prestamos-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .search-container, .filter-sort-container {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .filter-sort-container {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .prestamos-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .prestamo-card {
+        padding: 1.2rem;
+    }
+
+    .edit-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .confirm-delete-btn, .cancel-delete-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .prestamos-container.modern-bg {
+        padding: 0.5rem 0;
+    }
+
+    .prestamos-title {
+        font-size: 1.8rem;
+    }
+
+    .prestamos-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .prestamo-card {
+        padding: 1rem;
+        border-radius: 1.2rem;
+    }
+
+    .client-name {
+        font-size: 1.2rem;
+    }
+
+    .prestamo-amounts {
+        gap: 0.6rem;
+    }
+
+    .amount-item {
+        padding: 0.5rem 0;
+    }
+
+    .amount-item.main-amount .amount-value {
+        font-size: 1.2rem;
+    }
+
+    .search-input {
+        padding: 0.9rem 0.9rem 0.9rem 2.5rem;
+        font-size: 0.95rem;
+    }
+
+    .filter-select, .sort-select {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .edit-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .edit-actions {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+
+    .save-btn, .cancel-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .prestamos-title {
+        font-size: 1.6rem;
+    }
+
+    .prestamos-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .prestamo-card {
+        padding: 0.8rem;
+    }
+
+    .amount-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    .prestamo-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+
+    .prestamo-actions {
+        align-self: flex-end;
+    }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1400px) {
+    .prestamos-container.modern-bg {
+        padding: 2.5rem 0;
+    }
+
+    .prestamos-title {
+        font-size: 3rem;
+    }
+
+    .prestamos-subtitle {
+        font-size: 1.3rem;
+    }
+
+    .prestamos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        gap: 2rem;
+    }
+
+    .prestamo-card {
+        padding: 2rem;
+    }
+
+    .client-name {
+        font-size: 1.4rem;
+    }
+
+    .amount-item.main-amount .amount-value {
+        font-size: 1.6rem;
+    }
+
+    .search-input, .filter-select, .sort-select {
+        padding: 1.2rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (min-width: 1800px) {
+    .prestamos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+        gap: 2.5rem;
+    }
+
+    .prestamos-title {
+        font-size: 3.5rem;
+    }
+}
