@@ -60,29 +60,6 @@ function App() {
     const stored = localStorage.getItem('darkMode');
     return stored === null ? true : stored === 'true'; // Default to dark theme
   });
-  const [showClientsDropdown, setShowClientsDropdown] = useState(false);
-  const [showPrestamosDropdown, setShowPrestamosDropdown] = useState(false);
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const clientsContainer = document.querySelector('.mobile-clients-dropdown-container');
-      const prestamosContainer = document.querySelector('.mobile-prestamos-dropdown-container');
-      
-      if (clientsContainer && !clientsContainer.contains(event.target)) {
-        setShowClientsDropdown(false);
-      }
-      
-      if (prestamosContainer && !prestamosContainer.contains(event.target)) {
-        setShowPrestamosDropdown(false);
-      }
-    };
-
-    if (showClientsDropdown || showPrestamosDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [showClientsDropdown, showPrestamosDropdown]);
 
   // console.log(process.env.REACT_APP_BACKEND_STRING)
 
@@ -123,39 +100,6 @@ function App() {
       <DarkModeToggle dark={dark} setDark={setDark} />
       <PrestamosNavbar />
       
-      {/* Mobile Top Dropdown for Clients */}
-      <div className={`mobile-clients-dropdown-container ${showClientsDropdown ? 'dropdown-open' : ''}`}>
-        <button 
-          className="mobile-dropdown-toggle"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowClientsDropdown(!showClientsDropdown);
-          }}
-          type="button"
-        >
-          Clientes ({clients?.length || 0}) {showClientsDropdown ? '▲' : '▼'}
-        </button>
-        {showClientsDropdown && (
-          <div className="mobile-dropdown-content clients-dropdown">
-            <div className="mobile-dropdown-item mobile-nav-item">
-              <a href={CLIENTS_PATH} onClick={() => setShowClientsDropdown(false)} style={{ color: 'var(--accent-color)', fontWeight: '600', textDecoration: 'none' }}>
-                Ver Todos los Clientes →
-              </a>
-            </div>
-            {clients && clients.length > 0 ? (
-              clients.map((client, index) => (
-                <div key={client.cedula || index} className="mobile-dropdown-item">
-                  {client.firstName} {client.lastName}
-                </div>
-              ))
-            ) : (
-              <div className="mobile-dropdown-item">No hay clientes</div>
-            )}
-          </div>
-        )}
-      </div>
-
       <div className="main-flex-layout">
         <aside className="sidebar-clients">
           <ClientCards clients={clients || []} />
@@ -172,39 +116,6 @@ function App() {
         <div className="prestamos-sidebar">
           <PrestamoCards prestamos={prestamos || []} />
         </div>
-      </div>
-
-      {/* Mobile Bottom Dropdown for Prestamos */}
-      <div className={`mobile-prestamos-dropdown-container ${showPrestamosDropdown ? 'dropdown-open' : ''}`}>
-        <button 
-          className="mobile-dropdown-toggle"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowPrestamosDropdown(!showPrestamosDropdown);
-          }}
-          type="button"
-        >
-          Préstamos ({prestamos?.length || 0}) {showPrestamosDropdown ? '▲' : '▼'}
-        </button>
-        {showPrestamosDropdown && (
-          <div className="mobile-dropdown-content prestamos-dropdown">
-            <div className="mobile-dropdown-item mobile-nav-item">
-              <a href={PRESTAMOS_PATH} onClick={() => setShowPrestamosDropdown(false)} style={{ color: 'var(--accent-color)', fontWeight: '600', textDecoration: 'none' }}>
-                Ver Todos los Préstamos →
-              </a>
-            </div>
-            {prestamos && prestamos.length > 0 ? (
-              prestamos.map((prestamo, idx) => (
-                <div key={prestamo._id || idx} className="mobile-dropdown-item">
-                  Cédula: {prestamo.cedula} - ${prestamo.prestamoAmount}
-                </div>
-              ))
-            ) : (
-              <div className="mobile-dropdown-item">No hay préstamos</div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
