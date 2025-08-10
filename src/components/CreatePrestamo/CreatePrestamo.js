@@ -19,6 +19,12 @@ const defaultFormState = {
     paymentDates: []
 }
 
+// Interest rates (annual rates)
+const INTEREST_RATES = {
+    'Monthly': 0.12,     // 12% annual for monthly payments
+    'Bi-Weekly': 0.10    // 10% annual for bi-weekly payments
+}
+
 
 const CreatePrestamo = () => {
     const navigate = useNavigate()
@@ -40,12 +46,6 @@ const CreatePrestamo = () => {
     // Form validation
     const [validationErrors, setValidationErrors] = useState({})
     
-    // Interest rates (annual rates)
-    const INTEREST_RATES = {
-        'Monthly': 0.12,     // 12% annual for monthly payments
-        'Bi-Weekly': 0.10    // 10% annual for bi-weekly payments
-    }
-
     // Modern loan calculation using amortization formula
     const calculateLoanDetails = useCallback((principal, annualRate, totalPayments, paymentFrequency) => {
         if (!principal || !annualRate || !totalPayments) return null
@@ -162,10 +162,16 @@ const CreatePrestamo = () => {
 
     // Update start date in form state
     useEffect(() => {
-        setFormState(prev => ({
-            ...prev,
-            startDate: startDate.toISOString().split('T')[0]
-        }))
+        const newStartDateString = startDate.toISOString().split('T')[0]
+        setFormState(prev => {
+            if (prev.startDate !== newStartDateString) {
+                return {
+                    ...prev,
+                    startDate: newStartDateString
+                }
+            }
+            return prev
+        })
     }, [startDate])
 
     // Fetch all clients
