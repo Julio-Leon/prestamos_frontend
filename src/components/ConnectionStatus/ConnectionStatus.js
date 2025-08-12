@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ApiService from '../services/ApiService';
+import ApiService from '../../services/ApiService';
 import './ConnectionStatus.css';
 
 const ConnectionStatus = () => {
