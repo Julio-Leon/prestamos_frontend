@@ -1,7 +1,7 @@
 // API Configuration
 const API_CONFIG = {
   // Production backend URL (deployed on Render)
-  BASE_URL: 'https://prestamos-backend-o6cd.onrender.com',
+  BASE_URL: 'https://prestamos-backend.onrender.com',
   
   // Fallback to local backend if production is unavailable
   // BASE_URL: 'http://localhost:4000',
