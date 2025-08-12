@@ -15,12 +15,12 @@ const Clients = () => {
   const testBackendConnection = async () => {
     try {
       setBackendStatus('testing');
-      const response = await fetch('https://prestamos-backend.onrender.com/health');
+      const response = await fetch('http://localhost:4000/health');
       if (response.ok) {
         const data = await response.json();
         console.log('Backend health check:', data);
         setBackendStatus('connected');
-        alert(`Backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
+        alert(`Local backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
       } else {
         setBackendStatus('error');
         alert(`Backend health check failed: ${response.status}`);
@@ -40,7 +40,8 @@ const Clients = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://prestamos-backend.onrender.com/clients');
+      // Temporarily using local backend for testing
+      const response = await fetch('http://localhost:4000/clients');
       const data = await response.json();
       setClients(data);
     } catch (error) {
@@ -87,7 +88,7 @@ const Clients = () => {
 
       console.log('Updating client with data:', updateData);
 
-      const response = await fetch(`https://prestamos-backend.onrender.com/clients/${editingClient.cedula}`, {
+      const response = await fetch(`http://localhost:4000/clients/${editingClient.cedula}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ const Clients = () => {
     try {
       console.log('Deleting client with cedula:', clientToDelete.cedula);
 
-      const response = await fetch(`https://prestamos-backend.onrender.com/clients/${clientToDelete.cedula}`, {
+      const response = await fetch(`http://localhost:4000/clients/${clientToDelete.cedula}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
