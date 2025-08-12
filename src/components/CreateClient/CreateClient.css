@@ -3,10 +3,10 @@
 .create-client-container.modern-bg {
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Change from center to flex-start */
     justify-content: center;
     background: transparent; /* Remove background, main-content provides it */
-    padding: 2rem 0;
+    padding: 1rem 0 3rem 0; /* Add more bottom padding to ensure form is fully visible */
     box-sizing: border-box;
     width: 100%;
 }
@@ -26,9 +26,9 @@
     backdrop-filter: blur(8px);                                                                                                                                                                                                 
     -webkit-backdrop-filter: blur(8px);
     box-sizing: border-box;
-    margin: 0; /* Remove external margin, main-content provides spacing */
+    margin: 1rem 0; /* Add margin to ensure spacing from container edges */
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* Change from hidden to visible to ensure content isn't clipped */
 }
 
 .client-form::before {
@@ -51,6 +51,7 @@
 .form-header {
     text-align: center;
     margin-bottom: 1rem;
+    padding-top: 0.5rem; /* Add top padding to ensure visibility */
 }
 
 .form-title {
@@ -350,7 +351,8 @@
 /* Mobile responsive design */
 @media (max-width: 900px) {
     .create-client-container.modern-bg {
-        padding: 1rem 0;
+        padding: 0.5rem 0 3rem 0; /* More bottom padding for mobile */
+        min-height: auto; /* Allow natural height on mobile */
     }
 
     .client-form, .success-container {
