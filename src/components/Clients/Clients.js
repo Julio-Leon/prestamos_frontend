@@ -18,7 +18,7 @@ const Clients = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:4000/clients');
+      const response = await fetch('https://prestamos-backend.onrender.com/clients');
       const data = await response.json();
       setClients(data);
     } catch (error) {
@@ -35,7 +35,7 @@ const Clients = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/clients/${editingClient.cedula}`, {
+      const response = await fetch(`https://prestamos-backend.onrender.com/clients/${editingClient.cedula}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const Clients = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/clients/${clientToDelete.cedula}`, {
+      const response = await fetch(`https://prestamos-backend.onrender.com/clients/${clientToDelete.cedula}`, {
         method: 'DELETE',
       });
 
@@ -113,7 +113,6 @@ const Clients = () => {
     return (
       <div className="clients-container">
         <div className="loader">
-          <div className="spinner"></div>
           <p>Cargando clientes...</p>
         </div>
       </div>
@@ -214,29 +213,47 @@ const Clients = () => {
                 <div className="edit-form-row">
                   <input
                     type="text"
-                    value={editingClient.street || ''}
-                    onChange={(e) => setEditingClient({...editingClient, street: e.target.value})}
+                    value={editingClient.address?.street || ''}
+                    onChange={(e) => setEditingClient({
+                      ...editingClient, 
+                      address: {
+                        ...editingClient.address,
+                        street: e.target.value
+                      }
+                    })}
                     className="edit-input"
                     placeholder="Calle"
                   />
                   <input
                     type="text"
-                    value={editingClient.number || ''}
-                    onChange={(e) => setEditingClient({...editingClient, number: e.target.value})}
+                    value={editingClient.address?.number || ''}
+                    onChange={(e) => setEditingClient({
+                      ...editingClient,
+                      address: {
+                        ...editingClient.address,
+                        number: e.target.value
+                      }
+                    })}
                     className="edit-input"
                     placeholder="Número"
                   />
                 </div>
                 <input
                   type="text"
-                  value={editingClient.apartment || ''}
-                  onChange={(e) => setEditingClient({...editingClient, apartment: e.target.value})}
+                  value={editingClient.address?.apartment || ''}
+                  onChange={(e) => setEditingClient({
+                    ...editingClient,
+                    address: {
+                      ...editingClient.address,
+                      apartment: e.target.value
+                    }
+                  })}
                   className="edit-input"
                   placeholder="Apartamento"
                 />
                 <textarea
-                  value={editingClient.recommendation || ''}
-                  onChange={(e) => setEditingClient({...editingClient, recommendation: e.target.value})}
+                  value={editingClient.recommendedBy || ''}
+                  onChange={(e) => setEditingClient({...editingClient, recommendedBy: e.target.value})}
                   className="edit-textarea"
                   placeholder="Recomendación"
                   rows="2"
@@ -281,14 +298,14 @@ const Clients = () => {
                       <strong>Institución:</strong> {client.department}
                     </div>
                   )}
-                  {(client.street || client.number || client.apartment) && (
+                  {(client.address?.street || client.address?.number || client.address?.apartment) && (
                     <div className="client-detail">
-                      <strong>Dirección:</strong> {client.street} {client.number} {client.apartment ? `Apt. ${client.apartment}` : ''}
+                      <strong>Dirección:</strong> {client.address?.street} {client.address?.number} {client.address?.apartment ? `Apt. ${client.address.apartment}` : ''}
                     </div>
                   )}
-                  {client.recommendation && (
+                  {client.recommendedBy && (
                     <div className="client-detail recommendation">
-                      <strong>Recomendación:</strong> {client.recommendation}
+                      <strong>Recomendación:</strong> {client.recommendedBy}
                     </div>
                   )}
                 </div>

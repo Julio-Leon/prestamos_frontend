@@ -21,7 +21,7 @@ const Prestamos = () => {
   const fetchPrestamos = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:4000/prestamos');
+      const response = await fetch('https://prestamos-backend.onrender.com/prestamos');
       const data = await response.json();
       setPrestamos(data);
     } catch (error) {
@@ -33,7 +33,7 @@ const Prestamos = () => {
 
   const fetchClients = async () => {
     try {
-      const response = await fetch('http://localhost:4000/clients');
+      const response = await fetch('https://prestamos-backend.onrender.com/clients');
       const data = await response.json();
       setClients(data);
     } catch (error) {
@@ -64,7 +64,7 @@ const Prestamos = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/prestamos/${editingPrestamo._id}`, {
+      const response = await fetch(`https://prestamos-backend.onrender.com/prestamos/${editingPrestamo._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const Prestamos = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/prestamos/${prestamoToDelete._id}`, {
+      const response = await fetch(`https://prestamos-backend.onrender.com/prestamos/${prestamoToDelete._id}`, {
         method: 'DELETE',
       });
 
@@ -181,7 +181,6 @@ const Prestamos = () => {
     return (
       <div className="prestamos-container modern-bg">
         <div className="loading-spinner">
-          <div className="spinner"></div>
           <span>Cargando préstamos...</span>
         </div>
       </div>

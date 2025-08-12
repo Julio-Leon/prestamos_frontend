@@ -7,8 +7,10 @@ import CreatePrestamo from './components/CreatePrestamo/CreatePrestamo';
 import Clients from './components/Clients/Clients';
 import Prestamos from './components/Prestamos/Prestamos';
 import Home from './components/Home/Home';
+import ConnectionStatus from './components/ConnectionStatus/ConnectionStatus';
 import { Routes, Route } from "react-router-dom";
 import PrestamosNavbar from './components/Navbar/PrestamosNavbar';
+import API_CONFIG from './config/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -64,25 +66,23 @@ function App() {
   // console.log(process.env.REACT_APP_BACKEND_STRING)
 
   const getClientsInfo = async () => {
-    const CLIENT_ENDPOINT =  (process.env.REACT_APP_BACKEND_STRING || 'http://localhost:4000/') + 'clients'
     try {
-      const response = await fetch(CLIENT_ENDPOINT)
+      const response = await fetch(API_CONFIG.CLIENTS_URL)
       const data = await response.json()
       setClients(data)
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching clients:', error)
     }
   }
 
   const getPrestamosInfo = async () => {
-    const PRESTAMOS_ENDPOINT = (process.env.REACT_APP_BACKEND_STRING || 'http://localhost:4000/') + 'prestamos'
     try {
-      const response = await fetch(PRESTAMOS_ENDPOINT)
+      const response = await fetch(API_CONFIG.PRESTAMOS_URL)
       const data = await response.json()
-      console.log(data)
+      console.log('Prestamos data:', data)
       setPrestamos(data)
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching prestamos:', error)
     }
   }
 
@@ -98,6 +98,7 @@ function App() {
   return (
     <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
       <DarkModeToggle dark={dark} setDark={setDark} />
+      <ConnectionStatus />
       <PrestamosNavbar />
       
       <div className="main-flex-layout">

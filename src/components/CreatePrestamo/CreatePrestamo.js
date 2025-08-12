@@ -177,7 +177,7 @@ const CreatePrestamo = () => {
     // Fetch all clients
     const getAllClientsInfo = async () => {
         try {
-            const response = await fetch('http://localhost:4000/clients')
+            const response = await fetch('https://prestamos-backend.onrender.com/clients')
             if (!response.ok) throw new Error('Failed to fetch clients')
             const data = await response.json()
             setAllClientsInfo(data)
@@ -213,7 +213,7 @@ const CreatePrestamo = () => {
                 amountPerPayment: formState.amountPerPayment
             }
             
-            const response = await fetch('http://localhost:4000/prestamos', {
+            const response = await fetch('https://prestamos-backend.onrender.com/prestamos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

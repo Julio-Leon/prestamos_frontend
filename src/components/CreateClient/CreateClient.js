@@ -63,7 +63,13 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
         setLoading(true)
         setError('')
         
-        const CREATE_CLIENT_ENDPOINT = 'http://localhost:4000/clients' // Backend endpoint
+        const CREATE_CLIENT_ENDPOINT = 'https://prestamos-backend.onrender.com/clients' // Backend endpoint
+        
+        // Prepare data to match backend expectations
+        const clientData = {
+            ...formState,
+            recommendedBy: formState.recommendation // Map recommendation to recommendedBy
+        }
         
         try {
             const response = await fetch(CREATE_CLIENT_ENDPOINT, {
@@ -71,7 +77,7 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formState)
+                body: JSON.stringify(clientData)
             })
             
             if (response.ok) {

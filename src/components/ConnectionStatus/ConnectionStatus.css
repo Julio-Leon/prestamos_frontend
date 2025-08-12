@@ -1,0 +1,66 @@
+.connection-status {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.connection-status:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.status-icon {
+  font-size: 12px;
+}
+
+.status-text {
+  white-space: nowrap;
+}
+
+.last-check {
+  color: #6c757d;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.retry-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.retry-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode styles */
+.dark-mode .connection-status {
+  background: rgba(33, 37, 41, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8f9fa;
+}
+
+.dark-mode .connection-status .last-check {
+  color: #adb5bd;
+}
+
+.dark-mode .connection-status .retry-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
