@@ -30,17 +30,47 @@ const Clients = () => {
 
   // Edit client
   const handleEdit = (client) => {
-    setEditingClient({ ...client });
+    setEditingClient({ 
+      ...client,
+      address: {
+        street: client.address?.street || '',
+        number: client.address?.number || '',
+        apartment: client.address?.apartment || '',
+        county: client.address?.county || '',
+        state: client.address?.state || '',
+        zipCode: client.address?.zipCode || ''
+      }
+    });
   };
 
   const handleSaveEdit = async () => {
     try {
+      // Prepare the data in the format expected by the backend
+      const updateData = {
+        cedula: editingClient.cedula,
+        firstName: editingClient.firstName,
+        lastName: editingClient.lastName,
+        department: editingClient.department,
+        telephoneNumber: editingClient.telephoneNumber,
+        celularNumber: editingClient.celularNumber,
+        // Flatten address fields for backend compatibility
+        street: editingClient.address?.street,
+        number: editingClient.address?.number,
+        apartment: editingClient.address?.apartment,
+        county: editingClient.address?.county,
+        state: editingClient.address?.state,
+        zipCode: editingClient.address?.zipCode,
+        recommendedBy: editingClient.recommendedBy
+      };
+
+      console.log('Updating client with data:', updateData);
+
       const response = await fetch(`https://prestamos-backend.onrender.com/clients/${editingClient.cedula}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editingClient),
+        body: JSON.stringify(updateData),
       });
 
       if (response.ok) {
@@ -49,11 +79,15 @@ const Clients = () => {
           client.cedula === editingClient.cedula ? updatedClient : client
         ));
         setEditingClient(null);
+        console.log('Client updated successfully');
       } else {
-        console.error('Error updating client');
+        const errorData = await response.text();
+        console.error('Error updating client:', response.status, errorData);
+        alert(`Error updating client: ${response.status} - ${errorData}`);
       }
     } catch (error) {
       console.error('Error updating client:', error);
+      alert(`Network error updating client: ${error.message}`);
     }
   };
 
@@ -69,19 +103,26 @@ const Clients = () => {
 
   const confirmDelete = async () => {
     try {
+      console.log('Deleting client with cedula:', clientToDelete.cedula);
+
       const response = await fetch(`https://prestamos-backend.onrender.com/clients/${clientToDelete.cedula}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
+        const result = await response.json();
+        console.log('Client deleted successfully:', result);
         setClients(clients.filter(client => client.cedula !== clientToDelete.cedula));
         setShowDeleteModal(false);
         setClientToDelete(null);
       } else {
-        console.error('Error deleting client');
+        const errorData = await response.text();
+        console.error('Error deleting client:', response.status, errorData);
+        alert(`Error deleting client: ${response.status} - ${errorData}`);
       }
     } catch (error) {
       console.error('Error deleting client:', error);
+      alert(`Network error deleting client: ${error.message}`);
     }
   };
 
