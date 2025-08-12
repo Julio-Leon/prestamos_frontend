@@ -64,3 +64,15 @@
 .dark-mode .connection-status .retry-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+/* Disable animations on mobile devices for better performance */
+@media (max-width: 768px) {
+  .connection-status,
+  .connection-status *,
+  .connection-status *::before,
+  .connection-status *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

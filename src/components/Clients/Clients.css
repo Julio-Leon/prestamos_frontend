@@ -635,3 +635,18 @@
     font-size: 1.2rem;
   }
 }
+
+/* Disable animations on mobile devices for better performance */
+@media (max-width: 768px) {
+  .clients-container *,
+  .clients-container *::before,
+  .clients-container *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .modal-content {
+    animation: none !important;
+  }
+}

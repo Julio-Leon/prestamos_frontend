@@ -126,39 +126,66 @@ const CreatePrestamo = ({ onDataChange }) => {
 
     // Auto-calculate loan details when key fields change
     useEffect(() => {
-        if (formState.prestamoAmount && formState.paymentSchedule && formState.amountOfPayments) {
-            setCalculating(true)
+        // Clear previous calculations if any required field is missing
+        if (!formState.prestamoAmount || !formState.paymentSchedule || !formState.amountOfPayments) {
+            setFormState(prev => ({
+                ...prev,
+                amountPerPayment: "",
+                totalToPay: "",
+                interestEarn: "",
+                endDate: "",
+                paymentDates: []
+            }))
+            setPaymentDatesFull([])
+            return
+        }
+
+        const principal = parseFloat(formState.prestamoAmount)
+        const payments = parseInt(formState.amountOfPayments)
+        
+        // Validate numeric values
+        if (isNaN(principal) || principal <= 0 || isNaN(payments) || payments <= 0) {
+            return
+        }
+
+        setCalculating(true)
+        
+        const annualRate = INTEREST_RATES[formState.paymentSchedule]
+        const calculation = calculateLoanDetails(principal, annualRate, payments, formState.paymentSchedule)
+        
+        // Debug logging
+        console.log('Recalculating prestamo details:', {
+            principal,
+            payments,
+            paymentSchedule: formState.paymentSchedule,
+            annualRate,
+            calculation
+        })
+        
+        if (calculation) {
+            setFormState(prev => ({
+                ...prev,
+                amountPerPayment: calculation.amountPerPayment,
+                totalToPay: calculation.totalToPay,
+                interestEarn: calculation.interestEarn
+            }))
             
-            const principal = parseFloat(formState.prestamoAmount)
-            const payments = parseInt(formState.amountOfPayments)
-            const annualRate = INTEREST_RATES[formState.paymentSchedule]
+            // Calculate payment dates
+            const dates = calculatePaymentDates(payments, formState.paymentSchedule, startDate)
+            setPaymentDatesFull(dates)
             
-            const calculation = calculateLoanDetails(principal, annualRate, payments, formState.paymentSchedule)
-            
-            if (calculation) {
+            if (dates.length > 0) {
+                const endDate = dates[dates.length - 1]
                 setFormState(prev => ({
                     ...prev,
-                    amountPerPayment: calculation.amountPerPayment,
-                    totalToPay: calculation.totalToPay,
-                    interestEarn: calculation.interestEarn
+                    endDate: endDate.toISOString().split('T')[0],
+                    paymentDates: dates.map(date => date.toISOString().split('T')[0])
                 }))
-                
-                // Calculate payment dates
-                const dates = calculatePaymentDates(payments, formState.paymentSchedule, startDate)
-                setPaymentDatesFull(dates)
-                
-                if (dates.length > 0) {
-                    const endDate = dates[dates.length - 1]
-                    setFormState(prev => ({
-                        ...prev,
-                        endDate: endDate.toISOString().split('T')[0],
-                        paymentDates: dates.map(date => date.toISOString().split('T')[0])
-                    }))
-                }
             }
-            
-            setTimeout(() => setCalculating(false), 500)
         }
+        
+        // Small timeout to show calculation feedback, then clear calculating state
+        setTimeout(() => setCalculating(false), 200)
     }, [formState.prestamoAmount, formState.paymentSchedule, formState.amountOfPayments, startDate, calculateLoanDetails, calculatePaymentDates])
 
     // Update start date in form state

@@ -467,3 +467,22 @@
         font-size: 2.8rem;
     }
 }
+
+/* Disable animations on mobile devices for better performance */
+@media (max-width: 768px) {
+    .create-client-container *,
+    .create-client-container *::before,
+    .create-client-container *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .success-container {
+        animation: none !important;
+    }
+    
+    .success-icon {
+        animation: none !important;
+    }
+}

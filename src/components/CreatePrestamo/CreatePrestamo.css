@@ -614,3 +614,14 @@
         padding: 2rem;
     }
 }
+
+/* Disable animations on mobile devices for better performance */
+@media (max-width: 768px) {
+    .create-prestamo-container *,
+    .create-prestamo-container *::before,
+    .create-prestamo-container *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
