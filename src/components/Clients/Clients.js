@@ -159,7 +159,6 @@ const Clients = ({ onDataChange }) => {
         
         // Notify parent component to update sidebars
         notifyDataChange();
-        alert('Cliente eliminado exitosamente');
       } else {
         let errorMessage;
         const contentType = response.headers.get('content-type');

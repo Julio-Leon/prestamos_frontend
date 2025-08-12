@@ -401,13 +401,20 @@ const Prestamos = ({ onDataChange }) => {
                         <label>Frecuencia:</label>
                         <select
                           value={editingPrestamo.paymentSchedule}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            paymentSchedule: e.target.value
-                          })}
+                          onChange={(e) => {
+                            const freq = e.target.value;
+                            let interest = editingPrestamo.interestEarn;
+                            if (freq === 'Quincenal') interest = 10;
+                            if (freq === 'Semanal') interest = 5;
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              paymentSchedule: freq,
+                              interestEarn: interest
+                            });
+                          }}
                         >
-                          <option value="Monthly">Mensual</option>
-                          <option value="Bi-Weekly">Quincenal</option>
+                          <option value="Quincenal">Quincenal (10% anual)</option>
+                          <option value="Semanal">Semanal (5% anual)</option>
                         </select>
                       </div>
 
@@ -438,7 +445,7 @@ const Prestamos = ({ onDataChange }) => {
                       </div>
 
                       <div className="edit-field">
-                        <label>Intereses:</label>
+                        <label>Intereses (% anual):</label>
                         <input
                           type="number"
                           step="0.01"
@@ -447,6 +454,7 @@ const Prestamos = ({ onDataChange }) => {
                             ...editingPrestamo,
                             interestEarn: e.target.value
                           })}
+                          readOnly={editingPrestamo.paymentSchedule === 'Quincenal' || editingPrestamo.paymentSchedule === 'Semanal'}
                         />
                       </div>
 
@@ -557,7 +565,7 @@ const Prestamos = ({ onDataChange }) => {
                       <div className="detail-row">
                         <span className="detail-label">Frecuencia:</span>
                         <span className="detail-value">
-                          {prestamo.paymentSchedule === 'Monthly' ? 'Mensual' : 'Quincenal'}
+                          {prestamo.paymentSchedule === 'Quincenal' ? 'Quincenal (10% anual)' : prestamo.paymentSchedule === 'Semanal' ? 'Semanal (5% anual)' : prestamo.paymentSchedule}
                         </span>
                       </div>
                       <div className="detail-row">
