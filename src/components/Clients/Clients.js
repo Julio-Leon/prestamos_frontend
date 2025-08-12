@@ -9,6 +9,28 @@ const Clients = () => {
   const [clientToDelete, setClientToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('firstName');
+  const [backendStatus, setBackendStatus] = useState('unknown');
+
+  // Test backend connection
+  const testBackendConnection = async () => {
+    try {
+      setBackendStatus('testing');
+      const response = await fetch('https://prestamos-backend.onrender.com/health');
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Backend health check:', data);
+        setBackendStatus('connected');
+        alert(`Backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
+      } else {
+        setBackendStatus('error');
+        alert(`Backend health check failed: ${response.status}`);
+      }
+    } catch (error) {
+      setBackendStatus('error');
+      console.error('Backend connection test failed:', error);
+      alert(`Backend connection test failed: ${error.message}`);
+    }
+  };
 
   // Fetch all clients
   useEffect(() => {
@@ -107,7 +129,13 @@ const Clients = () => {
 
       const response = await fetch(`https://prestamos-backend.onrender.com/clients/${clientToDelete.cedula}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+
+      console.log('Delete response status:', response.status);
+      console.log('Delete response headers:', response.headers);
 
       if (response.ok) {
         const result = await response.json();
@@ -115,14 +143,26 @@ const Clients = () => {
         setClients(clients.filter(client => client.cedula !== clientToDelete.cedula));
         setShowDeleteModal(false);
         setClientToDelete(null);
+        alert('Cliente eliminado exitosamente');
       } else {
-        const errorData = await response.text();
-        console.error('Error deleting client:', response.status, errorData);
-        alert(`Error deleting client: ${response.status} - ${errorData}`);
+        let errorMessage;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || `Error ${response.status}`;
+          console.error('JSON error response:', errorData);
+        } else {
+          const errorText = await response.text();
+          errorMessage = `Server error (${response.status}): ${errorText.substring(0, 200)}...`;
+          console.error('HTML error response:', errorText);
+        }
+        
+        alert(`Error deleting client: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('Error deleting client:', error);
-      alert(`Network error deleting client: ${error.message}`);
+      console.error('Network error deleting client:', error);
+      alert(`Network error deleting client: ${error.message}\n\nPlease check if the backend is running and accessible.`);
     }
   };
 
@@ -165,6 +205,16 @@ const Clients = () => {
       <div className="clients-header">
         <h1 className="clients-title">Gestión de Clientes</h1>
         <p className="clients-subtitle">Administra todos los clientes del sistema</p>
+        <button 
+          onClick={testBackendConnection} 
+          className={`test-backend-btn ${backendStatus}`}
+          disabled={backendStatus === 'testing'}
+        >
+          {backendStatus === 'testing' ? '🔄 Testing...' : 
+           backendStatus === 'connected' ? '✅ Backend OK' : 
+           backendStatus === 'error' ? '❌ Backend Error' : 
+           '🔍 Test Backend'}
+        </button>
       </div>
 
       {/* Search and Sort Controls */}

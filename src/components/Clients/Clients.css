@@ -12,6 +12,7 @@
 .clients-header {
   text-align: center;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .clients-title {
@@ -25,8 +26,47 @@
 .clients-subtitle {
   font-size: 1.1rem;
   color: var(--text-secondary);
-  margin: 0;
+  margin: 0 0 1rem 0;
   font-weight: 400;
+}
+
+.test-backend-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.test-backend-btn.unknown {
+  background: var(--accent-color);
+  color: white;
+}
+
+.test-backend-btn.testing {
+  background: #ffc107;
+  color: #333;
+  cursor: not-allowed;
+}
+
+.test-backend-btn.connected {
+  background: #28a745;
+  color: white;
+}
+
+.test-backend-btn.error {
+  background: #dc3545;
+  color: white;
+}
+
+.test-backend-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
 }
 
 /* Controls Section */
