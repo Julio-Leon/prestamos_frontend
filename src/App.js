@@ -101,6 +101,20 @@ function App() {
     }
   }
 
+  // Function to refresh all data (for when child components make changes)
+  const handleDataChange = async () => {
+    console.log('Data change detected, refreshing all data...');
+    try {
+      await Promise.all([
+        getClientsInfo(),
+        getPrestamosInfo()
+      ]);
+      console.log('Data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -195,10 +209,10 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path='/' element={<Home prestamos={prestamos} clients={clients} />} />
-              <Route path={CLIENTS_PATH} element={<Clients />} />
-              <Route path={PRESTAMOS_PATH} element={<Prestamos />} />
-              <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
-              <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
+              <Route path={CLIENTS_PATH} element={<Clients onDataChange={handleDataChange} />} />
+              <Route path={PRESTAMOS_PATH} element={<Prestamos onDataChange={handleDataChange} />} />
+              <Route path={NEW_CLIENT_PATH} element={ <CreateClient onDataChange={handleDataChange} />} />
+              <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo onDataChange={handleDataChange} />} />
               <Route path='/diagnostics' element={<Diagnostics />} />
             </Routes>
           </main>

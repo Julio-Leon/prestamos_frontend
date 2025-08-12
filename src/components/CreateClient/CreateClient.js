@@ -18,7 +18,7 @@ const defaultFormState = {
     recommendation: "" // Changed from recommendedBy to match backend
 }
 
-const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
+const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
     const [formState, setFormState] = useState(defaultFormState)
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
@@ -63,7 +63,7 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
         setLoading(true)
         setError('')
         
-        const CREATE_CLIENT_ENDPOINT = 'https://prestamos-backend.onrender.com/clients' // Backend endpoint
+        const CREATE_CLIENT_ENDPOINT = 'http://localhost:4000/clients' // Updated to use local backend
         
         // Prepare data to match backend expectations
         const clientData = {
@@ -85,6 +85,12 @@ const CreateClient = ({ NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                 console.log('Cliente creado exitosamente:', createdClient)
                 setSuccess(true)
                 setFormState(defaultFormState)
+                
+                // Notify parent component to update sidebars
+                if (onDataChange && typeof onDataChange === 'function') {
+                    console.log('Notifying parent component of new client creation...');
+                    onDataChange();
+                }
                 
                 // Show success message for 2 seconds then redirect
                 setTimeout(() => {

@@ -26,7 +26,7 @@ const INTEREST_RATES = {
 }
 
 
-const CreatePrestamo = () => {
+const CreatePrestamo = ({ onDataChange }) => {
     const navigate = useNavigate()
     
     // Form state management
@@ -177,7 +177,7 @@ const CreatePrestamo = () => {
     // Fetch all clients
     const getAllClientsInfo = async () => {
         try {
-            const response = await fetch('https://prestamos-backend.onrender.com/clients')
+            const response = await fetch('http://localhost:4000/clients')
             if (!response.ok) throw new Error('Failed to fetch clients')
             const data = await response.json()
             setAllClientsInfo(data)
@@ -213,7 +213,7 @@ const CreatePrestamo = () => {
                 amountPerPayment: formState.amountPerPayment
             }
             
-            const response = await fetch('https://prestamos-backend.onrender.com/prestamos', {
+            const response = await fetch('http://localhost:4000/prestamos', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -226,7 +226,15 @@ const CreatePrestamo = () => {
                 throw new Error(errorData || 'Error al crear préstamo')
             }
             
+            const createdPrestamo = await response.json()
+            console.log('Préstamo creado exitosamente:', createdPrestamo)
             setSuccess(true)
+            
+            // Notify parent component to update sidebars
+            if (onDataChange && typeof onDataChange === 'function') {
+                console.log('Notifying parent component of new prestamo creation...');
+                onDataChange();
+            }
         } catch (error) {
             console.error('Error creating prestamo:', error)
             setError(error.message || 'Error al crear el préstamo')

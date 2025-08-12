@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Clients.css';
 
-const Clients = () => {
+const Clients = ({ onDataChange }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingClient, setEditingClient] = useState(null);
@@ -10,6 +10,14 @@ const Clients = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('firstName');
   const [backendStatus, setBackendStatus] = useState('unknown');
+
+  // Notify parent component when data changes
+  const notifyDataChange = () => {
+    if (onDataChange && typeof onDataChange === 'function') {
+      console.log('Notifying parent component of data change...');
+      onDataChange();
+    }
+  };
 
   // Test backend connection
   const testBackendConnection = async () => {
@@ -103,6 +111,9 @@ const Clients = () => {
         ));
         setEditingClient(null);
         console.log('Client updated successfully');
+        
+        // Notify parent component to update sidebars
+        notifyDataChange();
       } else {
         const errorData = await response.text();
         console.error('Error updating client:', response.status, errorData);
@@ -144,6 +155,9 @@ const Clients = () => {
         setClients(clients.filter(client => client.cedula !== clientToDelete.cedula));
         setShowDeleteModal(false);
         setClientToDelete(null);
+        
+        // Notify parent component to update sidebars
+        notifyDataChange();
         alert('Cliente eliminado exitosamente');
       } else {
         let errorMessage;

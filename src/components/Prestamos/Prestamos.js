@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Prestamos.css';
+import API_CONFIG from '../../config/api';
 
-const Prestamos = () => {
+const Prestamos = ({ onDataChange }) => {
   const [prestamos, setPrestamos] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,6 +12,37 @@ const Prestamos = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('startDate');
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, completed
+  const [backendStatus, setBackendStatus] = useState('unknown');
+
+  // Test backend connection
+  const testBackendConnection = async () => {
+    try {
+      setBackendStatus('testing');
+      console.log('Testing backend connection...');
+      const response = await fetch(API_CONFIG.HEALTH_URL);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Backend health check:', data);
+        setBackendStatus('connected');
+        alert(`Local backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
+      } else {
+        setBackendStatus('error');
+        alert(`Backend health check failed: ${response.status}`);
+      }
+    } catch (error) {
+      setBackendStatus('error');
+      console.error('Backend connection test failed:', error);
+      alert(`Backend connection test failed: ${error.message}`);
+    }
+  };
+
+  // Notify parent component when data changes
+  const notifyDataChange = () => {
+    if (onDataChange && typeof onDataChange === 'function') {
+      console.log('Notifying parent component of data change...');
+      onDataChange();
+    }
+  };
 
   // Fetch all prestamos and clients
   useEffect(() => {
@@ -21,11 +53,19 @@ const Prestamos = () => {
   const fetchPrestamos = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://prestamos-backend.onrender.com/prestamos');
-      const data = await response.json();
-      setPrestamos(data);
+      console.log('Fetching prestamos from:', API_CONFIG.PRESTAMOS_URL);
+      const response = await fetch(API_CONFIG.PRESTAMOS_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setPrestamos(data);
+        console.log('Fetched prestamos:', data.length);
+      } else {
+        console.error('Error fetching prestamos:', response.status);
+        const errorText = await response.text();
+        console.error('Error details:', errorText);
+      }
     } catch (error) {
-      console.error('Error fetching prestamos:', error);
+      console.error('Network error fetching prestamos:', error);
     } finally {
       setLoading(false);
     }
@@ -33,11 +73,17 @@ const Prestamos = () => {
 
   const fetchClients = async () => {
     try {
-      const response = await fetch('https://prestamos-backend.onrender.com/clients');
-      const data = await response.json();
-      setClients(data);
+      console.log('Fetching clients from:', API_CONFIG.CLIENTS_URL);
+      const response = await fetch(API_CONFIG.CLIENTS_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data);
+        console.log('Fetched clients:', data.length);
+      } else {
+        console.error('Error fetching clients:', response.status);
+      }
     } catch (error) {
-      console.error('Error fetching clients:', error);
+      console.error('Network error fetching clients:', error);
     }
   };
 
@@ -64,22 +110,27 @@ const Prestamos = () => {
 
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`https://prestamos-backend.onrender.com/prestamos/${editingPrestamo._id}`, {
+      // Prepare the data in the format expected by the backend
+      const updateData = {
+        cedula: editingPrestamo.cedula,
+        paymentSchedule: editingPrestamo.paymentSchedule,
+        prestamoAmount: parseFloat(editingPrestamo.prestamoAmount),
+        startDate: editingPrestamo.startDate,
+        endDate: editingPrestamo.endDate,
+        totalToPay: parseFloat(editingPrestamo.totalToPay),
+        interestEarn: parseFloat(editingPrestamo.interestEarn),
+        amountOfPayments: parseInt(editingPrestamo.amountOfPayments),
+        amountPerPayment: parseFloat(editingPrestamo.amountPerPayment)
+      };
+
+      console.log('Updating prestamo with data:', updateData);
+
+      const response = await fetch(`${API_CONFIG.PRESTAMOS_URL}/${editingPrestamo._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          cedula: editingPrestamo.cedula,
-          paymentSchedule: editingPrestamo.paymentSchedule,
-          prestamoAmount: parseFloat(editingPrestamo.prestamoAmount),
-          startDate: editingPrestamo.startDate,
-          endDate: editingPrestamo.endDate,
-          totalToPay: parseFloat(editingPrestamo.totalToPay),
-          interestEarn: parseFloat(editingPrestamo.interestEarn),
-          amountOfPayments: parseInt(editingPrestamo.amountOfPayments),
-          amountPerPayment: parseFloat(editingPrestamo.amountPerPayment)
-        }),
+        body: JSON.stringify(updateData),
       });
 
       if (response.ok) {
@@ -88,11 +139,19 @@ const Prestamos = () => {
           prestamo._id === editingPrestamo._id ? updatedPrestamo : prestamo
         ));
         setEditingPrestamo(null);
+        console.log('Prestamo updated successfully');
+        
+        // Notify parent component to update sidebars
+        notifyDataChange();
+        alert('Préstamo actualizado exitosamente');
       } else {
-        console.error('Error updating prestamo');
+        const errorData = await response.text();
+        console.error('Error updating prestamo:', response.status, errorData);
+        alert(`Error updating prestamo: ${response.status} - ${errorData}`);
       }
     } catch (error) {
-      console.error('Error updating prestamo:', error);
+      console.error('Network error updating prestamo:', error);
+      alert(`Network error updating prestamo: ${error.message}`);
     }
   };
 
@@ -108,19 +167,46 @@ const Prestamos = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`https://prestamos-backend.onrender.com/prestamos/${prestamoToDelete._id}`, {
+      console.log('Deleting prestamo with ID:', prestamoToDelete._id);
+
+      const response = await fetch(`${API_CONFIG.PRESTAMOS_URL}/${prestamoToDelete._id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
+      console.log('Delete response status:', response.status);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('Prestamo deleted successfully:', result);
         setPrestamos(prestamos.filter(prestamo => prestamo._id !== prestamoToDelete._id));
         setShowDeleteModal(false);
         setPrestamoToDelete(null);
+        
+        // Notify parent component to update sidebars
+        notifyDataChange();
+        alert('Préstamo eliminado exitosamente');
       } else {
-        console.error('Error deleting prestamo');
+        let errorMessage;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || `Error ${response.status}`;
+          console.error('JSON error response:', errorData);
+        } else {
+          const errorText = await response.text();
+          errorMessage = `Server error (${response.status}): ${errorText.substring(0, 200)}...`;
+          console.error('HTML error response:', errorText);
+        }
+        
+        alert(`Error deleting prestamo: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('Error deleting prestamo:', error);
+      console.error('Network error deleting prestamo:', error);
+      alert(`Network error deleting prestamo: ${error.message}\n\nPlease check if the backend is running and accessible.`);
     }
   };
 
@@ -196,6 +282,16 @@ const Prestamos = () => {
         <p className="prestamos-subtitle">
           Administre todos los préstamos del sistema ({prestamos.length} préstamos)
         </p>
+        <button 
+          onClick={testBackendConnection} 
+          className={`test-backend-btn ${backendStatus}`}
+          disabled={backendStatus === 'testing'}
+        >
+          {backendStatus === 'testing' ? '🔄 Testing...' : 
+           backendStatus === 'connected' ? '✅ Backend OK' : 
+           backendStatus === 'error' ? '❌ Backend Error' : 
+           '🔍 Test Backend'}
+        </button>
       </div>
 
       {/* Search and Filter Controls */}
