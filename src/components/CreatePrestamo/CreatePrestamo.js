@@ -22,8 +22,8 @@ const defaultFormState = {
 
 // Interest rates (annual rates)
 const INTEREST_RATES = {
-    'Monthly': 0.12,     // 12% annual for monthly payments
-    'Bi-Weekly': 0.10    // 10% annual for bi-weekly payments
+    'Quincenal': 0.10,   // 10% annual for bi-weekly payments (quincenal)
+    'Semanal': 0.05      // 5% annual for weekly payments (semanal)
 }
 
 
@@ -52,7 +52,7 @@ const CreatePrestamo = ({ onDataChange }) => {
         if (!principal || !annualRate || !totalPayments) return null
         
         // Convert annual rate to payment period rate
-        const paymentsPerYear = paymentFrequency === 'Monthly' ? 12 : 26
+        const paymentsPerYear = paymentFrequency === 'Quincenal' ? 26 : 52 // 26 for bi-weekly, 52 for weekly
         const periodRate = annualRate / paymentsPerYear
         
         // Calculate monthly payment using amortization formula
@@ -82,10 +82,10 @@ const CreatePrestamo = ({ onDataChange }) => {
         const currentDate = new Date(startDate)
         
         for (let i = 0; i < numOfPayments; i++) {
-            if (paymentSchedule === 'Monthly') {
-                currentDate.setMonth(currentDate.getMonth() + 1)
-            } else if (paymentSchedule === 'Bi-Weekly') {
-                currentDate.setDate(currentDate.getDate() + 14)
+            if (paymentSchedule === 'Quincenal') {
+                currentDate.setDate(currentDate.getDate() + 14) // Every 14 days
+            } else if (paymentSchedule === 'Semanal') {
+                currentDate.setDate(currentDate.getDate() + 7)  // Every 7 days
             }
             
             dates.push(new Date(currentDate))
@@ -305,7 +305,7 @@ const CreatePrestamo = ({ onDataChange }) => {
                         <p><strong>Monto:</strong> ${formState.prestamoAmount}</p>
                         <p><strong>Total a Pagar:</strong> ${formState.totalToPay}</p>
                         <p><strong>Pago por Período:</strong> ${formState.amountPerPayment}</p>
-                        <p><strong>Frecuencia:</strong> {formState.paymentSchedule === 'Monthly' ? 'Mensual' : 'Quincenal'}</p>
+                        <p><strong>Frecuencia:</strong> {formState.paymentSchedule === 'Quincenal' ? 'Quincenal' : 'Semanal'}</p>
                     </div>
                     <div className="success-actions">
                         <button 
@@ -388,19 +388,19 @@ const CreatePrestamo = ({ onDataChange }) => {
                             <div className="payment-schedule-btns">
                                 <button 
                                     type="button"
-                                    className={`schedule-btn ${formState.paymentSchedule === 'Monthly' ? 'active' : ''}`}
-                                    onClick={() => handleInputChange('paymentSchedule', 'Monthly')}
-                                    disabled={loading}
-                                >
-                                    Mensual (12% anual)
-                                </button>
-                                <button 
-                                    type="button"
-                                    className={`schedule-btn ${formState.paymentSchedule === 'Bi-Weekly' ? 'active' : ''}`}
-                                    onClick={() => handleInputChange('paymentSchedule', 'Bi-Weekly')}
+                                    className={`schedule-btn ${formState.paymentSchedule === 'Quincenal' ? 'active' : ''}`}
+                                    onClick={() => handleInputChange('paymentSchedule', 'Quincenal')}
                                     disabled={loading}
                                 >
                                     Quincenal (10% anual)
+                                </button>
+                                <button 
+                                    type="button"
+                                    className={`schedule-btn ${formState.paymentSchedule === 'Semanal' ? 'active' : ''}`}
+                                    onClick={() => handleInputChange('paymentSchedule', 'Semanal')}
+                                    disabled={loading}
+                                >
+                                    Semanal (5% anual)
                                 </button>
                             </div>
                             {validationErrors.paymentSchedule && (
@@ -529,7 +529,7 @@ const CreatePrestamo = ({ onDataChange }) => {
                             <div className="dates-info">
                                 <strong>Cliente:</strong> {clientInfo?.firstName} {clientInfo?.lastName}<br/>
                                 <strong>Monto por Pago:</strong> ${formState.amountPerPayment}<br/>
-                                <strong>Frecuencia:</strong> {formState.paymentSchedule === 'Monthly' ? 'Mensual' : 'Quincenal'}
+                                <strong>Frecuencia:</strong> {formState.paymentSchedule === 'Quincenal' ? 'Quincenal' : 'Semanal'}
                             </div>
                         </div>
                         <div className="dates-grid">
