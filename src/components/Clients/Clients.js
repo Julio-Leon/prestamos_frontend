@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Clients.css';
+import API_CONFIG from '../../config/api';
 
 const Clients = ({ onDataChange }) => {
   const [clients, setClients] = useState([]);
@@ -23,7 +24,7 @@ const Clients = ({ onDataChange }) => {
   const testBackendConnection = async () => {
     try {
       setBackendStatus('testing');
-      const response = await fetch('http://localhost:4000/health');
+      const response = await fetch(API_CONFIG.HEALTH_URL);
       if (response.ok) {
         const data = await response.json();
         console.log('Backend health check:', data);
@@ -49,7 +50,7 @@ const Clients = ({ onDataChange }) => {
     try {
       setLoading(true);
       // Temporarily using local backend for testing
-      const response = await fetch('http://localhost:4000/clients');
+      const response = await fetch(API_CONFIG.CLIENTS_URL);
       const data = await response.json();
       setClients(data);
     } catch (error) {
@@ -96,7 +97,7 @@ const Clients = ({ onDataChange }) => {
 
       console.log('Updating client with data:', updateData);
 
-      const response = await fetch(`http://localhost:4000/clients/${editingClient.cedula}`, {
+      const response = await fetch(`${API_CONFIG.CLIENTS_URL}/${editingClient.cedula}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +140,7 @@ const Clients = ({ onDataChange }) => {
     try {
       console.log('Deleting client with cedula:', clientToDelete.cedula);
 
-      const response = await fetch(`http://localhost:4000/clients/${clientToDelete.cedula}`, {
+      const response = await fetch(`${API_CONFIG.CLIENTS_URL}/${clientToDelete.cedula}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

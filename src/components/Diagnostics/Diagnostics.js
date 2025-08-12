@@ -193,7 +193,7 @@ const Diagnostics = () => {
       <div style={{ marginTop: '20px', padding: '15px', background: 'var(--accent-color-light)', borderRadius: '8px' }}>
         <h4>💡 Troubleshooting Tips</h4>
         <ul>
-          <li>Make sure the backend server is running on localhost:4000</li>
+          <li>Make sure the backend server is deployed and accessible</li>
           <li>Check the browser console (F12) for detailed error messages</li>
           <li>Verify your network connection</li>
           <li>Try refreshing the page if tests fail</li>

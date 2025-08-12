@@ -1,8 +1,10 @@
 // API Configuration
 const API_CONFIG = {
-  // Temporary: Use local backend for testing CRUD operations
-  // Change back to 'https://prestamos-backend.onrender.com' after redeploying to Render
-  BASE_URL: 'http://localhost:4000',
+  // Production backend URL (deployed on Render)
+  BASE_URL: 'https://prestamos-backend-o6cd.onrender.com',
+  
+  // Fallback to local backend if production is unavailable
+  // BASE_URL: 'http://localhost:4000',
   
   // API endpoints
   ENDPOINTS: {

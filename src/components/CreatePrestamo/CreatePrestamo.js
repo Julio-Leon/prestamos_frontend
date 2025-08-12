@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './CreatePrestamo.css'
+import API_CONFIG from '../../config/api'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import DatePicker from "react-datepicker";
@@ -177,7 +178,7 @@ const CreatePrestamo = ({ onDataChange }) => {
     // Fetch all clients
     const getAllClientsInfo = async () => {
         try {
-            const response = await fetch('http://localhost:4000/clients')
+            const response = await fetch(API_CONFIG.CLIENTS_URL)
             if (!response.ok) throw new Error('Failed to fetch clients')
             const data = await response.json()
             setAllClientsInfo(data)
@@ -213,7 +214,7 @@ const CreatePrestamo = ({ onDataChange }) => {
                 amountPerPayment: formState.amountPerPayment
             }
             
-            const response = await fetch('http://localhost:4000/prestamos', {
+            const response = await fetch(API_CONFIG.PRESTAMOS_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -174,7 +174,7 @@ function App() {
           }}>
             <h2>⚠️ Connection Error</h2>
             <p>{error}</p>
-            <p>Make sure the backend server is running on localhost:4000</p>
+            <p>Make sure the backend server is deployed and accessible</p>
             <button 
               onClick={() => window.location.reload()}
               style={{

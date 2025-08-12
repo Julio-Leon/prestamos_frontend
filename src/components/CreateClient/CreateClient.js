@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './CreateClient.css'
+import API_CONFIG from '../../config/api'
 
 const defaultFormState = {
     cedula: "",
@@ -63,7 +64,7 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
         setLoading(true)
         setError('')
         
-        const CREATE_CLIENT_ENDPOINT = 'http://localhost:4000/clients' // Updated to use local backend
+        const CREATE_CLIENT_ENDPOINT = API_CONFIG.CLIENTS_URL // Use centralized API config
         
         // Prepare data to match backend expectations
         const clientData = {
