@@ -8,6 +8,8 @@ import Clients from './components/Clients/Clients';
 import Prestamos from './components/Prestamos/Prestamos';
 import Home from './components/Home/Home';
 import ConnectionStatus from './components/ConnectionStatus/ConnectionStatus';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import Diagnostics from './components/Diagnostics/Diagnostics';
 import { Routes, Route } from "react-router-dom";
 import PrestamosNavbar from './components/Navbar/PrestamosNavbar';
 import API_CONFIG from './config/api';
@@ -56,8 +58,10 @@ const PRESTAMOS_PATH = '/prestamos'
 
 function App() {
 
-  const [clients, setClients] = useState(null)
-  const [prestamos, setPrestamos] = useState(null)
+  const [clients, setClients] = useState([])
+  const [prestamos, setPrestamos] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem('darkMode');
     return stored === null ? true : stored === 'true'; // Default to dark theme
@@ -67,58 +71,143 @@ function App() {
 
   const getClientsInfo = async () => {
     try {
+      console.log('Fetching clients from:', API_CONFIG.CLIENTS_URL);
       const response = await fetch(API_CONFIG.CLIENTS_URL)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json()
+      console.log('Clients fetched successfully:', data.length, 'clients');
       setClients(data)
     } catch (error) {
       console.error('Error fetching clients:', error)
+      setError(`Failed to load clients: ${error.message}`);
     }
   }
 
   const getPrestamosInfo = async () => {
     try {
+      console.log('Fetching prestamos from:', API_CONFIG.PRESTAMOS_URL);
       const response = await fetch(API_CONFIG.PRESTAMOS_URL)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json()
       console.log('Prestamos data:', data)
       setPrestamos(data)
     } catch (error) {
       console.error('Error fetching prestamos:', error)
+      setError(prev => prev ? `${prev}; Failed to load prestamos: ${error.message}` : `Failed to load prestamos: ${error.message}`);
     }
   }
 
   useEffect(() => {
-    getClientsInfo()
-    getPrestamosInfo()
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      await Promise.all([
+        getClientsInfo(),
+        getPrestamosInfo()
+      ]);
+      
+      setLoading(false);
+    };
+    
+    loadData();
   }, [])
 
   useEffect(() => {
     localStorage.setItem('darkMode', dark);
   }, [dark]);
 
-  return (
-    <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
-      <DarkModeToggle dark={dark} setDark={setDark} />
-      <ConnectionStatus />
-      <PrestamosNavbar />
-      
-      <div className="main-flex-layout">
-        <aside className="sidebar-clients">
-          <ClientCards clients={clients || []} />
-        </aside>
-        <main className="main-content">
-          <Routes>
-            <Route path='/' element={<Home prestamos={prestamos} clients={clients} />} />
-            <Route path={CLIENTS_PATH} element={<Clients />} />
-            <Route path={PRESTAMOS_PATH} element={<Prestamos />} />
-            <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
-            <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
-          </Routes>
-        </main>
-        <div className="prestamos-sidebar">
-          <PrestamoCards prestamos={prestamos || []} />
+  if (loading) {
+    return (
+      <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          fontSize: '1.5rem',
+          color: 'var(--text-main)'
+        }}>
+          🔄 Loading application...
         </div>
       </div>
-    </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          padding: '20px',
+          textAlign: 'center'
+        }}>
+          <div style={{ 
+            background: 'var(--error-bg, #fef2f2)',
+            border: '1px solid var(--error-border, #fecaca)',
+            borderRadius: '8px',
+            padding: '20px',
+            maxWidth: '600px',
+            color: 'var(--error-text, #dc2626)'
+          }}>
+            <h2>⚠️ Connection Error</h2>
+            <p>{error}</p>
+            <p>Make sure the backend server is running on localhost:4000</p>
+            <button 
+              onClick={() => window.location.reload()}
+              style={{
+                background: 'var(--accent-color)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                marginTop: '10px'
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
+        <DarkModeToggle dark={dark} setDark={setDark} />
+        <ConnectionStatus />
+        <PrestamosNavbar />
+        
+        <div className="main-flex-layout">
+          <aside className="sidebar-clients">
+            <ClientCards clients={clients || []} />
+          </aside>
+          <main className="main-content">
+            <Routes>
+              <Route path='/' element={<Home prestamos={prestamos} clients={clients} />} />
+              <Route path={CLIENTS_PATH} element={<Clients />} />
+              <Route path={PRESTAMOS_PATH} element={<Prestamos />} />
+              <Route path={NEW_CLIENT_PATH} element={ <CreateClient />} />
+              <Route path={NEW_PRESTAMO_PATH} element={ <CreatePrestamo />} />
+              <Route path='/diagnostics' element={<Diagnostics />} />
+            </Routes>
+          </main>
+          <div className="prestamos-sidebar">
+            <PrestamoCards prestamos={prestamos || []} />
+          </div>
+        </div>
+      </div>
+    </ErrorBoundary>
   );
 }
 

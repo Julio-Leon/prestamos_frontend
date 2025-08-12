@@ -31,6 +31,7 @@ const PrestamosNavbar = () => {
                         <Nav.Link as={Link} to={PRESTAMOS_PATH}>Préstamos</Nav.Link>
                         <Nav.Link as={Link} to={NEW_CLIENT_PATH}>Nuevo Cliente</Nav.Link>
                         <Nav.Link as={Link} to={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Nav.Link>
+                        <Nav.Link as={Link} to="/diagnostics" style={{ color: '#ff6b35' }}>🔍 Diagnostics</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
