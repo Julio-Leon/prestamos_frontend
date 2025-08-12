@@ -76,9 +76,9 @@ const Diagnostics = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>🔍 System Diagnostics</h1>
-      <p>This page helps identify connection and configuration issues.</p>
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', color: 'var(--text-main)' }}>
+      <h1 style={{ color: 'var(--text-main)' }}>🔍 System Diagnostics</h1>
+      <p style={{ color: 'var(--text-secondary)' }}>This page helps identify connection and configuration issues.</p>
       
       <button 
         onClick={runDiagnostics} 
@@ -102,21 +102,28 @@ const Diagnostics = () => {
           border: '1px solid var(--border-color)', 
           borderRadius: '8px', 
           padding: '15px',
-          background: 'var(--bg-card)'
+          background: 'var(--bg-card)',
+          color: 'var(--text-main)'
         }}>
-          <h3>{getStatusIcon(diagnosticResults.health?.status)} Backend Health Check</h3>
-          <p><strong>Endpoint:</strong> {API_CONFIG.HEALTH_URL}</p>
+          <h3 style={{ color: 'var(--text-main)' }}>{getStatusIcon(diagnosticResults.health?.status)} Backend Health Check</h3>
+          <p style={{ color: 'var(--text-secondary)' }}><strong>Endpoint:</strong> {API_CONFIG.HEALTH_URL}</p>
           {diagnosticResults.health ? (
             <div>
-              <p><strong>Status:</strong> {diagnosticResults.health.status}</p>
+              <p style={{ color: 'var(--text-main)' }}><strong>Status:</strong> {diagnosticResults.health.status}</p>
               {diagnosticResults.health.status === 'success' ? (
-                <pre>{JSON.stringify(diagnosticResults.health.data, null, 2)}</pre>
+                <pre style={{ 
+                  background: 'var(--bg-secondary)', 
+                  color: 'var(--text-main)',
+                  padding: '10px',
+                  borderRadius: '4px',
+                  border: '1px solid var(--border-color)'
+                }}>{JSON.stringify(diagnosticResults.health.data, null, 2)}</pre>
               ) : (
                 <p style={{ color: 'var(--error-text)' }}>Error: {diagnosticResults.health.message}</p>
               )}
             </div>
           ) : (
-            <p>⏳ Testing...</p>
+            <p style={{ color: 'var(--text-secondary)' }}>⏳ Testing...</p>
           )}
         </div>
 
@@ -125,21 +132,22 @@ const Diagnostics = () => {
           border: '1px solid var(--border-color)', 
           borderRadius: '8px', 
           padding: '15px',
-          background: 'var(--bg-card)'
+          background: 'var(--bg-card)',
+          color: 'var(--text-main)'
         }}>
-          <h3>{getStatusIcon(diagnosticResults.clients?.status)} Clients API</h3>
-          <p><strong>Endpoint:</strong> {API_CONFIG.CLIENTS_URL}</p>
+          <h3 style={{ color: 'var(--text-main)' }}>{getStatusIcon(diagnosticResults.clients?.status)} Clients API</h3>
+          <p style={{ color: 'var(--text-secondary)' }}><strong>Endpoint:</strong> {API_CONFIG.CLIENTS_URL}</p>
           {diagnosticResults.clients ? (
             <div>
-              <p><strong>Status:</strong> {diagnosticResults.clients.status}</p>
+              <p style={{ color: 'var(--text-main)' }}><strong>Status:</strong> {diagnosticResults.clients.status}</p>
               {diagnosticResults.clients.status === 'success' ? (
-                <p>Found {diagnosticResults.clients.count} clients</p>
+                <p style={{ color: 'var(--text-main)' }}>Found {diagnosticResults.clients.count} clients</p>
               ) : (
                 <p style={{ color: 'var(--error-text)' }}>Error: {diagnosticResults.clients.message}</p>
               )}
             </div>
           ) : (
-            <p>⏳ Testing...</p>
+            <p style={{ color: 'var(--text-secondary)' }}>⏳ Testing...</p>
           )}
         </div>
 
@@ -148,21 +156,22 @@ const Diagnostics = () => {
           border: '1px solid var(--border-color)', 
           borderRadius: '8px', 
           padding: '15px',
-          background: 'var(--bg-card)'
+          background: 'var(--bg-card)',
+          color: 'var(--text-main)'
         }}>
-          <h3>{getStatusIcon(diagnosticResults.prestamos?.status)} Prestamos API</h3>
-          <p><strong>Endpoint:</strong> {API_CONFIG.PRESTAMOS_URL}</p>
+          <h3 style={{ color: 'var(--text-main)' }}>{getStatusIcon(diagnosticResults.prestamos?.status)} Prestamos API</h3>
+          <p style={{ color: 'var(--text-secondary)' }}><strong>Endpoint:</strong> {API_CONFIG.PRESTAMOS_URL}</p>
           {diagnosticResults.prestamos ? (
             <div>
-              <p><strong>Status:</strong> {diagnosticResults.prestamos.status}</p>
+              <p style={{ color: 'var(--text-main)' }}><strong>Status:</strong> {diagnosticResults.prestamos.status}</p>
               {diagnosticResults.prestamos.status === 'success' ? (
-                <p>Found {diagnosticResults.prestamos.count} prestamos</p>
+                <p style={{ color: 'var(--text-main)' }}>Found {diagnosticResults.prestamos.count} prestamos</p>
               ) : (
                 <p style={{ color: 'var(--error-text)' }}>Error: {diagnosticResults.prestamos.message}</p>
               )}
             </div>
           ) : (
-            <p>⏳ Testing...</p>
+            <p style={{ color: 'var(--text-secondary)' }}>⏳ Testing...</p>
           )}
         </div>
 
@@ -171,17 +180,27 @@ const Diagnostics = () => {
           border: '1px solid var(--border-color)', 
           borderRadius: '8px', 
           padding: '15px',
-          background: 'var(--bg-card)'
+          background: 'var(--bg-card)',
+          color: 'var(--text-main)'
         }}>
-          <h3>🖥️ Environment Information</h3>
+          <h3 style={{ color: 'var(--text-main)' }}>🖥️ Environment Information</h3>
           {diagnosticResults.environment && (
-            <div style={{ fontSize: '14px' }}>
-              <p><strong>Current URL:</strong> {diagnosticResults.environment.url}</p>
-              <p><strong>API Base URL:</strong> {diagnosticResults.environment.apiBaseUrl}</p>
-              <p><strong>Timestamp:</strong> {diagnosticResults.environment.timestamp}</p>
+            <div style={{ fontSize: '14px', color: 'var(--text-main)' }}>
+              <p style={{ color: 'var(--text-main)' }}><strong>Current URL:</strong> {diagnosticResults.environment.url}</p>
+              <p style={{ color: 'var(--text-main)' }}><strong>API Base URL:</strong> {diagnosticResults.environment.apiBaseUrl}</p>
+              <p style={{ color: 'var(--text-main)' }}><strong>Timestamp:</strong> {diagnosticResults.environment.timestamp}</p>
               <details>
-                <summary>Browser Info</summary>
-                <p style={{ fontSize: '12px', wordBreak: 'break-all' }}>
+                <summary style={{ color: 'var(--text-main)', cursor: 'pointer' }}>Browser Info</summary>
+                <p style={{ 
+                  fontSize: '12px', 
+                  wordBreak: 'break-all',
+                  color: 'var(--text-secondary)',
+                  background: 'var(--bg-secondary)',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid var(--border-color)',
+                  marginTop: '5px'
+                }}>
                   {diagnosticResults.environment.userAgent}
                 </p>
               </details>
@@ -190,9 +209,16 @@ const Diagnostics = () => {
         </div>
       </div>
 
-      <div style={{ marginTop: '20px', padding: '15px', background: 'var(--accent-color-light)', borderRadius: '8px' }}>
-        <h4>💡 Troubleshooting Tips</h4>
-        <ul>
+      <div style={{ 
+        marginTop: '20px', 
+        padding: '15px', 
+        background: 'var(--bg-card)', 
+        borderRadius: '8px',
+        border: '1px solid var(--border-color)',
+        color: 'var(--text-main)'
+      }}>
+        <h4 style={{ color: 'var(--text-main)' }}>💡 Troubleshooting Tips</h4>
+        <ul style={{ color: 'var(--text-main)' }}>
           <li>Make sure the backend server is deployed and accessible</li>
           <li>Check the browser console (F12) for detailed error messages</li>
           <li>Verify your network connection</li>
