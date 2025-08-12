@@ -36,10 +36,19 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
     }
 
     const validateForm = () => {
-        const requiredFields = ['cedula', 'firstName', 'lastName']
+        const requiredFields = ['cedula', 'firstName', 'lastName', 'department', 'recommendation', 'celularNumber']
+        const fieldLabels = {
+            'cedula': 'Cédula',
+            'firstName': 'Nombre', 
+            'lastName': 'Apellido',
+            'department': 'Institución',
+            'recommendation': 'Recomendación',
+            'celularNumber': 'Celular'
+        }
+        
         for (let field of requiredFields) {
-            if (!formState[field].trim()) {
-                return `El campo ${field === 'cedula' ? 'Cédula' : field === 'firstName' ? 'Nombre' : 'Apellido'} es obligatorio`
+            if (!formState[field] || !formState[field].toString().trim()) {
+                return `El campo ${fieldLabels[field]} es obligatorio`
             }
         }
         
@@ -68,8 +77,21 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
         
         // Prepare data to match backend expectations
         const clientData = {
-            ...formState,
-            recommendedBy: formState.recommendation // Map recommendation to recommendedBy
+            cedula: formState.cedula,
+            firstName: formState.firstName,
+            lastName: formState.lastName,
+            department: formState.department,
+            telephoneNumber: formState.telephoneNumber ? parseInt(formState.telephoneNumber.replace(/\D/g, '')) : undefined,
+            celularNumber: parseInt(formState.celularNumber.replace(/\D/g, '')),
+            address: {
+                number: formState.number ? parseInt(formState.number) : undefined,
+                street: formState.street || "",
+                apartment: formState.apartment || "",
+                county: formState.county || "",
+                state: formState.state || "",
+                zipCode: formState.zipCode ? parseInt(formState.zipCode) : undefined
+            },
+            recommendedBy: formState.recommendation
         }
         
         try {
@@ -194,9 +216,9 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="department">Institución</label>
+                                <label htmlFor="department">Institución *</label>
                                 <input 
-                                    className="input-field" 
+                                    className={`input-field ${error && !formState.department ? 'input-error' : ''}`}
                                     type="text" 
                                     name="department" 
                                     onChange={handleChange} 
@@ -225,9 +247,9 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="celularNumber">Celular</label>
+                                <label htmlFor="celularNumber">Celular *</label>
                                 <input 
-                                    className="input-field" 
+                                    className={`input-field ${error && !formState.celularNumber ? 'input-error' : ''}`}
                                     type="tel" 
                                     name="celularNumber" 
                                     onChange={handleChange} 
@@ -325,13 +347,13 @@ const CreateClient = ({ onDataChange, NEW_CLIENT_PATH, NEW_PRESTAMO_PATH }) => {
                         <h3 className="section-title">Información Adicional</h3>
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="recommendation">Recomendación</label>
+                                <label htmlFor="recommendation">Recomendación *</label>
                                 <textarea 
-                                    className="input-field textarea-field" 
+                                    className={`input-field textarea-field ${error && !formState.recommendation ? 'input-error' : ''}`}
                                     name="recommendation" 
                                     onChange={handleChange} 
                                     value={formState.recommendation} 
-                                    placeholder="Recomendado por o notas adicionales..."
+                                    placeholder="Recomendado por (requerido)..."
                                     rows="3"
                                     disabled={loading}
                                 />
