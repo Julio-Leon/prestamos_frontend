@@ -108,19 +108,67 @@ const Prestamos = ({ onDataChange }) => {
     setEditingPrestamo({ ...prestamo });
   };
 
+  // Interest rates (annual rates) - same as in CreatePrestamo component
+  const INTEREST_RATES = {
+    'Monthly': 0.12,    // 12% annual for monthly payments
+    'Bi-Weekly': 0.10,  // 10% annual for bi-weekly payments (quincenal)
+    'Weekly': 0.05      // 5% annual for weekly payments (semanal)
+  };
+
+  // Calculate loan details (similar to CreatePrestamo's calculateLoanDetails)
+  const calculateLoanDetails = (principal, annualRate, totalPayments, paymentFrequency) => {
+    if (!principal || !annualRate || !totalPayments) return null;
+    
+    // Convert annual rate to payment period rate
+    const paymentsPerYear = paymentFrequency === 'Bi-Weekly' ? 26 : 
+                           paymentFrequency === 'Monthly' ? 12 : 52; // 26 for bi-weekly, 12 for monthly, 52 for weekly
+    const periodRate = annualRate / paymentsPerYear;
+    
+    // Calculate payment amount using amortization formula
+    // PMT = P * [r(1+r)^n] / [(1+r)^n - 1]
+    const numerator = periodRate * Math.pow(1 + periodRate, totalPayments);
+    const denominator = Math.pow(1 + periodRate, totalPayments) - 1;
+    const paymentAmount = principal * (numerator / denominator);
+    
+    // Calculate totals
+    const totalToPay = paymentAmount * totalPayments;
+    const totalInterest = totalToPay - principal;
+    
+    return {
+      amountPerPayment: Math.round(paymentAmount * 100) / 100, // Round to 2 decimals
+      totalToPay: Math.round(totalToPay * 100) / 100,
+      interestEarn: Math.round(totalInterest * 100) / 100
+    };
+  };
+
   const handleSaveEdit = async () => {
     try {
-      // Prepare the data in the format expected by the backend
+      // Recalculate loan details if amount of payments or loan amount changed
+      const principal = parseFloat(editingPrestamo.prestamoAmount);
+      const payments = parseInt(editingPrestamo.amountOfPayments);
+      
+      // Get the appropriate interest rate
+      const annualRate = INTEREST_RATES[editingPrestamo.paymentSchedule] || 0.10; // Default to 10% if not found
+      
+      // Recalculate the loan details
+      const recalculated = calculateLoanDetails(
+        principal, 
+        annualRate, 
+        payments, 
+        editingPrestamo.paymentSchedule
+      );
+      
+      // Use recalculated values
       const updateData = {
         cedula: editingPrestamo.cedula,
         paymentSchedule: editingPrestamo.paymentSchedule,
-        prestamoAmount: parseFloat(editingPrestamo.prestamoAmount),
+        prestamoAmount: principal,
         startDate: editingPrestamo.startDate,
         endDate: editingPrestamo.endDate,
-        totalToPay: parseFloat(editingPrestamo.totalToPay),
-        interestEarn: parseFloat(editingPrestamo.interestEarn),
-        amountOfPayments: parseInt(editingPrestamo.amountOfPayments),
-        amountPerPayment: parseFloat(editingPrestamo.amountPerPayment)
+        totalToPay: recalculated ? recalculated.totalToPay : parseFloat(editingPrestamo.totalToPay),
+        interestEarn: recalculated ? recalculated.interestEarn : parseFloat(editingPrestamo.interestEarn),
+        amountOfPayments: payments,
+        amountPerPayment: recalculated ? recalculated.amountPerPayment : parseFloat(editingPrestamo.amountPerPayment)
       };
 
       console.log('Updating prestamo with data:', updateData);
@@ -401,10 +449,33 @@ const Prestamos = ({ onDataChange }) => {
                         <label>Frecuencia:</label>
                         <select
                           value={editingPrestamo.paymentSchedule}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            paymentSchedule: e.target.value
-                          })}
+                          onChange={(e) => {
+                            const newSchedule = e.target.value;
+                            // Get current values
+                            const principal = parseFloat(editingPrestamo.prestamoAmount);
+                            const payments = parseInt(editingPrestamo.amountOfPayments);
+                            const annualRate = INTEREST_RATES[newSchedule] || 0.10; // Default to 10% if not found
+                            
+                            // Recalculate loan details
+                            const recalculated = calculateLoanDetails(
+                              principal, 
+                              annualRate, 
+                              payments, 
+                              newSchedule
+                            );
+                            
+                            // Update with new values
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              paymentSchedule: newSchedule,
+                              // Update other values only if recalculation was successful
+                              ...(recalculated && {
+                                amountPerPayment: recalculated.amountPerPayment,
+                                totalToPay: recalculated.totalToPay,
+                                interestEarn: recalculated.interestEarn
+                              })
+                            });
+                          }}
                         >
                           <option value="Monthly">Mensual</option>
                           <option value="Bi-Weekly">Quincenal</option>
@@ -417,10 +488,33 @@ const Prestamos = ({ onDataChange }) => {
                           type="number"
                           step="0.01"
                           value={editingPrestamo.prestamoAmount}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            prestamoAmount: e.target.value
-                          })}
+                          onChange={(e) => {
+                            const newAmount = e.target.value;
+                            // Get current values
+                            const payments = parseInt(editingPrestamo.amountOfPayments);
+                            const paymentSchedule = editingPrestamo.paymentSchedule;
+                            const annualRate = INTEREST_RATES[paymentSchedule] || 0.10; // Default to 10% if not found
+                            
+                            // Recalculate loan details
+                            const recalculated = calculateLoanDetails(
+                              parseFloat(newAmount), 
+                              annualRate, 
+                              payments, 
+                              paymentSchedule
+                            );
+                            
+                            // Update with new values
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              prestamoAmount: newAmount,
+                              // Update other values only if recalculation was successful
+                              ...(recalculated && {
+                                amountPerPayment: recalculated.amountPerPayment,
+                                totalToPay: recalculated.totalToPay,
+                                interestEarn: recalculated.interestEarn
+                              })
+                            });
+                          }}
                         />
                       </div>
 
@@ -455,10 +549,33 @@ const Prestamos = ({ onDataChange }) => {
                         <input
                           type="number"
                           value={editingPrestamo.amountOfPayments}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            amountOfPayments: e.target.value
-                          })}
+                          onChange={(e) => {
+                            const newPayments = e.target.value;
+                            // Get current values
+                            const principal = parseFloat(editingPrestamo.prestamoAmount);
+                            const paymentSchedule = editingPrestamo.paymentSchedule;
+                            const annualRate = INTEREST_RATES[paymentSchedule] || 0.10; // Default to 10% if not found
+                            
+                            // Recalculate loan details
+                            const recalculated = calculateLoanDetails(
+                              principal, 
+                              annualRate, 
+                              parseInt(newPayments), 
+                              paymentSchedule
+                            );
+                            
+                            // Update with new values
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              amountOfPayments: newPayments,
+                              // Update other values only if recalculation was successful
+                              ...(recalculated && {
+                                amountPerPayment: recalculated.amountPerPayment,
+                                totalToPay: recalculated.totalToPay,
+                                interestEarn: recalculated.interestEarn
+                              })
+                            });
+                          }}
                         />
                       </div>
 
