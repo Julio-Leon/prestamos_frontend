@@ -252,7 +252,7 @@ const Prestamos = ({ onDataChange }) => {
     
     // Calculate default payment amounts
     const amountPerPayment = prestamo.amountPerPayment || 0;
-    const totalToPay = prestamo.totalToPay || 0;
+    // const totalToPay = prestamo.totalToPay || 0;
     const prestamoAmount = prestamo.prestamoAmount || 0;
     const interestEarn = prestamo.interestEarn || 0;
     
