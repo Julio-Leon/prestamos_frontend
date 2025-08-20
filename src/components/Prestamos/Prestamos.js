@@ -695,12 +695,12 @@ const Prestamos = ({ onDataChange }) => {
                         <span className="amount-value">${prestamo.prestamoAmount}</span>
                       </div>
                       <div className="amount-item">
-                        <span className="amount-label">Total a Pagar:</span>
-                        <span className="amount-value">${prestamo.totalToPay}</span>
-                      </div>
-                      <div className="amount-item">
                         <span className="amount-label">Intereses:</span>
                         <span className="amount-value interest">${prestamo.interestEarn}</span>
+                      </div>
+                      <div className="amount-item">
+                        <span className="amount-label">Total a Pagar:</span>
+                        <span className="amount-value">${prestamo.prestamoAmount}</span>
                       </div>
                       <div className="amount-item">
                         <span className="amount-label">Pago por Período:</span>
