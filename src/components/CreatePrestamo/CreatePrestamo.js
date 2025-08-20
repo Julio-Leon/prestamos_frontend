@@ -194,6 +194,7 @@ const CreatePrestamo = ({ onDataChange }) => {
                 return newState
             })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formState.prestamoAmount, formState.paymentSchedule, formState.amountOfPayments, startDate, calculateLoanDetails, calculatePaymentDates])
 
     // Auto-calculate loan details when key fields change
