@@ -10,6 +10,7 @@ import Home from './components/Home/Home';
 import ConnectionStatus from './components/ConnectionStatus/ConnectionStatus';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Diagnostics from './components/Diagnostics/Diagnostics';
+import Login from './components/Login/Login';
 import { Routes, Route } from "react-router-dom";
 import PrestamosNavbar from './components/Navbar/PrestamosNavbar';
 import API_CONFIG from './config/api';
@@ -62,10 +63,40 @@ function App() {
   const [prestamos, setPrestamos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authLoading, setAuthLoading] = useState(true)
   const [dark, setDark] = useState(() => {
     const stored = localStorage.getItem('darkMode');
     return stored === null ? true : stored === 'true'; // Default to dark theme
   });
+
+  // Check authentication on app load
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('authToken');
+      const loginTime = localStorage.getItem('loginTime');
+      
+      if (token && loginTime) {
+        setIsAuthenticated(true);
+      }
+      setAuthLoading(false);
+    };
+
+    checkAuth();
+  }, []);
+
+  // Handle login
+  const handleLogin = (loginStatus) => {
+    setIsAuthenticated(loginStatus);
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('loginTime');
+    localStorage.removeItem('username');
+    setIsAuthenticated(false);
+  };
 
   // console.log(process.env.REACT_APP_BACKEND_STRING)
 
@@ -117,6 +148,8 @@ function App() {
 
   useEffect(() => {
     const loadData = async () => {
+      if (!isAuthenticated) return;
+      
       setLoading(true);
       setError(null);
       
@@ -128,12 +161,43 @@ function App() {
       setLoading(false);
     };
     
-    loadData();
-  }, [])
+    if (isAuthenticated && !authLoading) {
+      loadData();
+    }
+  }, [isAuthenticated, authLoading])
 
   useEffect(() => {
     localStorage.setItem('darkMode', dark);
   }, [dark]);
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          fontSize: '1.5rem',
+          color: 'var(--text-main)'
+        }}>
+          🔄 Loading...
+        </div>
+      </div>
+    );
+  }
+
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <Login 
+        onLogin={handleLogin} 
+        dark={dark} 
+        setDark={setDark} 
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -200,7 +264,7 @@ function App() {
       <div className={`app modern-app-bg${dark ? ' dark-mode' : ''}`}>
         <DarkModeToggle dark={dark} setDark={setDark} />
         <ConnectionStatus />
-        <PrestamosNavbar />
+        <PrestamosNavbar onLogout={handleLogout} />
         
         <div className="main-flex-layout">
           <aside className="sidebar-clients">

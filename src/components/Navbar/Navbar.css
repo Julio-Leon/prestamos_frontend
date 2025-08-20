@@ -117,6 +117,28 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Logout button */
+.logout-btn {
+    background: none !important;
+    border: none !important;
+    color: var(--text-secondary) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+}
+
+.logout-btn:hover {
+    color: #ff6b35 !important;
+    background: rgba(255, 107, 53, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+.dark-mode .logout-btn:hover {
+    background: rgba(255, 107, 53, 0.15) !important;
+}
+
 @media (max-width: 700px) {
     .navbar.modern-navbar {
         flex-direction: row;

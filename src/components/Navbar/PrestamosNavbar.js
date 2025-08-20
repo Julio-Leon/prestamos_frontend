@@ -4,12 +4,18 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-const PrestamosNavbar = () => {
+const PrestamosNavbar = ({ onLogout }) => {
     const NEW_CLIENT_PATH = '/new-client';
     const NEW_PRESTAMO_PATH = '/new-prestamo';
     const CLIENTS_PATH = '/clients';
     const PRESTAMOS_PATH = '/prestamos';
     const displayMyNavbar = false;
+
+    const handleLogout = () => {
+        if (window.confirm('¿Está seguro que desea cerrar sesión?')) {
+            onLogout();
+        }
+    };
 
     return displayMyNavbar ? (
         <nav className="navbar modern-navbar">
@@ -18,6 +24,9 @@ const PrestamosNavbar = () => {
             <Link className="nav-link" to={PRESTAMOS_PATH}>Préstamos</Link>
             <Link className="nav-link" to={NEW_CLIENT_PATH}>Nuevo Cliente</Link>
             <Link className="nav-link" to={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Link>
+            <button className="nav-link logout-btn" onClick={handleLogout}>
+                🚪 Salir
+            </button>
         </nav>
     ) : (
         <Navbar expand="lg" className="navbar modern-navbar">
@@ -32,6 +41,21 @@ const PrestamosNavbar = () => {
                         <Nav.Link as={Link} to={NEW_CLIENT_PATH}>Nuevo Cliente</Nav.Link>
                         <Nav.Link as={Link} to={NEW_PRESTAMO_PATH}>Nuevo Préstamo</Nav.Link>
                         <Nav.Link as={Link} to="/diagnostics" style={{ color: '#ff6b35' }}>🔍 Diagnostics</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <Nav.Link 
+                            as="button" 
+                            onClick={handleLogout}
+                            className="logout-btn"
+                            style={{ 
+                                background: 'none', 
+                                border: 'none',
+                                color: 'var(--text-secondary)',
+                                padding: '0.5rem 1rem'
+                            }}
+                        >
+                            🚪 Salir
+                        </Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
