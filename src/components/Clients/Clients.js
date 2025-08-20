@@ -10,34 +10,12 @@ const Clients = ({ onDataChange }) => {
   const [clientToDelete, setClientToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('firstName');
-  const [backendStatus, setBackendStatus] = useState('unknown');
 
   // Notify parent component when data changes
   const notifyDataChange = () => {
     if (onDataChange && typeof onDataChange === 'function') {
       console.log('Notifying parent component of data change...');
       onDataChange();
-    }
-  };
-
-  // Test backend connection
-  const testBackendConnection = async () => {
-    try {
-      setBackendStatus('testing');
-      const response = await fetch(API_CONFIG.HEALTH_URL);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Backend health check:', data);
-        setBackendStatus('connected');
-        alert(`Local backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
-      } else {
-        setBackendStatus('error');
-        alert(`Backend health check failed: ${response.status}`);
-      }
-    } catch (error) {
-      setBackendStatus('error');
-      console.error('Backend connection test failed:', error);
-      alert(`Backend connection test failed: ${error.message}`);
     }
   };
 
@@ -220,16 +198,6 @@ const Clients = ({ onDataChange }) => {
       <div className="clients-header">
         <h1 className="clients-title">Gestión de Clientes</h1>
         <p className="clients-subtitle">Administra todos los clientes del sistema</p>
-        <button 
-          onClick={testBackendConnection} 
-          className={`test-backend-btn ${backendStatus}`}
-          disabled={backendStatus === 'testing'}
-        >
-          {backendStatus === 'testing' ? '🔄 Testing...' : 
-           backendStatus === 'connected' ? '✅ Backend OK' : 
-           backendStatus === 'error' ? '❌ Backend Error' : 
-           '🔍 Test Backend'}
-        </button>
       </div>
 
       {/* Search and Sort Controls */}

@@ -12,29 +12,6 @@ const Prestamos = ({ onDataChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('startDate');
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, completed
-  const [backendStatus, setBackendStatus] = useState('unknown');
-
-  // Test backend connection
-  const testBackendConnection = async () => {
-    try {
-      setBackendStatus('testing');
-      console.log('Testing backend connection...');
-      const response = await fetch(API_CONFIG.HEALTH_URL);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Backend health check:', data);
-        setBackendStatus('connected');
-        alert(`Local backend is healthy! Status: ${data.status}, Uptime: ${Math.round(data.uptime)}s`);
-      } else {
-        setBackendStatus('error');
-        alert(`Backend health check failed: ${response.status}`);
-      }
-    } catch (error) {
-      setBackendStatus('error');
-      console.error('Backend connection test failed:', error);
-      alert(`Backend connection test failed: ${error.message}`);
-    }
-  };
 
   // Notify parent component when data changes
   const notifyDataChange = () => {
@@ -330,16 +307,6 @@ const Prestamos = ({ onDataChange }) => {
         <p className="prestamos-subtitle">
           Administre todos los préstamos del sistema ({prestamos.length} préstamos)
         </p>
-        <button 
-          onClick={testBackendConnection} 
-          className={`test-backend-btn ${backendStatus}`}
-          disabled={backendStatus === 'testing'}
-        >
-          {backendStatus === 'testing' ? '🔄 Testing...' : 
-           backendStatus === 'connected' ? '✅ Backend OK' : 
-           backendStatus === 'error' ? '❌ Backend Error' : 
-           '🔍 Test Backend'}
-        </button>
       </div>
 
       {/* Search and Filter Controls */}
