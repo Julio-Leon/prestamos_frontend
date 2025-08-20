@@ -576,6 +576,19 @@ const Prestamos = ({ onDataChange }) => {
                       </div>
 
                       <div className="edit-field">
+                        <label>Intereses a Pagar:</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={editingPrestamo.interestEarn}
+                          onChange={(e) => setEditingPrestamo({
+                            ...editingPrestamo,
+                            interestEarn: e.target.value
+                          })}
+                        />
+                      </div>
+
+                      <div className="edit-field">
                         <label>Número de Pagos:</label>
                         <input
                           type="number"
@@ -778,6 +791,10 @@ const Prestamos = ({ onDataChange }) => {
                   </div>
                   <div className="payment-detail">
                     <span className="detail-label">Intereses Totales:</span>
+                    <span className="detail-value interest">${selectedPrestamo.interestEarn}</span>
+                  </div>
+                  <div className="payment-detail">
+                    <span className="detail-label">Intereses a Pagar:</span>
                     <span className="detail-value interest">${selectedPrestamo.interestEarn}</span>
                   </div>
                   <div className="payment-detail">
