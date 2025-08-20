@@ -260,7 +260,12 @@ const CreatePrestamo = ({ onDataChange }) => {
                 totalToPay: formState.totalToPay,
                 interestEarn: formState.interestEarn,
                 amountOfPayments: parseInt(formState.amountOfPayments),
-                amountPerPayment: formState.amountPerPayment
+                amountPerPayment: formState.amountPerPayment,
+                // Initialize new tracking fields
+                interestToPay: formState.interestEarn, // Start with full interest amount
+                capitalRemaining: formState.totalToPay, // Total amount remaining
+                paymentsMade: 0, // No payments made yet
+                status: 'active' // Active loan
             }
             
             const response = await fetch(API_CONFIG.PRESTAMOS_URL, {

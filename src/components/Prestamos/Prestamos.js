@@ -150,8 +150,12 @@ const Prestamos = ({ onDataChange }) => {
         endDate: editingPrestamo.endDate,
         totalToPay: recalculated ? recalculated.totalToPay : parseFloat(editingPrestamo.totalToPay),
         interestEarn: recalculated ? recalculated.interestEarn : parseFloat(editingPrestamo.interestEarn),
+        interestToPay: parseFloat(editingPrestamo.interestToPay || editingPrestamo.interestEarn),
+        capitalRemaining: parseFloat(editingPrestamo.capitalRemaining || editingPrestamo.prestamoAmount),
         amountOfPayments: payments,
-        amountPerPayment: recalculated ? recalculated.amountPerPayment : parseFloat(editingPrestamo.amountPerPayment)
+        amountPerPayment: recalculated ? recalculated.amountPerPayment : parseFloat(editingPrestamo.amountPerPayment),
+        paymentsMade: parseInt(editingPrestamo.paymentsMade || 0),
+        status: editingPrestamo.status || 'active'
       };
 
       console.log('Updating prestamo with data:', updateData);
@@ -713,11 +717,11 @@ const Prestamos = ({ onDataChange }) => {
                       </div>
                       <div className="amount-item">
                         <span className="amount-label">Total a Pagar:</span>
-                        <span className="amount-value">${prestamo.prestamoAmount}</span>
+                        <span className="amount-value">${prestamo.capitalRemaining || prestamo.prestamoAmount}</span>
                       </div>
                       <div className="amount-item">
                         <span className="amount-label">Intereses a Pagar:</span>
-                        <span className="amount-value interest">${prestamo.interestEarn}</span>
+                        <span className="amount-value interest">${prestamo.interestToPay || prestamo.interestEarn}</span>
                       </div>
                       <div className="amount-item">
                         <span className="amount-label">Pago por Período:</span>
