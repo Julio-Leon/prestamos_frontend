@@ -323,10 +323,10 @@
     color: var(--text-main);
 }
 
-.amount-item.main-amount .amount-value {
+/* .amount-item.main-amount .amount-value {
     font-size: 1.4rem;
     color: var(--accent-color);
-}
+} */
 
 .amount-value.interest {
     color: var(--error-text);
