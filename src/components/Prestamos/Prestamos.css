@@ -248,7 +248,7 @@
     gap: 0.5rem;
 }
 
-.edit-btn, .delete-btn {
+.edit-btn, .delete-btn, .payment-btn {
     padding: 0.5rem;
     border: none;
     border-radius: 0.5rem;
@@ -260,6 +260,11 @@
 
 .edit-btn:hover {
     background: var(--accent-color-light);
+    transform: scale(1.1);
+}
+
+.payment-btn:hover {
+    background: var(--success-bg);
     transform: scale(1.1);
 }
 
@@ -786,5 +791,185 @@
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Payment Modal Styles */
+.payment-modal {
+    max-width: 600px;
+    min-height: auto;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.payment-info h4,
+.payment-form h4 {
+    color: var(--text-main);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.payment-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.payment-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.payment-detail .detail-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.payment-detail .detail-value {
+    font-size: 1rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.payment-detail .detail-value.interest {
+    color: var(--error-text);
+}
+
+.payment-form {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.payment-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.payment-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.payment-input-group label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.payment-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: var(--form-input-bg);
+    color: var(--form-text);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.payment-input:focus {
+    outline: none;
+    border-color: var(--form-focus-border);
+    box-shadow: 0 0 0 3px var(--form-focus-shadow);
+    background: var(--form-bg);
+}
+
+.payment-total {
+    background: var(--accent-color-light);
+    border: 2px solid var(--accent-color);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+.confirm-payment-btn {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 2px solid var(--success-border);
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.confirm-payment-btn:hover {
+    background: var(--success-text);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.cancel-payment-btn {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 2px solid var(--error-border);
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.cancel-payment-btn:hover {
+    background: var(--error-text);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Responsive design for payment modal */
+@media (max-width: 768px) {
+    .payment-modal {
+        max-width: 95vw;
+        margin: 1rem;
+    }
+    
+    .payment-details-grid,
+    .payment-inputs {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .confirm-payment-btn,
+    .cancel-payment-btn {
+        width: 100%;
     }
 }

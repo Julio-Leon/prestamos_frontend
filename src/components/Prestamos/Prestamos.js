@@ -12,6 +12,12 @@ const Prestamos = ({ onDataChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('startDate');
   const [filterStatus, setFilterStatus] = useState('all'); // all, active, completed
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPrestamo, setSelectedPrestamo] = useState(null);
+  const [paymentData, setPaymentData] = useState({
+    capitalPayment: 0,
+    interestPayment: 0
+  });
 
   // Notify parent component when data changes
   const notifyDataChange = () => {
@@ -238,6 +244,64 @@ const Prestamos = ({ onDataChange }) => {
   const cancelDelete = () => {
     setShowDeleteModal(false);
     setPrestamoToDelete(null);
+  };
+
+  // Payment functions
+  const handleAddPayment = (prestamo) => {
+    setSelectedPrestamo(prestamo);
+    
+    // Calculate default payment amounts
+    const amountPerPayment = prestamo.amountPerPayment || 0;
+    const totalToPay = prestamo.totalToPay || 0;
+    const prestamoAmount = prestamo.prestamoAmount || 0;
+    const interestEarn = prestamo.interestEarn || 0;
+    
+    // Simple calculation: interest portion vs capital portion
+    const interestRate = interestEarn / prestamoAmount; // Total interest rate
+    const interestPayment = amountPerPayment * (interestRate / (1 + interestRate));
+    const capitalPayment = amountPerPayment - interestPayment;
+    
+    setPaymentData({
+      capitalPayment: Math.round(capitalPayment * 100) / 100,
+      interestPayment: Math.round(interestPayment * 100) / 100
+    });
+    
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentDataChange = (field, value) => {
+    setPaymentData(prev => ({
+      ...prev,
+      [field]: parseFloat(value) || 0
+    }));
+  };
+
+  const handlePaymentSubmit = async () => {
+    try {
+      // Here you would typically send the payment data to your backend
+      console.log('Processing payment for prestamo:', selectedPrestamo._id);
+      console.log('Payment data:', paymentData);
+      
+      // For now, just show a success message
+      alert(`Pago procesado exitosamente:\nCapital: $${paymentData.capitalPayment}\nIntereses: $${paymentData.interestPayment}`);
+      
+      // Close modal and refresh data
+      setShowPaymentModal(false);
+      setSelectedPrestamo(null);
+      setPaymentData({ capitalPayment: 0, interestPayment: 0 });
+      
+      // Refresh prestamos data
+      notifyDataChange();
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert(`Error procesando el pago: ${error.message}`);
+    }
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPaymentModal(false);
+    setSelectedPrestamo(null);
+    setPaymentData({ capitalPayment: 0, interestPayment: 0 });
   };
 
   // Filter and sort prestamos
@@ -602,6 +666,13 @@ const Prestamos = ({ onDataChange }) => {
                           ✏️
                         </button>
                         <button
+                          className="payment-btn"
+                          onClick={() => handleAddPayment(prestamo)}
+                          title="Agregar pago"
+                        >
+                          💰
+                        </button>
+                        <button
                           className="delete-btn"
                           onClick={() => handleDelete(prestamo)}
                           title="Eliminar préstamo"
@@ -668,6 +739,94 @@ const Prestamos = ({ onDataChange }) => {
           })
         )}
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && selectedPrestamo && (
+        <div className="modal-overlay">
+          <div className="modal-content payment-modal">
+            <div className="modal-header">
+              <h3>Agregar Pago</h3>
+              <button 
+                className="modal-close-btn" 
+                onClick={handlePaymentCancel}
+                aria-label="Cerrar"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="payment-info">
+                <h4>Información del Préstamo</h4>
+                <div className="payment-details-grid">
+                  <div className="payment-detail">
+                    <span className="detail-label">Cliente:</span>
+                    <span className="detail-value">
+                      {getClientInfo(selectedPrestamo.cedula).firstName} {getClientInfo(selectedPrestamo.cedula).lastName}
+                    </span>
+                  </div>
+                  <div className="payment-detail">
+                    <span className="detail-label">Monto Total del Préstamo:</span>
+                    <span className="detail-value">${selectedPrestamo.prestamoAmount}</span>
+                  </div>
+                  <div className="payment-detail">
+                    <span className="detail-label">Total a Pagar:</span>
+                    <span className="detail-value">${selectedPrestamo.totalToPay}</span>
+                  </div>
+                  <div className="payment-detail">
+                    <span className="detail-label">Intereses Totales:</span>
+                    <span className="detail-value interest">${selectedPrestamo.interestEarn}</span>
+                  </div>
+                  <div className="payment-detail">
+                    <span className="detail-label">Pago por Período:</span>
+                    <span className="detail-value">${selectedPrestamo.amountPerPayment}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="payment-form">
+                <h4>Detalles del Pago</h4>
+                <div className="payment-inputs">
+                  <div className="payment-input-group">
+                    <label htmlFor="capitalPayment">Pago a Capital:</label>
+                    <input
+                      id="capitalPayment"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={paymentData.capitalPayment}
+                      onChange={(e) => handlePaymentDataChange('capitalPayment', e.target.value)}
+                      className="payment-input"
+                    />
+                  </div>
+                  <div className="payment-input-group">
+                    <label htmlFor="interestPayment">Pago a Intereses:</label>
+                    <input
+                      id="interestPayment"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={paymentData.interestPayment}
+                      onChange={(e) => handlePaymentDataChange('interestPayment', e.target.value)}
+                      className="payment-input"
+                    />
+                  </div>
+                </div>
+                <div className="payment-total">
+                  <strong>Total del Pago: ${(paymentData.capitalPayment + paymentData.interestPayment).toFixed(2)}</strong>
+                </div>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="confirm-payment-btn" onClick={handlePaymentSubmit}>
+                Procesar Pago
+              </button>
+              <button className="cancel-payment-btn" onClick={handlePaymentCancel}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
