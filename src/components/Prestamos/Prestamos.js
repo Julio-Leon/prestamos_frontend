@@ -102,9 +102,14 @@ const Prestamos = ({ onDataChange }) => {
   const calculateLoanDetails = (principal, annualRate, totalPayments, paymentFrequency) => {
     if (!principal || !annualRate || !totalPayments) return null;
     
+    console.log(`Calculating loan with: Principal=${principal}, Rate=${annualRate}, Payments=${totalPayments}, Schedule=${paymentFrequency}`);
+    
     // Convert annual rate to payment period rate
-    const paymentsPerYear = paymentFrequency === 'Bi-Weekly' ? 26 : 
-                           paymentFrequency === 'Monthly' ? 12 : 52; // 26 for bi-weekly, 12 for monthly, 52 for weekly
+    const paymentsPerYear = 
+      paymentFrequency === 'Quincenal' ? 24 : 
+      paymentFrequency === 'Bi-Weekly' ? 26 : 
+      paymentFrequency === 'Monthly' ? 12 : 52; // 24/26 for bi-weekly, 12 for monthly, 52 for weekly
+    
     const periodRate = annualRate / paymentsPerYear;
     
     // Calculate payment amount using amortization formula
@@ -113,9 +118,11 @@ const Prestamos = ({ onDataChange }) => {
     const denominator = Math.pow(1 + periodRate, totalPayments) - 1;
     const paymentAmount = principal * (numerator / denominator);
     
-    // Calculate totals
-    const totalToPay = paymentAmount * totalPayments;
-    const totalInterest = totalToPay - principal;
+    // Calculate totals - make sure we're not exceeding reasonable values
+    const totalInterest = paymentAmount * totalPayments - principal;
+    const totalToPay = principal + totalInterest; // This ensures total is principal + interest
+    
+    console.log(`Calculated: Payment=${paymentAmount.toFixed(2)}, Total=${totalToPay.toFixed(2)}, Interest=${totalInterest.toFixed(2)}`);
     
     return {
       amountPerPayment: Math.round(paymentAmount * 100) / 100, // Round to 2 decimals
@@ -126,32 +133,51 @@ const Prestamos = ({ onDataChange }) => {
 
   const handleSaveEdit = async () => {
     try {
-      // Recalculate loan details if amount of payments or loan amount changed
+      // Get basic loan parameters
       const principal = parseFloat(editingPrestamo.prestamoAmount);
       const payments = parseInt(editingPrestamo.amountOfPayments);
       
       // Get the appropriate interest rate
-      const annualRate = INTEREST_RATES[editingPrestamo.paymentSchedule] || 0.10; // Default to 10% if not found
+      const scheduleKey = editingPrestamo.paymentSchedule; // Use actual value from data
+      let annualRate = 0.10; // Default to 10% if not found
       
-      // Recalculate the loan details
-      const recalculated = calculateLoanDetails(
-        principal, 
-        annualRate, 
-        payments, 
-        editingPrestamo.paymentSchedule
-      );
+      // Map common schedule names to rates
+      if (scheduleKey === 'Quincenal' || scheduleKey === 'Bi-Weekly') {
+        annualRate = 0.10; // 10% for bi-weekly
+      } else if (scheduleKey === 'Semanal' || scheduleKey === 'Weekly') {
+        annualRate = 0.05; // 5% for weekly
+      } else if (scheduleKey === 'Mensual' || scheduleKey === 'Monthly') {
+        annualRate = 0.12; // 12% for monthly
+      }
       
-      // Use recalculated values
+      console.log(`Using interest rate ${annualRate * 100}% for schedule: ${scheduleKey}`);
+      
+      // Check if we have manually entered values
+      const manuallyEnteredTotalToPay = parseFloat(editingPrestamo.totalToPay);
+      const manuallyEnteredInterestEarn = parseFloat(editingPrestamo.interestEarn);
+      const manuallyEnteredInterestToPay = parseFloat(editingPrestamo.interestToPay || editingPrestamo.interestEarn);
+      
+      // Only recalculate if values weren't manually adjusted
+      let totalToPay, interestEarn, interestToPay;
+      
+      console.log("Manual entry detected? Total:", manuallyEnteredTotalToPay, "Interest:", manuallyEnteredInterestEarn);
+      
+      // Always respect manually entered values if they exist and are reasonable
+      totalToPay = manuallyEnteredTotalToPay;
+      interestEarn = manuallyEnteredInterestEarn;
+      interestToPay = manuallyEnteredInterestToPay;
+            
+      // Create the update data object with the actual values
       const updateData = {
         cedula: editingPrestamo.cedula,
         paymentSchedule: editingPrestamo.paymentSchedule,
         prestamoAmount: principal,
         startDate: editingPrestamo.startDate,
         endDate: editingPrestamo.endDate,
-        totalToPay: recalculated ? recalculated.totalToPay : parseFloat(editingPrestamo.totalToPay),
-        interestEarn: recalculated ? recalculated.interestEarn : parseFloat(editingPrestamo.interestEarn),
-        interestToPay: parseFloat(editingPrestamo.interestToPay || editingPrestamo.interestEarn),
-        capitalRemaining: parseFloat(editingPrestamo.capitalRemaining || editingPrestamo.prestamoAmount),
+        totalToPay: totalToPay,
+        interestEarn: interestEarn,
+        interestToPay: interestToPay,
+        capitalRemaining: principal, // Reset to full amount when editing
         amountOfPayments: payments,
         amountPerPayment: recalculated ? recalculated.amountPerPayment : parseFloat(editingPrestamo.amountPerPayment),
         paymentsMade: parseInt(editingPrestamo.paymentsMade || 0),
@@ -559,10 +585,13 @@ const Prestamos = ({ onDataChange }) => {
                           type="number"
                           step="0.01"
                           value={editingPrestamo.totalToPay}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            totalToPay: e.target.value
-                          })}
+                          onChange={(e) => {
+                            console.log("Updating Total a Pagar to:", e.target.value);
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              totalToPay: e.target.value
+                            });
+                          }}
                         />
                       </div>
 
@@ -572,10 +601,13 @@ const Prestamos = ({ onDataChange }) => {
                           type="number"
                           step="0.01"
                           value={editingPrestamo.interestEarn}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            interestEarn: e.target.value
-                          })}
+                          onChange={(e) => {
+                            console.log("Updating Intereses to:", e.target.value);
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              interestEarn: e.target.value
+                            });
+                          }}
                         />
                       </div>
 
@@ -584,11 +616,14 @@ const Prestamos = ({ onDataChange }) => {
                         <input
                           type="number"
                           step="0.01"
-                          value={editingPrestamo.interestEarn}
-                          onChange={(e) => setEditingPrestamo({
-                            ...editingPrestamo,
-                            interestEarn: e.target.value
-                          })}
+                          value={editingPrestamo.interestToPay || editingPrestamo.interestEarn}
+                          onChange={(e) => {
+                            console.log("Updating Intereses a Pagar to:", e.target.value);
+                            setEditingPrestamo({
+                              ...editingPrestamo,
+                              interestToPay: e.target.value
+                            });
+                          }}
                         />
                       </div>
 
