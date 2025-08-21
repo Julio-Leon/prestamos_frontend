@@ -1,1 +1,8 @@
+# Proxying API requests to backend to avoid CORS issues
+/api/* https://prestamos-backend.netlify.app/:splat 200
+/clients/* https://prestamos-backend.netlify.app/clients/:splat 200
+/prestamos/* https://prestamos-backend.netlify.app/prestamos/:splat 200
+/health/* https://prestamos-backend.netlify.app/health/:splat 200
+
+# Fallback for all other routes
 /*    /index.html   200

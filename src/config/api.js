@@ -1,10 +1,33 @@
 // API Configuration
 const API_CONFIG = {
-  // Production backend URL (deployed on Render)
-  BASE_URL: 'https://prestamos-backend.onrender.com',
+  // Primary production backend URL (deployed on Netlify)
+  PRIMARY_URL: 'https://prestamos-backend.netlify.app',
   
-  // Fallback to local backend if production is unavailable
-  // BASE_URL: 'http://localhost:4000',
+  // Alternate backend URL (in case the primary is down)
+  ALTERNATE_URL: 'https://prestamos-backend.onrender.com',
+  
+  // Local development URL
+  LOCAL_URL: 'http://localhost:4000',
+  
+  // Proxy URL (using Netlify's proxy to avoid CORS issues)
+  PROXY_URL: '', // Empty string means use relative URLs - will be served from same domain
+  
+  // Active URL (will be set to proxy URL initially for better CORS handling)
+  BASE_URL: '',  // Use relative URLs by default - helps avoid CORS issues
+  
+  // Method to switch to alternate URL if primary fails
+  switchToAlternateUrl() {
+    console.log('Switching to alternate API URL');
+    this.BASE_URL = this.ALTERNATE_URL;
+    return this.ALTERNATE_URL;
+  },
+  
+  // Method to switch to local URL for development
+  switchToLocalUrl() {
+    console.log('Switching to local API URL');
+    this.BASE_URL = this.LOCAL_URL;
+    return this.LOCAL_URL;
+  },
   
   // API endpoints
   ENDPOINTS: {
